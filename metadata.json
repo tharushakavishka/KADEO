@@ -1,0 +1,6 @@
+{
+  "name": "Kadeo Commerce Platform",
+  "description": "Multi-vendor commerce platform for Sri Lankan independent sellers with WhatsApp order handoff, custom storefronts, and seller management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
