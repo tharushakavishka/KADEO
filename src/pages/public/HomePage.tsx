@@ -11,29 +11,17 @@ import {
   Smartphone,
   CheckCircle2,
   ExternalLink,
-  Lock,
   Check,
   HelpCircle,
   ChevronDown,
-  TrendingUp,
   Instagram,
   Facebook,
 } from 'lucide-react';
+import { ReelmarkHero } from '../../components/home/ReelmarkHero';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [storeSlug, setStoreSlug] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const handleCreateStoreSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanSlug = storeSlug.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-{2,}/g, '-').replace(/^-+|-+$/g, '');
-    if (cleanSlug) {
-      navigate(`/seller/register?shop=${encodeURIComponent(cleanSlug)}`);
-    } else {
-      navigate('/seller/register');
-    }
-  };
 
   const toggleFaq = (index: number) => {
     setOpenFaq(prev => (prev === index ? null : index));
@@ -186,317 +174,22 @@ export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-transparent text-neutral-900 font-sans antialiased selection:bg-[#10B981] selection:text-white">
       {/* ──────────────────────────────────────────────────────────────────────────
-          1. HERO SECTION (Matching User Design Specification)
+          1. REELMARK INTERACTIVE CURVED VIDEO HERO SECTION
       ────────────────────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-transparent py-16 sm:py-24 border-b border-[#E5E7EB]">
-        {/* Soft Radial Mint Glow */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/[0.06] rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-6 space-y-6 text-left">
-              {/* Pill Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full bg-white border border-[#E5E7EB] px-3.5 py-1.5 text-xs font-semibold text-[#047857] shadow-2xs">
-                <span className="w-5 h-5 rounded-full bg-[#10B981] text-white flex items-center justify-center text-[10px]">
-                  <Sparkles className="h-3 w-3" />
-                </span>
-                <span>Sri Lanka's #1 eCommerce Platform for Sellers</span>
-              </div>
-
-              {/* Headline */}
-              <div className="space-y-2">
-                <h1 className="text-4xl sm:text-5xl lg:text-[62px] font-black tracking-[-0.04em] text-neutral-950 leading-[1.05]">
-                  Build Your Own{' '}
-                  <span className="relative inline-block text-[#10B981]">
-                    Online Store
-                    <svg
-                      className="absolute -bottom-2 left-0 w-full h-3 text-emerald-200 -z-10"
-                      viewBox="0 0 300 12"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M2 8c60-6 140-8 296-2"
-                        stroke="currentColor"
-                        strokeWidth="6"
-                        fill="none"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>{' '}
-                  in Minutes.
-                </h1>
-                <p className="text-base sm:text-lg text-neutral-600 font-normal leading-relaxed max-w-xl pt-2">
-                  The easiest way for Sri Lankan brands, boutiques, and creators to sell online.
-                  Get a dedicated store link, accept orders directly on WhatsApp, and manage your inventory with zero coding.
-                </p>
-              </div>
-
-              {/* Claim Store Link Form */}
-              <div className="pt-2">
-                <form
-                  onSubmit={handleCreateStoreSubmit}
-                  className="flex flex-col sm:flex-row items-stretch gap-2 p-2 bg-white border border-[#E5E7EB] rounded-2xl shadow-xs max-w-xl transition-all focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10"
-                >
-                  <label className="flex-1 flex items-center gap-1 px-3 py-2 bg-[#F8F8F5] border border-neutral-200/60 rounded-xl text-xs sm:text-sm text-neutral-500 font-medium cursor-text">
-                    <span className="select-none font-semibold text-neutral-400">
-                      kadeo.lk/shop/
-                    </span>
-                    <input
-                      type="text"
-                      value={storeSlug}
-                      onChange={e =>
-                        setStoreSlug(
-                          e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-                        )
-                      }
-                      placeholder="your-shop-name"
-                      maxLength={30}
-                      className="w-full bg-transparent font-bold text-neutral-900 focus:outline-none placeholder:text-neutral-400 placeholder:font-normal"
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-sm shadow-xs transition-all active:scale-95 cursor-pointer shrink-0"
-                  >
-                    <span>Create Your Free Shop</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </form>
-
-                {/* Micro Perks */}
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-3 text-xs text-neutral-500">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-[#10B981] stroke-[2.5]" />
-                    Free forever tier
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-[#10B981] stroke-[2.5]" />
-                    Zero technical setup
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-[#10B981] stroke-[2.5]" />
-                    Ready in 2 minutes
-                  </span>
-                </div>
-              </div>
-
-              {/* Secondary CTA buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-[#E5E7EB] bg-white hover:border-neutral-400 text-xs sm:text-sm font-semibold text-neutral-800 shadow-2xs transition-all"
-                >
-                  <span>How Kadeo Works</span>
-                  <ArrowRight className="h-3.5 w-3.5 text-[#10B981]" />
-                </a>
-
-                <Link
-                  to="/shop/ceylon-linen"
-                  className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-[#E5E7EB] bg-white hover:border-neutral-400 text-xs sm:text-sm font-semibold text-neutral-800 shadow-2xs transition-all"
-                >
-                  <span>View Sample Storefront</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </Link>
-
-                <Link
-                  to="/seller/login"
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-neutral-700 hover:text-[#10B981] transition-colors py-2"
-                >
-                  <span>Seller Login</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-
-              {/* Hero Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-[#E5E7EB]">
-                <div>
-                  <b className="block text-2xl font-black text-neutral-950 tracking-tight">0%</b>
-                  <span className="text-xs text-neutral-500">Commission on orders</span>
-                </div>
-                <div>
-                  <b className="block text-2xl font-black text-neutral-950 tracking-tight">2 min</b>
-                  <span className="text-xs text-neutral-500">Average setup time</span>
-                </div>
-                <div>
-                  <b className="block text-2xl font-black text-neutral-950 tracking-tight">COD + Bank</b>
-                  <span className="text-xs text-neutral-500">Local payment ready</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Visual: Multi-Device Preview Showcase */}
-            <div className="lg:col-span-6 relative w-full overflow-hidden sm:overflow-visible">
-              <div className="relative mx-auto max-w-[500px] w-full h-[480px] sm:h-[540px] md:h-[580px]">
-                {/* Floating Chip 1: New WhatsApp Order */}
-                <div className="absolute top-2 left-2 sm:-left-6 lg:-left-8 z-30 bg-white border border-[#E5E7EB] rounded-2xl p-2.5 sm:p-3 shadow-sm flex items-center gap-2.5 sm:gap-3 anim-float max-w-[90%] sm:max-w-none">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-[#10B981] flex items-center justify-center shrink-0">
-                    <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-                      <b className="text-[11px] sm:text-xs font-bold text-neutral-900">New WhatsApp Order!</b>
-                    </div>
-                    <small className="text-[10px] sm:text-[11px] text-neutral-500">
-                      Rs. 6,800 • Relaxed Resort Shirt
-                    </small>
-                  </div>
-                </div>
-
-                {/* Browser Mockup */}
-                <div className="absolute top-8 left-0 right-4 sm:right-10 md:right-12 bg-white rounded-2xl border border-[#E5E7EB] shadow-md overflow-hidden -rotate-1 hover:rotate-0 transition-transform duration-500">
-                  {/* Browser Bar */}
-                  <div className="flex items-center gap-3 px-4 py-3 bg-[#F8F8F5] border-b border-[#E5E7EB]">
-                    <div className="flex gap-1.5">
-                      <i className="w-2.5 h-2.5 rounded-full bg-neutral-300" />
-                      <i className="w-2.5 h-2.5 rounded-full bg-neutral-300" />
-                      <i className="w-2.5 h-2.5 rounded-full bg-neutral-300" />
-                    </div>
-                    <div className="flex-1 flex items-center justify-center gap-1.5 bg-white border border-[#E5E7EB] rounded-lg py-1 px-3 text-[11px] font-mono text-neutral-500 shadow-2xs">
-                      <Lock className="h-3 w-3 text-[#10B981]" />
-                      <span>kadeo.lk/shop/ceylon-linen</span>
-                    </div>
-                  </div>
-
-                  {/* Storefront Nav */}
-                  <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB]">
-                    <span className="font-extrabold text-xs sm:text-sm tracking-tight text-neutral-900">
-                      Ceylon Linen Co.
-                    </span>
-                    <div className="flex gap-3 text-[11px] font-medium text-neutral-500">
-                      <span>New</span>
-                      <span>Shirts</span>
-                      <span>Bags</span>
-                    </div>
-                  </div>
-
-                  {/* Storefront Hero */}
-                  <div className="m-3 p-4 rounded-xl bg-gradient-to-br from-[#EFE9DC] to-[#E4DDCA] grid grid-cols-1 sm:grid-cols-12 gap-3 items-center overflow-hidden">
-                    <div className="sm:col-span-7 space-y-1">
-                      <span className="inline-block text-[9px] font-bold tracking-wider text-[#047857] bg-white/80 px-2 py-0.5 rounded">
-                        PURE LINEN TAILORING
-                      </span>
-                      <h4 className="text-lg font-black text-neutral-950 leading-tight">
-                        Look Good.<br />Feel Cool.
-                      </h4>
-                      <p className="text-[11px] text-neutral-700 leading-snug">
-                        Handcrafted Sri Lankan resort wear tailored for the tropical climate.
-                      </p>
-                      <span className="inline-flex items-center gap-1 bg-neutral-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg mt-2">
-                        Shop Collection <ArrowRight className="h-3 w-3" />
-                      </span>
-                    </div>
-                    <div className="sm:col-span-5 flex justify-center">
-                      <img
-                        src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&q=80"
-                        alt="Resort Shirt"
-                        className="h-28 w-28 rounded-xl object-cover shadow-md"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Storefront Mini Products */}
-                  <div className="px-3 pb-3">
-                    <div className="flex justify-between items-center text-[11px] font-bold text-neutral-800 mb-2 px-1">
-                      <span>Featured Collection</span>
-                      <span className="text-[#10B981]">Direct Checkout →</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="p-1.5 border border-neutral-100 rounded-xl bg-white shadow-2xs">
-                        <img
-                          src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=150&q=80"
-                          alt="Resort Shirt"
-                          className="w-full aspect-square rounded-lg object-cover mb-1"
-                        />
-                        <b className="block text-[10px] font-bold truncate">Resort Shirt</b>
-                        <span className="text-[10px] font-bold text-[#10B981]">Rs. 6,800</span>
-                      </div>
-                      <div className="p-1.5 border border-neutral-100 rounded-xl bg-white shadow-2xs">
-                        <img
-                          src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=150&q=80"
-                          alt="Carry Tote"
-                          className="w-full aspect-square rounded-lg object-cover mb-1"
-                        />
-                        <b className="block text-[10px] font-bold truncate">Carry Tote</b>
-                        <span className="text-[10px] font-bold text-[#10B981]">Rs. 3,850</span>
-                      </div>
-                      <div className="p-1.5 border border-neutral-100 rounded-xl bg-white shadow-2xs">
-                        <img
-                          src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=150&q=80"
-                          alt="Linen Spray"
-                          className="w-full aspect-square rounded-lg object-cover mb-1"
-                        />
-                        <b className="block text-[10px] font-bold truncate">Linen Spray</b>
-                        <span className="text-[10px] font-bold text-[#10B981]">Rs. 1,950</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Phone Mockup Showing WhatsApp Confirmation */}
-                <div className="absolute right-0 bottom-2 sm:bottom-4 w-44 sm:w-52 md:w-56 bg-neutral-950 rounded-[30px] sm:rounded-[34px] p-1.5 sm:p-2 shadow-2xl z-20 rotate-2 sm:rotate-3 hover:rotate-0 transition-transform duration-500">
-                  <div className="bg-[#EFE9E0] rounded-[24px] sm:rounded-[26px] overflow-hidden flex flex-col h-[320px] sm:h-[350px]">
-                    {/* WhatsApp Header */}
-                    <div className="bg-[#075E54] text-white px-3 py-3 sm:py-4 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-emerald-100 text-[#075E54] font-black text-[10px] flex items-center justify-center">
-                        CL
-                      </div>
-                      <div>
-                        <b className="text-[11px] block leading-none">Ceylon Linen Co.</b>
-                        <small className="text-[9px] opacity-80">online</small>
-                      </div>
-                    </div>
-
-                    {/* WhatsApp Chat Body */}
-                    <div className="flex-1 p-2.5 space-y-2 text-[10px] overflow-hidden bg-[#EFE9E0]">
-                      <div className="bg-[#D9FDD3] p-2 rounded-lg rounded-tr-none shadow-xs text-neutral-800 leading-tight">
-                        <strong className="block font-bold text-[#075E54] text-[9.5px]">
-                          Order via Kadeo
-                        </strong>
-                        Resort Shirt (SKU CL-014)<br />
-                        Size: M × 1<br />
-                        Rs. 6,800 • COD<br />
-                        Deliver: Colombo 07
-                        <span className="block text-right text-[8px] text-neutral-500 mt-1">12:41 ✓✓</span>
-                      </div>
-                      <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-xs text-neutral-800 leading-tight">
-                        Thank you! Your order is confirmed 🎉 Packing now.
-                        <span className="block text-right text-[8px] text-neutral-500 mt-1">12:42</span>
-                      </div>
-                      <div className="bg-white p-2 rounded-lg rounded-tl-none shadow-xs text-neutral-800 leading-tight">
-                        Courier dispatch tomorrow morning.
-                        <span className="block text-right text-[8px] text-neutral-500 mt-1">12:42</span>
-                      </div>
-                    </div>
-
-                    {/* Chat Input Pill */}
-                    <div className="p-2 bg-[#EFE9E0]">
-                      <div className="bg-white rounded-full py-1.5 px-3 text-[9px] text-neutral-400">
-                        Type a message
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Chip 2: 100% Direct Sales */}
-                <div className="absolute bottom-4 left-2 sm:-left-4 lg:-left-6 z-30 bg-white border border-[#E5E7EB] rounded-2xl p-2.5 sm:p-3 shadow-sm flex items-center gap-2.5 sm:gap-3 max-w-[90%] sm:max-w-none">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                    <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </div>
-                  <div>
-                    <b className="text-[11px] sm:text-xs font-bold text-neutral-900 block">100% Direct Sales</b>
-                    <small className="text-[10px] sm:text-[11px] text-neutral-500">
-                      0% Commission on WhatsApp
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ReelmarkHero
+        badgeText="Trusted by 120,000+ indie makers"
+        headlineLine1="Captivate Crowds"
+        headlineLine2="with Snackable Reels"
+        subline={[
+          'Grow your brand with short, snappy product clips by',
+          'our handpicked video makers. Our crew is ready to',
+          'lift your next launch higher.',
+        ]}
+        ctaText="Make a Reel"
+        ctaLink="/seller/register"
+        note1Text={'Be seen\nwith clips'}
+        note2Text="Zero cost"
+      />
 
       {/* ──────────────────────────────────────────────────────────────────────────
           2. CHANNELS STRIP (Benefits for Social Media Sellers)
