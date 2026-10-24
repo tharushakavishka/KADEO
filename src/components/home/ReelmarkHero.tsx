@@ -678,8 +678,8 @@ export const ReelmarkHero: React.FC<ReelmarkHeroProps> = ({
 
         .note-zerocost-group {
           position: absolute;
-          left: calc(521 * var(--u));
-          top: calc(897 * var(--u));
+          left: calc(50% - 175 * var(--u));
+          top: calc(885 * var(--u));
           z-index: 16;
           pointer-events: none;
         }
@@ -796,13 +796,16 @@ export const ReelmarkHero: React.FC<ReelmarkHeroProps> = ({
           margin-left: calc(1.5 * var(--u));
         }
 
-        /* Bottom CTA Button: Ring 190x74 at (626, 861), Inner Pill 172x58 */
+        /* Bottom CTA Button: Centered Pill with Dashed Ring */
         .cta-ring {
           position: absolute;
-          left: calc(626 * var(--u));
+          left: 50%;
           top: calc(861 * var(--u));
-          width: calc(190 * var(--u));
+          transform: translateX(-50%);
+          width: auto;
+          min-width: calc(190 * var(--u));
           height: calc(74 * var(--u));
+          padding: calc(6 * var(--u));
           border-radius: 999px;
           border: calc(1.6 * var(--u)) dashed var(--green);
           display: flex;
@@ -815,16 +818,18 @@ export const ReelmarkHero: React.FC<ReelmarkHeroProps> = ({
         }
 
         .cta-ring:hover {
-          transform: scale(1.03);
+          transform: translateX(-50%) scale(1.03);
         }
 
         .cta-ring:active {
-          transform: scale(0.98);
+          transform: translateX(-50%) scale(0.98);
         }
 
         .cta-pill {
-          width: calc(172 * var(--u));
+          width: auto;
+          min-width: calc(172 * var(--u));
           height: calc(58 * var(--u));
+          padding: 0 calc(28 * var(--u));
           border-radius: 999px;
           background-color: var(--green);
           color: #FFFFFF;
@@ -835,6 +840,7 @@ export const ReelmarkHero: React.FC<ReelmarkHeroProps> = ({
           display: flex;
           align-items: center;
           justify-content: center;
+          white-space: nowrap;
           transition: background-color 0.18s ease;
         }
 
@@ -932,14 +938,27 @@ export const ReelmarkHero: React.FC<ReelmarkHeroProps> = ({
             position: relative;
             left: auto;
             top: auto;
-            width: 178px;
+            transform: none;
+            width: auto;
+            min-width: 178px;
             height: 68px;
+            padding: 5px;
             border-width: 1.5px;
           }
 
+          .cta-ring:hover {
+            transform: scale(1.03);
+          }
+
+          .cta-ring:active {
+            transform: scale(0.98);
+          }
+
           .cta-pill {
-            width: 162px;
+            width: auto;
+            min-width: 162px;
             height: 52px;
+            padding: 0 24px;
             font-size: 16px;
           }
 

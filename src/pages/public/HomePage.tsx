@@ -177,18 +177,18 @@ export const HomePage: React.FC = () => {
           1. REELMARK INTERACTIVE CURVED VIDEO HERO SECTION
       ────────────────────────────────────────────────────────────────────────── */}
       <ReelmarkHero
-        badgeText="Trusted by 120,000+ indie makers"
-        headlineLine1="Captivate Crowds"
+        badgeText="Sri Lanka's #1 Boutique Commerce Platform"
+        headlineLine1="Build Your Boutique"
         headlineLine2="with Snackable Reels"
         subline={[
-          'Grow your brand with short, snappy product clips by',
-          'our handpicked video makers. Our crew is ready to',
-          'lift your next launch higher.',
+          'The easiest way for Sri Lankan brands & creators to sell online.',
+          'Showcase video reels, accept instant orders on WhatsApp,',
+          'and manage your inventory with zero code.',
         ]}
-        ctaText="Make a Reel"
+        ctaText="Create Your Store"
         ctaLink="/seller/register"
-        note1Text={'Be seen\nwith clips'}
-        note2Text="Zero cost"
+        note1Text={'Direct\nWhatsApp Orders'}
+        note2Text="0% Commission"
       />
 
       {/* ──────────────────────────────────────────────────────────────────────────
