@@ -12,7 +12,22 @@ export interface User {
   createdAt: string;
 }
 
-export type StorefrontThemeId = 'minimal' | 'beauty' | 'modern';
+export type StorefrontThemeId =
+  | 'minimal'
+  | 'beauty'
+  | 'modern'
+  | 'kadeo'
+  | 'linen'
+  | 'tech'
+  | 'streetwear'
+  | 'organic'
+  | 'classic'
+  | 'spices'
+  | 'jewelry'
+  | 'pottery'
+  | 'cyber'
+  | 'surf'
+  | string;
 
 export interface ShopContact {
   email: string;

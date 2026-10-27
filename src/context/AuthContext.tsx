@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Shop } from '../types';
+import { User, Shop, StorefrontThemeId } from '../types';
 import { StorageService } from '../services/storageService';
 import { ApiService } from '../services/apiService';
 
@@ -19,7 +19,7 @@ interface AuthContextType {
     phone: string;
     whatsappNumber: string;
     city: string;
-    themeId: 'minimal' | 'beauty' | 'modern';
+    themeId: StorefrontThemeId;
     password?: string;
   }) => { user: User; shop: Shop };
   logout: () => void;
@@ -290,7 +290,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     phone: string;
     whatsappNumber: string;
     city: string;
-    themeId: 'minimal' | 'beauty' | 'modern';
+    themeId: StorefrontThemeId;
     password?: string;
   }) => {
     // Generate slug

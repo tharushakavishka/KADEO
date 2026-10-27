@@ -30,6 +30,7 @@ import {
   Mail,
   DollarSign,
   Truck,
+  Search,
 } from 'lucide-react';
 import {
   KaveeStoreService,
@@ -55,6 +56,7 @@ export const SellerCustomizeStudio: React.FC = () => {
   // Active Tool & Section selection
   const [activeTool, setActiveTool] = useState<string>('theme');
   const [activeSection, setActiveSection] = useState<string>('theme');
+  const [themeFilter, setThemeFilter] = useState<'all' | 'fashion' | 'tech' | 'artisan' | 'food'>('all');
 
   // Right Drawer Tab & State
   const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
@@ -62,6 +64,31 @@ export const SellerCustomizeStudio: React.FC = () => {
   // Toast notification
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(true);
+
+  // Deep-linking via URL hash (e.g. #categories, #header)
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        if (['categories', 'header', 'hero', 'announcement', 'products', 'promoBanners', 'whyShop', 'footer'].includes(hash)) {
+          setActiveSection(hash);
+          setActiveTool(hash);
+          setDrawerOpen(true);
+        } else if (['theme', 'colors', 'typography', 'animations'].includes(hash)) {
+          setActiveSection(hash);
+          setActiveTool(hash);
+          setDrawerOpen(true);
+        } else if (hash === 'settings') {
+          setActiveSection('storeSettings');
+          setActiveTool('settings');
+          setDrawerOpen(true);
+        }
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -137,6 +164,15 @@ export const SellerCustomizeStudio: React.FC = () => {
 
   const themeList = Object.values(THEME_PRESETS);
 
+  const filteredThemes = themeList.filter(t => {
+    if (themeFilter === 'all') return true;
+    if (themeFilter === 'fashion') return ['linen', 'streetwear', 'beauty', 'surf'].includes(t.id);
+    if (themeFilter === 'tech') return ['tech', 'cyber'].includes(t.id);
+    if (themeFilter === 'artisan') return ['jewelry', 'pottery', 'classic', 'minimal'].includes(t.id);
+    if (themeFilter === 'food') return ['spices', 'organic', 'kadeo'].includes(t.id);
+    return true;
+  });
+
   const colorPresets = [
     { label: 'Emerald Green', value: '#00A86B' },
     { label: 'Warm Sand Linen', value: '#8C7355' },
@@ -146,6 +182,11 @@ export const SellerCustomizeStudio: React.FC = () => {
     { label: 'Forest Green', value: '#15803D' },
     { label: 'Pitch Black', value: '#18181B' },
     { label: 'Heritage Amber', value: '#B45309' },
+    { label: 'Ceylon Spices', value: '#047857' },
+    { label: 'Royal Sapphire', value: '#2563EB' },
+    { label: 'Terracotta Clay', value: '#C2410C' },
+    { label: 'Neon Cyber Violet', value: '#A855F7' },
+    { label: 'Tropical Ocean Teal', value: '#0D9488' },
   ];
 
   return (
@@ -298,7 +339,7 @@ export const SellerCustomizeStudio: React.FC = () => {
                     <span>Themes & Niches</span>
                   </div>
                   <span className="px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                    8
+                    {themeList.length}
                   </span>
                 </button>
 
@@ -565,8 +606,32 @@ export const SellerCustomizeStudio: React.FC = () => {
                     </p>
                   </div>
 
+                  {/* Category Filter Tabs */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+                    {[
+                      { id: 'all', label: `All (${themeList.length})` },
+                      { id: 'fashion', label: 'Fashion & Luxury' },
+                      { id: 'tech', label: 'Tech & Gaming' },
+                      { id: 'artisan', label: 'Artisan & Craft' },
+                      { id: 'food', label: 'Pantry & Living' },
+                    ].map(f => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setThemeFilter(f.id as any)}
+                        className={`px-2.5 py-1 rounded-lg font-semibold text-[11px] whitespace-nowrap transition-all cursor-pointer ${
+                          themeFilter === f.id
+                            ? 'bg-neutral-900 text-white shadow-xs'
+                            : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {themeList.map(t => {
+                    {filteredThemes.map(t => {
                       const isSelected = config.theme.themeId === t.id;
                       return (
                         <div
@@ -837,14 +902,78 @@ export const SellerCustomizeStudio: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Navigation Bar Style */}
+                  {/* Navigation Bar Style with Visual Previews */}
                   <div className="space-y-2 pt-2 border-t border-neutral-100">
-                    <label className="block font-bold text-neutral-900">Navigation Bar Style</label>
+                    <div className="flex items-center justify-between">
+                      <label className="block font-bold text-neutral-900">Navigation Bar Style</label>
+                      <span className="text-[10px] text-neutral-400">Visual Layout</span>
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
                       {[
-                        { id: 'solid', label: 'Solid Bar', desc: 'Classic full-width header' },
-                        { id: 'floating', label: 'Floating Glass', desc: 'Floating island container' },
-                        { id: 'transparent', label: 'Transparent', desc: 'Airy seamless look' },
+                        {
+                          id: 'solid',
+                          label: 'Solid Bar',
+                          desc: 'Full-width anchored',
+                          preview: (
+                            <div className="w-full h-11 rounded-lg bg-neutral-100 p-1 flex flex-col justify-start mb-2 overflow-hidden border border-neutral-200">
+                              <div className="w-full h-5 bg-white rounded-t-xs border-b border-neutral-200 flex items-center justify-between px-1.5 shadow-2xs">
+                                <div className="flex items-center gap-1">
+                                  <div className="h-1.5 w-3 rounded-xs bg-emerald-500" />
+                                  <div className="h-1 w-2 rounded-xs bg-neutral-300" />
+                                </div>
+                                <div className="h-1.5 w-6 rounded-full bg-neutral-100 border border-neutral-200" />
+                                <div className="flex items-center gap-0.5">
+                                  <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                                  <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                                </div>
+                              </div>
+                              <div className="flex-1 bg-neutral-50/60" />
+                            </div>
+                          ),
+                        },
+                        {
+                          id: 'floating',
+                          label: 'Floating Glass',
+                          desc: 'Island container',
+                          preview: (
+                            <div className="w-full h-11 rounded-lg bg-neutral-100 p-1 flex flex-col justify-start mb-2 overflow-hidden border border-neutral-200">
+                              <div className="w-full pt-0.5 px-0.5">
+                                <div className="w-full h-4.5 bg-white/95 backdrop-blur-xs rounded-full border border-neutral-200 shadow-xs flex items-center justify-between px-1.5">
+                                  <div className="flex items-center gap-1">
+                                    <div className="h-1.5 w-2.5 rounded-xs bg-emerald-500" />
+                                    <div className="h-1 w-1.5 rounded-xs bg-neutral-300" />
+                                  </div>
+                                  <div className="h-1.5 w-5 rounded-full bg-neutral-100 border border-neutral-200" />
+                                  <div className="flex items-center gap-0.5">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                                    <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex-1" />
+                            </div>
+                          ),
+                        },
+                        {
+                          id: 'transparent',
+                          label: 'Transparent',
+                          desc: 'Airy seamless look',
+                          preview: (
+                            <div className="w-full h-11 rounded-lg bg-gradient-to-br from-emerald-100/80 via-amber-50 to-neutral-200 p-1 flex flex-col justify-start mb-2 overflow-hidden border border-neutral-200">
+                              <div className="w-full h-5 bg-white/60 backdrop-blur-xs border-b border-white/60 flex items-center justify-between px-1.5">
+                                <div className="flex items-center gap-1">
+                                  <div className="h-1.5 w-3 rounded-xs bg-emerald-600" />
+                                  <div className="h-1 w-2 rounded-xs bg-neutral-700" />
+                                </div>
+                                <div className="h-1.5 w-6 rounded-full bg-white/70 border border-white/80" />
+                                <div className="flex items-center gap-0.5">
+                                  <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                                  <div className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
+                                </div>
+                              </div>
+                            </div>
+                          ),
+                        },
                       ].map(item => {
                         const isSelected = (config.header.navStyle || 'solid') === item.id;
                         return (
@@ -857,13 +986,17 @@ export const SellerCustomizeStudio: React.FC = () => {
                                 header: { ...prev.header, navStyle: item.id as any },
                               }))
                             }
-                            className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                            className={`p-2 rounded-xl border text-left cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-2 border-emerald-500 bg-emerald-50/50 shadow-xs'
+                                ? 'border-2 border-emerald-500 bg-emerald-50/50 shadow-xs ring-2 ring-emerald-500/20'
                                 : 'border-neutral-200 bg-white hover:border-neutral-300'
                             }`}
                           >
-                            <p className="font-bold text-neutral-900 text-[11px]">{item.label}</p>
+                            {item.preview}
+                            <p className="font-bold text-neutral-900 text-[11px] leading-tight flex items-center justify-between">
+                              <span>{item.label}</span>
+                              {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />}
+                            </p>
                             <p className="text-[9px] text-neutral-400 mt-0.5 leading-tight">{item.desc}</p>
                           </button>
                         );
@@ -871,13 +1004,48 @@ export const SellerCustomizeStudio: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Header Height & Spacing */}
+                  {/* Header Height with Visual Preview */}
                   <div className="space-y-2">
-                    <label className="block font-bold text-neutral-900">Header Height</label>
+                    <div className="flex items-center justify-between">
+                      <label className="block font-bold text-neutral-900">Header Height</label>
+                      <span className="text-[10px] text-neutral-400">Vertical Scale</span>
+                    </div>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        { id: 'spacious', label: 'Spacious Flagship (80px)' },
-                        { id: 'compact', label: 'Compact Modern (64px)' },
+                        {
+                          id: 'spacious',
+                          label: 'Spacious Flagship (80px)',
+                          desc: 'Generous luxury breathing room',
+                          preview: (
+                            <div className="w-full h-12 rounded-lg bg-neutral-100 border border-neutral-200 flex flex-col justify-center px-2 mb-1.5">
+                              <div className="w-full h-8 bg-white rounded-md border border-neutral-200 shadow-2xs flex items-center justify-between px-2">
+                                <div className="flex items-center gap-1">
+                                  <div className="h-2 w-3.5 rounded-xs bg-emerald-500" />
+                                  <div className="h-1 w-2 rounded-xs bg-neutral-300" />
+                                </div>
+                                <div className="h-2.5 w-12 rounded-full bg-neutral-100 border border-neutral-200" />
+                                <div className="h-2 w-2 rounded-full bg-neutral-300" />
+                              </div>
+                            </div>
+                          ),
+                        },
+                        {
+                          id: 'compact',
+                          label: 'Compact Modern (64px)',
+                          desc: 'Sleek, slim space-saving bar',
+                          preview: (
+                            <div className="w-full h-12 rounded-lg bg-neutral-100 border border-neutral-200 flex flex-col justify-center px-2 mb-1.5">
+                              <div className="w-full h-5 bg-white rounded-md border border-neutral-200 shadow-2xs flex items-center justify-between px-2">
+                                <div className="flex items-center gap-1">
+                                  <div className="h-1.5 w-3 rounded-xs bg-emerald-500" />
+                                  <div className="h-1 w-2 rounded-xs bg-neutral-300" />
+                                </div>
+                                <div className="h-1.5 w-10 rounded-full bg-neutral-100 border border-neutral-200" />
+                                <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                              </div>
+                            </div>
+                          ),
+                        },
                       ].map(item => {
                         const isSelected = (config.header.navHeight || 'spacious') === item.id;
                         return (
@@ -890,27 +1058,84 @@ export const SellerCustomizeStudio: React.FC = () => {
                                 header: { ...prev.header, navHeight: item.id as any },
                               }))
                             }
-                            className={`p-2 rounded-xl border text-center cursor-pointer transition-all ${
+                            className={`p-2 rounded-xl border text-left cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-2 border-emerald-500 bg-emerald-50/50 font-bold'
+                                ? 'border-2 border-emerald-500 bg-emerald-50/50 shadow-xs ring-2 ring-emerald-500/20'
                                 : 'border-neutral-200 bg-white hover:border-neutral-300'
                             }`}
                           >
-                            <span className="text-[11px] text-neutral-800">{item.label}</span>
+                            {item.preview}
+                            <p className="font-bold text-neutral-900 text-[11px] leading-tight flex items-center justify-between">
+                              <span>{item.label}</span>
+                              {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />}
+                            </p>
+                            <p className="text-[9px] text-neutral-400 mt-0.5 leading-tight">{item.desc}</p>
                           </button>
                         );
                       })}
                     </div>
                   </div>
 
-                  {/* Links Alignment */}
+                  {/* Menu Links Alignment with Visual Mini-Nav Preview */}
                   <div className="space-y-2">
-                    <label className="block font-bold text-neutral-900">Menu Links Alignment</label>
+                    <div className="flex items-center justify-between">
+                      <label className="block font-bold text-neutral-900">Menu Links Alignment</label>
+                      <span className="text-[10px] text-neutral-400">Positioning</span>
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
                       {[
-                        { id: 'left', label: 'Left (Beside Logo)' },
-                        { id: 'center', label: 'Center (Balanced)' },
-                        { id: 'right', label: 'Right (Beside Cart)' },
+                        {
+                          id: 'left',
+                          label: 'Left Aligned',
+                          desc: 'Beside store logo',
+                          preview: (
+                            <div className="w-full h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-between px-1.5 mb-1.5">
+                              <div className="flex items-center gap-1">
+                                <div className="h-2 w-3 rounded-xs bg-emerald-500" />
+                                <div className="flex items-center gap-0.5">
+                                  <div className="h-1 w-2 rounded-full bg-emerald-600" />
+                                  <div className="h-1 w-2 rounded-full bg-neutral-400" />
+                                  <div className="h-1 w-2 rounded-full bg-neutral-400" />
+                                </div>
+                              </div>
+                              <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                            </div>
+                          ),
+                        },
+                        {
+                          id: 'center',
+                          label: 'Center Aligned',
+                          desc: 'Symmetric & balanced',
+                          preview: (
+                            <div className="w-full h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-between px-1.5 mb-1.5">
+                              <div className="h-2 w-3 rounded-xs bg-emerald-500" />
+                              <div className="flex items-center gap-0.5">
+                                <div className="h-1 w-2 rounded-full bg-emerald-600" />
+                                <div className="h-1 w-2 rounded-full bg-neutral-400" />
+                                <div className="h-1 w-2 rounded-full bg-neutral-400" />
+                              </div>
+                              <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                            </div>
+                          ),
+                        },
+                        {
+                          id: 'right',
+                          label: 'Right Aligned',
+                          desc: 'Beside icons/cart',
+                          preview: (
+                            <div className="w-full h-8 rounded-lg bg-neutral-100 border border-neutral-200 flex items-center justify-between px-1.5 mb-1.5">
+                              <div className="h-2 w-3 rounded-xs bg-emerald-500" />
+                              <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
+                                  <div className="h-1 w-2 rounded-full bg-emerald-600" />
+                                  <div className="h-1 w-2 rounded-full bg-neutral-400" />
+                                  <div className="h-1 w-2 rounded-full bg-neutral-400" />
+                                </div>
+                                <div className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
+                              </div>
+                            </div>
+                          ),
+                        },
                       ].map(item => {
                         const isSelected = (config.header.linksAlignment || 'left') === item.id;
                         return (
@@ -923,13 +1148,18 @@ export const SellerCustomizeStudio: React.FC = () => {
                                 header: { ...prev.header, linksAlignment: item.id as any },
                               }))
                             }
-                            className={`p-2 rounded-xl border text-center cursor-pointer transition-all ${
+                            className={`p-2 rounded-xl border text-left cursor-pointer transition-all ${
                               isSelected
-                                ? 'border-2 border-emerald-500 bg-emerald-50/50 font-bold'
+                                ? 'border-2 border-emerald-500 bg-emerald-50/50 shadow-xs ring-2 ring-emerald-500/20'
                                 : 'border-neutral-200 bg-white hover:border-neutral-300'
                             }`}
                           >
-                            <span className="text-[11px] text-neutral-800">{item.label}</span>
+                            {item.preview}
+                            <p className="font-bold text-neutral-900 text-[11px] leading-tight flex items-center justify-between">
+                              <span>{item.label}</span>
+                              {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />}
+                            </p>
+                            <p className="text-[9px] text-neutral-400 mt-0.5 leading-tight">{item.desc}</p>
                           </button>
                         );
                       })}
@@ -977,14 +1207,47 @@ export const SellerCustomizeStudio: React.FC = () => {
 
                     {config.header.showSearch !== false && (
                       <div className="space-y-3 pl-2 border-l-2 border-neutral-200">
-                        {/* Search Bar Shape */}
+                        {/* Search Bar Shape with Live Previews */}
                         <div className="space-y-1.5">
-                          <span className="block text-[11px] font-bold text-neutral-700">Search Bar Shape</span>
+                          <div className="flex items-center justify-between">
+                            <span className="block text-[11px] font-bold text-neutral-700">Search Bar Shape</span>
+                            <span className="text-[10px] text-neutral-400">Corner Radius</span>
+                          </div>
                           <div className="grid grid-cols-3 gap-2">
                             {[
-                              { id: 'pill', label: 'Rounded Pill' },
-                              { id: 'rounded', label: 'Rounded-XL' },
-                              { id: 'square', label: 'Sharp Square' },
+                              {
+                                id: 'pill',
+                                label: 'Rounded Pill',
+                                desc: 'Full stadium curve',
+                                preview: (
+                                  <div className="w-full h-7 rounded-full border border-neutral-300 bg-white flex items-center px-2 gap-1.5 shadow-2xs mb-1.5">
+                                    <Search className="h-2.5 w-2.5 text-neutral-400 shrink-0" />
+                                    <div className="h-1 w-6 rounded-full bg-neutral-200" />
+                                  </div>
+                                ),
+                              },
+                              {
+                                id: 'rounded',
+                                label: 'Rounded-XL',
+                                desc: 'Modern soft corner',
+                                preview: (
+                                  <div className="w-full h-7 rounded-lg border border-neutral-300 bg-white flex items-center px-2 gap-1.5 shadow-2xs mb-1.5">
+                                    <Search className="h-2.5 w-2.5 text-neutral-400 shrink-0" />
+                                    <div className="h-1 w-6 rounded-full bg-neutral-200" />
+                                  </div>
+                                ),
+                              },
+                              {
+                                id: 'square',
+                                label: 'Sharp Square',
+                                desc: 'Architectural 90°',
+                                preview: (
+                                  <div className="w-full h-7 rounded-none border border-neutral-300 bg-white flex items-center px-2 gap-1.5 shadow-2xs mb-1.5">
+                                    <Search className="h-2.5 w-2.5 text-neutral-400 shrink-0" />
+                                    <div className="h-1 w-6 rounded-full bg-neutral-200" />
+                                  </div>
+                                ),
+                              },
                             ].map(item => {
                               const isSelected = (config.header.searchStyle || 'pill') === item.id;
                               return (
@@ -997,26 +1260,54 @@ export const SellerCustomizeStudio: React.FC = () => {
                                       header: { ...prev.header, searchStyle: item.id as any },
                                     }))
                                   }
-                                  className={`p-1.5 rounded-lg border text-center cursor-pointer transition-all ${
+                                  className={`p-2 rounded-xl border text-left cursor-pointer transition-all ${
                                     isSelected
-                                      ? 'border-2 border-emerald-500 bg-emerald-50 font-bold'
+                                      ? 'border-2 border-emerald-500 bg-emerald-50/50 shadow-xs ring-2 ring-emerald-500/20'
                                       : 'border-neutral-200 bg-white hover:border-neutral-300'
                                   }`}
                                 >
-                                  <span className="text-[11px] text-neutral-800">{item.label}</span>
+                                  {item.preview}
+                                  <p className="font-bold text-neutral-900 text-[11px] leading-tight flex items-center justify-between">
+                                    <span>{item.label}</span>
+                                    {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />}
+                                  </p>
+                                  <p className="text-[9px] text-neutral-400 mt-0.5 leading-tight">{item.desc}</p>
                                 </button>
                               );
                             })}
                           </div>
                         </div>
 
-                        {/* Search Bar Variant */}
+                        {/* Search Bar Variant with Live Fill/Outline Previews */}
                         <div className="space-y-1.5">
-                          <span className="block text-[11px] font-bold text-neutral-700">Search Bar Variant</span>
+                          <div className="flex items-center justify-between">
+                            <span className="block text-[11px] font-bold text-neutral-700">Search Bar Variant</span>
+                            <span className="text-[10px] text-neutral-400">Fill & Outline</span>
+                          </div>
                           <div className="grid grid-cols-2 gap-2">
                             {[
-                              { id: 'filled', label: 'Soft Filled (Subtle gray)' },
-                              { id: 'outline', label: 'Crisp Outline (Bordered)' },
+                              {
+                                id: 'filled',
+                                label: 'Soft Filled',
+                                desc: 'Subtle gray background',
+                                preview: (
+                                  <div className="w-full h-8 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center px-2.5 gap-2 mb-1.5">
+                                    <Search className="h-3 w-3 text-neutral-400" />
+                                    <span className="text-[9px] text-neutral-400 font-medium">Search...</span>
+                                  </div>
+                                ),
+                              },
+                              {
+                                id: 'outline',
+                                label: 'Crisp Outline',
+                                desc: 'Clean white bordered frame',
+                                preview: (
+                                  <div className="w-full h-8 rounded-xl bg-white border-2 border-neutral-300 shadow-2xs flex items-center px-2.5 gap-2 mb-1.5">
+                                    <Search className="h-3 w-3 text-neutral-600" />
+                                    <span className="text-[9px] text-neutral-600 font-semibold">Search...</span>
+                                  </div>
+                                ),
+                              },
                             ].map(item => {
                               const isSelected = (config.header.searchVariant || 'filled') === item.id;
                               return (
@@ -1029,13 +1320,18 @@ export const SellerCustomizeStudio: React.FC = () => {
                                       header: { ...prev.header, searchVariant: item.id as any },
                                     }))
                                   }
-                                  className={`p-1.5 rounded-lg border text-center cursor-pointer transition-all ${
+                                  className={`p-2 rounded-xl border text-left cursor-pointer transition-all ${
                                     isSelected
-                                      ? 'border-2 border-emerald-500 bg-emerald-50 font-bold'
+                                      ? 'border-2 border-emerald-500 bg-emerald-50/50 shadow-xs ring-2 ring-emerald-500/20'
                                       : 'border-neutral-200 bg-white hover:border-neutral-300'
                                   }`}
                                 >
-                                  <span className="text-[11px] text-neutral-800">{item.label}</span>
+                                  {item.preview}
+                                  <p className="font-bold text-neutral-900 text-[11px] leading-tight flex items-center justify-between">
+                                    <span>{item.label}</span>
+                                    {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />}
+                                  </p>
+                                  <p className="text-[9px] text-neutral-400 mt-0.5 leading-tight">{item.desc}</p>
                                 </button>
                               );
                             })}

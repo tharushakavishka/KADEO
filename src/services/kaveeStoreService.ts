@@ -9,6 +9,11 @@ import themeMinimalImg from '../assets/images/kadeo_theme_minimal.jpg';
 import themeBoldImg from '../assets/images/kadeo_theme_bold.jpg';
 import themeClassicImg from '../assets/images/kadeo_theme_classic.jpg';
 import themeNatureImg from '../assets/images/kadeo_theme_nature.jpg';
+import ceylonSpicesImg from '../assets/images/ceylon_cinnamon_spices.jpg';
+import catCraftImg from '../assets/images/category_handcrafted_living_1792347730298.jpg';
+import catTechImg from '../assets/images/category_audio_tech_1792347731311.jpg';
+import catBeautyImg from '../assets/images/category_beauty_wellness_1792347729900.jpg';
+import surfLifestyleImg from '../assets/images/marketplace_hero_lifestyle_1792347748759.jpg';
 
 export type StorefrontThemeType =
   | 'kadeo'
@@ -18,7 +23,20 @@ export type StorefrontThemeType =
   | 'streetwear'
   | 'organic'
   | 'minimal'
-  | 'classic';
+  | 'classic'
+  | 'spices'
+  | 'jewelry'
+  | 'pottery'
+  | 'cyber'
+  | 'surf';
+
+export type StorefrontCardStyle =
+  | 'standard'
+  | 'dark-tech'
+  | 'luxury-serif'
+  | 'clean-minimal'
+  | 'bold-street'
+  | 'organic-soft';
 
 export interface ThemePreset {
   id: StorefrontThemeType;
@@ -30,7 +48,7 @@ export interface ThemePreset {
   primaryColor: string;
   fontFamily: 'sans' | 'serif' | 'mono';
   borderRadius: 'rounded-none' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl';
-  cardStyle: 'standard' | 'dark-tech' | 'luxury-serif' | 'clean-minimal' | 'bold-street' | 'organic-soft';
+  cardStyle: StorefrontCardStyle;
   heroBadge: string;
   heroHeadline1: string;
   heroHeadline2: string;
@@ -63,15 +81,15 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     fontFamily: 'sans',
     borderRadius: 'rounded-2xl',
     cardStyle: 'standard',
-    heroBadge: 'Sri Lankan Sellers Platform',
+    heroBadge: '🇱🇰 Sri Lankan Sellers Platform',
     heroHeadline1: 'Your Shop.',
     heroHeadline2: 'Your Customers.',
     heroHeadline3: 'Your Growth.',
-    heroSubtitle: 'Discover amazing products from local sellers. Support small businesses. Shop with confidence.',
+    heroSubtitle: 'Discover amazing products from local sellers. Support small businesses across Sri Lanka. Shop with confidence.',
     heroCta: 'Shop Now →',
     heroImage: heroBagImg,
-    floatingBadge: 'Local Sellers Big Dreams ↗',
-    announcementText: '🚚 Free Islandwide Delivery on Orders Over Rs. 5,000 | Cash on Delivery Available',
+    floatingBadge: 'Local Sellers Big Dreams ✨',
+    announcementText: '✨ Free Islandwide Delivery on Orders Over Rs. 5,000 | Cash on Delivery Available',
     announcementLinkText: 'Shop Now →',
     announcementBg: '#00A86B',
     promoBanner1Tag: 'Support Local Small Businesses',
@@ -96,12 +114,12 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     heroBadge: 'PREMIUM LINEN COLLECTION',
     heroHeadline1: 'Timeless Elegance',
     heroHeadline2: 'for Everyday',
-    heroHeadline3: 'Living.',
+    heroHeadline3: 'Tropical Living.',
     heroSubtitle: 'Handcrafted breathable linen apparel tailored for the modern tropical lifestyle. Pure comfort, timeless style.',
     heroCta: 'Explore Collection →',
     heroImage: linenHeroImg,
-    floatingBadge: 'Handcrafted Linen 100% ↗',
-    announcementText: '✨ Complimentary Gift Packaging on all luxury linen orders this week',
+    floatingBadge: 'Handcrafted Linen 100% ✨',
+    announcementText: '🌿 Complimentary Gift Packaging on all luxury linen orders this week',
     announcementLinkText: 'Claim Gift →',
     announcementBg: '#8C7355',
     promoBanner1Tag: 'Artisan Weavers of Ceylon',
@@ -130,7 +148,7 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     heroSubtitle: 'Pro-grade wireless audio, smart wearables, and gaming peripherals with official manufacturer warranty.',
     heroCta: 'Discover Tech Deals →',
     heroImage: electronicsBannerImg,
-    floatingBadge: '1-Year Islandwide Warranty ↗',
+    floatingBadge: '1-Year Islandwide Warranty ✨',
     announcementText: '⚡ Flash Sale: Up to 40% OFF Studio ANC Wireless Earbuds & Gaming Headsets',
     announcementLinkText: 'Grab Deals →',
     announcementBg: '#0F172A',
@@ -147,7 +165,7 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     name: 'Glow Botanical Beauty',
     category: 'Cosmetics & Skincare',
     subtitle: 'Blush pink, rose gold details and soft aesthetic luxury',
-    thumbnail: prodSkincareImg,
+    thumbnail: catBeautyImg,
     colors: ['#E11D48', '#BE185D', '#FFF1F2'],
     primaryColor: '#E11D48',
     fontFamily: 'serif',
@@ -160,8 +178,8 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     heroSubtitle: 'Clean, cruelty-free botanical skincare packed with antioxidant fruit extracts and deeply nourishing hyaluronic formulas.',
     heroCta: 'Shop Skincare Routine →',
     heroImage: prodSkincareImg,
-    floatingBadge: 'Vegan & Cruelty Free ↗',
-    announcementText: '✨ Free Deluxe Mini Radiance Serum with every order over Rs. 4,500',
+    floatingBadge: 'Vegan & Cruelty Free ✨',
+    announcementText: '🌸 Free Deluxe Mini Radiance Serum with every order over Rs. 4,500',
     announcementLinkText: 'Shop Skincare →',
     announcementBg: '#E11D48',
     promoBanner1Tag: 'Clean Botanical Formulas',
@@ -190,7 +208,7 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     heroSubtitle: '300GSM custom-milled combed cotton tees, oversized silhouettes, and statement graphics designed in Colombo.',
     heroCta: 'COP THE DROP →',
     heroImage: prodTshirtImg,
-    floatingBadge: 'Only 150 Made ↗',
+    floatingBadge: 'Only 150 Made ✨',
     announcementText: '🔥 DROP 04 IS LIVE! ISLANDWIDE EXPRESS DISPATCH WITHIN 24 HOURS',
     announcementLinkText: 'Shop Drops →',
     announcementBg: '#09090B',
@@ -207,20 +225,20 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     name: 'Nature & Organic Living',
     category: 'Eco Living, Plants & Foods',
     subtitle: 'Botanical forest greens, soft rounded pill cards and eco vibe',
-    thumbnail: prodPlantImg,
+    thumbnail: themeNatureImg,
     colors: ['#15803D', '#166534', '#ECFDF5'],
     primaryColor: '#15803D',
     fontFamily: 'sans',
     borderRadius: 'rounded-3xl',
     cardStyle: 'organic-soft',
-    heroBadge: '🌱 100% ECO-FRIENDLY & LOCAL',
+    heroBadge: '🌿 100% ECO-FRIENDLY & LOCAL',
     heroHeadline1: 'Nurture Your Home',
     heroHeadline2: 'With Living Green',
     heroHeadline3: 'Vibes.',
     heroSubtitle: 'Hand-potted indoor plants, organic micro-herbs, and sustainable biodegradable planters for a calmer, cleaner home.',
     heroCta: 'Bring Nature Home →',
     heroImage: prodPlantImg,
-    floatingBadge: 'We Plant 1 Tree Per Order ↗',
+    floatingBadge: 'We Plant 1 Tree Per Order ✨',
     announcementText: '🌿 Plastic-Free Biodegradable Packaging | We plant a native tree with every purchase',
     announcementLinkText: 'Learn More →',
     announcementBg: '#15803D',
@@ -250,7 +268,7 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     heroSubtitle: 'Stripped of excess, crafted with purposeful materials. An uncompromising celebration of form, utility and silence.',
     heroCta: 'Explore Studio →',
     heroImage: heroBagImg,
-    floatingBadge: 'Architectural Simplicity ↗',
+    floatingBadge: 'Architectural Simplicity ✨',
     announcementText: 'Complimentary white-glove shipping on domestic orders above Rs. 7,500',
     announcementLinkText: 'Explore Collection →',
     announcementBg: '#18181B',
@@ -273,15 +291,15 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     fontFamily: 'serif',
     borderRadius: 'rounded-xl',
     cardStyle: 'standard',
-    heroBadge: '🏛️ GENUINE HANDCRAFTED HERITAGE',
+    heroBadge: '🛡️ GENUINE HANDCRAFTED HERITAGE',
     heroHeadline1: 'Built to Last.',
     heroHeadline2: 'Hand-Stitched With',
     heroHeadline3: 'Master Pride.',
     heroSubtitle: 'Full-grain vegetable tanned leather goods, solid teak accents, and timeless heritage artifacts built to outlive generations.',
     heroCta: 'Explore Heritage →',
     heroImage: heroBagImg,
-    floatingBadge: 'Lifetime Craftsmanship Guarantee ↗',
-    announcementText: '🧭 Free custom monogram initials on all handcrafted leather goods this month',
+    floatingBadge: 'Lifetime Craftsmanship Guarantee ✨',
+    announcementText: '🛡️ Free custom monogram initials on all handcrafted leather goods this month',
     announcementLinkText: 'Personalize Now →',
     announcementBg: '#B45309',
     promoBanner1Tag: 'Master Leather Artisans',
@@ -291,6 +309,156 @@ export const THEME_PRESETS: Record<StorefrontThemeType, ThemePreset> = {
     promoBanner2Title: 'Hand-carved reclaimed Ceylon teak home accents and solid brass desktop wares',
     promoBanner2Cta: 'Shop Heirlooms →',
     footerDescription: 'Honoring centuries of Sri Lankan craftsmanship with heirloom quality goods made with honest, natural materials.',
+  },
+  spices: {
+    id: 'spices',
+    name: 'Ceylon Spices & Tea Heritage',
+    category: 'Artisanal Food & Pantry',
+    subtitle: 'Warm cinnamon tones, single-origin teas and harvest freshness',
+    thumbnail: ceylonSpicesImg,
+    colors: ['#047857', '#92400E', '#FEF3C7'],
+    primaryColor: '#047857',
+    fontFamily: 'serif',
+    borderRadius: 'rounded-2xl',
+    cardStyle: 'organic-soft',
+    heroBadge: '🌿 100% PURE CEYLON SINGLE-ORIGIN',
+    heroHeadline1: 'Authentic Spices',
+    heroHeadline2: 'Handpicked From',
+    heroHeadline3: 'Ceylon Soil.',
+    heroSubtitle: 'Directly sourced pure Ceylon Alba cinnamon, artisan high-grown black teas, and organic sun-dried whole spices from multigenerational estate growers.',
+    heroCta: 'Explore Pantry Spices →',
+    heroImage: ceylonSpicesImg,
+    floatingBadge: 'Lion Logo Standard Guaranteed ✨',
+    announcementText: '🌿 Farm-to-Table Freshness | Free islandwide shipping on all tea & spice packs over Rs. 3,500',
+    announcementLinkText: 'Shop Spices →',
+    announcementBg: '#047857',
+    promoBanner1Tag: 'Single-Estate Harvest',
+    promoBanner1Title: 'High-elevation Ceylon silver tips & artisanal whole black pepper.',
+    promoBanner1Cta: 'View Harvest →',
+    promoBanner2Tag: 'Artisanal Wellness',
+    promoBanner2Title: 'Pure Ceylon wild bee honey, turmeric elixirs & herbal infusions',
+    promoBanner2Cta: 'Shop Wellness →',
+    footerDescription: 'Preserving the heritage of world-renowned Ceylon spices and single-estate teas with ethical direct-trade grower partnerships.',
+  },
+  jewelry: {
+    id: 'jewelry',
+    name: 'Royal Ceylon Gems & Fine Jewelry',
+    category: 'Luxury Jewelry & Gems',
+    subtitle: 'Midnight sapphire navy, 18K solid gold and lab-certified brilliance',
+    thumbnail: catBeautyImg,
+    colors: ['#2563EB', '#D97706', '#0F172A'],
+    primaryColor: '#2563EB',
+    fontFamily: 'serif',
+    borderRadius: 'rounded-2xl',
+    cardStyle: 'luxury-serif',
+    heroBadge: '💎 GEMMOLOGICAL CERTIFICATE INCLUDED',
+    heroHeadline1: 'Untamed Radiance.',
+    heroHeadline2: 'Handcrafted Fine',
+    heroHeadline3: 'Ceylon Gems.',
+    heroSubtitle: 'Natural unheated Ceylon Blue Sapphires, ethically mined Padparadscha gems, and bespoke 18K solid gold heirlooms crafted by master Sri Lankan lapidarists.',
+    heroCta: 'Explore Gem Collection →',
+    heroImage: catBeautyImg,
+    floatingBadge: '100% Natural Unheated Sapphires ✨',
+    announcementText: '💎 Complimentary Insured Islandwide Courier on all Fine Jewelry & Gemstone orders',
+    announcementLinkText: 'View Heirlooms →',
+    announcementBg: '#0F172A',
+    promoBanner1Tag: 'Ratnapura Sapphire Mines',
+    promoBanner1Title: 'Directly sourced unheated royal blue and cornflower Ceylon sapphires.',
+    promoBanner1Cta: 'Discover Sapphires →',
+    promoBanner2Tag: 'Bespoke Bridal',
+    promoBanner2Title: 'Custom 18K rose gold solitaire rings, moonstone drops & diamond bands',
+    promoBanner2Cta: 'Book Consultation →',
+    footerDescription: 'Celebrated worldwide for timeless gemstone artistry, ethically sourced Ceylon sapphires, and master handcrafted jewelry.',
+  },
+  pottery: {
+    id: 'pottery',
+    name: 'Artisan Pottery & Clay Atelier',
+    category: 'Handcrafted Living & Ceramics',
+    subtitle: 'Warm terracotta clay, wheel-turned ceramics and raw glaze textures',
+    thumbnail: catCraftImg,
+    colors: ['#C2410C', '#78350F', '#FFF7ED'],
+    primaryColor: '#C2410C',
+    fontFamily: 'serif',
+    borderRadius: 'rounded-2xl',
+    cardStyle: 'organic-soft',
+    heroBadge: '🏺 WHEEL-TURNED BY LOCAL POTTERS',
+    heroHeadline1: 'Raw Earth.',
+    heroHeadline2: 'Molded By Hand,',
+    heroHeadline3: 'Fired With Soul.',
+    heroSubtitle: 'Wheel-thrown terracotta amphoras, glazed ceramic tableware, and sculpted stoneware accents celebrating centuries of traditional Sri Lankan pottery traditions.',
+    heroCta: 'View Ceramic Atelier →',
+    heroImage: catCraftImg,
+    floatingBadge: '100% Biodegradable Ceylon Clay ✨',
+    announcementText: '🏺 Fragile-Care Protected Delivery | Free handcrafted terracotta coaster set with every order over Rs. 4,000',
+    announcementLinkText: 'Claim Gift →',
+    announcementBg: '#C2410C',
+    promoBanner1Tag: 'Wood-Fired Kiln Batch',
+    promoBanner1Title: 'Unique smoke-glazed stoneware planters and artisan bowls.',
+    promoBanner1Cta: 'Explore Batch →',
+    promoBanner2Tag: 'Tableware & Living',
+    promoBanner2Title: 'Hand-thrown terracotta water carafes, coffee drippers & decorative urns',
+    promoBanner2Cta: 'Shop Tableware →',
+    footerDescription: 'Honoring ancient Sri Lankan clay sculpting techniques with contemporary functional ceramics designed for soulful everyday living.',
+  },
+  cyber: {
+    id: 'cyber',
+    name: 'Tokyo Neon Cyber Arcade',
+    category: 'Gaming, Peripherals & RGB',
+    subtitle: 'Electric neon violet, cyber matrix accents and mechanical audio',
+    thumbnail: catTechImg,
+    colors: ['#A855F7', '#06B6D4', '#0F172A'],
+    primaryColor: '#A855F7',
+    fontFamily: 'mono',
+    borderRadius: 'rounded-xl',
+    cardStyle: 'dark-tech',
+    heroBadge: '⚡ // OVERCLOCKED ESPORTS GEAR //',
+    heroHeadline1: 'RGB SYNCHRONIZED.',
+    heroHeadline2: 'PRO PERFORMANCE,',
+    heroHeadline3: 'ZERO LATENCY.',
+    heroSubtitle: 'Hot-swap custom mechanical keydecks, low-latency 2.4G spatial gaming audio, and competition-ready gaming gear with full local warranty.',
+    heroCta: 'Upgrade Battlestation →',
+    heroImage: catTechImg,
+    floatingBadge: 'Esports Tournament Certified ✨',
+    announcementText: '⚡ NEXT-GEN DROP: 1,000Hz Polling Rate Wireless Mice & Cyber ANC Headsets In Stock',
+    announcementLinkText: 'Check Specs →',
+    announcementBg: '#090714',
+    promoBanner1Tag: 'Mechanical Keyboards',
+    promoBanner1Title: 'Lubed switches, sound-dampened gasket mounts & PBT dye-sub keycaps.',
+    promoBanner1Cta: 'View Keydecks →',
+    promoBanner2Tag: 'Battlestation Setup',
+    promoBanner2Title: 'Magnetic charging docks, monitor lightbars & ambient soundbars',
+    promoBanner2Cta: 'Shop Accessories →',
+    footerDescription: 'Engineered for dedicated gamers and creators. Ultimate performance, tactile precision, and cyberpunk aesthetics.',
+  },
+  surf: {
+    id: 'surf',
+    name: 'Tropical Island & Coastal Resort',
+    category: 'Beachwear, Swim & Coastal',
+    subtitle: 'Ocean seafoam turquoise, coral warmth and sun-drenched coastal vibes',
+    thumbnail: surfLifestyleImg,
+    colors: ['#0D9488', '#F97316', '#F0FDFA'],
+    primaryColor: '#0D9488',
+    fontFamily: 'sans',
+    borderRadius: 'rounded-2xl',
+    cardStyle: 'standard',
+    heroBadge: '🌊 TROPICAL ISLAND LIVING & SURF',
+    heroHeadline1: 'Endless Summer.',
+    heroHeadline2: 'Breezy Beachwear &',
+    heroHeadline3: 'Coastal Living.',
+    heroSubtitle: 'Hand-tailored quick-dry boardshorts, mineral reef-safe suncare, and coastal lifestyle accessories inspired by the warm waves of Arugam Bay and Mirissa.',
+    heroCta: 'Explore Coastal Gear →',
+    heroImage: surfLifestyleImg,
+    floatingBadge: 'Handcrafted in Coastal Ceylon ✨',
+    announcementText: '🌊 Free Waterproof Dry Bag with every tropical boardshort order over Rs. 6,000',
+    announcementLinkText: 'View Surf Drops →',
+    announcementBg: '#0D9488',
+    promoBanner1Tag: 'Southern Coastline',
+    promoBanner1Title: 'Breathable tropical resort wear and sun-protecting swim layers.',
+    promoBanner1Cta: 'View Boardshorts →',
+    promoBanner2Tag: 'Reef-Safe Suncare',
+    promoBanner2Title: 'Non-nano zinc oxide sunscreens, organic aloe lotions & coconut balms',
+    promoBanner2Cta: 'Shop Suncare →',
+    footerDescription: 'Celebrating the sun, sea, and tropical surf lifestyle of Sri Lanka with sustainable coastal apparel and ocean-friendly suncare.',
   },
 };
 
@@ -351,7 +519,7 @@ export interface KaveeStorefrontConfig {
     primaryColor: string;
     fontFamily: 'sans' | 'serif' | 'mono';
     borderRadius?: 'rounded-none' | 'rounded-lg' | 'rounded-xl' | 'rounded-2xl' | 'rounded-3xl';
-    cardStyle?: 'standard' | 'dark-tech' | 'luxury-serif' | 'clean-minimal' | 'bold-street' | 'organic-soft';
+    cardStyle?: StorefrontCardStyle;
   };
   sectionsVisibility: {
     announcement: boolean;
@@ -481,9 +649,9 @@ export const DEFAULT_KAVEE_CONFIG: KaveeStorefrontConfig = {
   },
   footer: {
     description: THEME_PRESETS.kadeo.footerDescription,
-    copyrightText: '© 2026 Kadeo. All rights reserved. Made with ❤️ in Sri Lanka.',
+    copyrightText: '© 2026 Kadeo Commerce. All rights reserved. Sri Lanka.',
     supportEmail: 'support@kadeo.lk',
-    phone: '+94 11 234 5678',
+    phone: '+94 77 123 4567',
   },
   storeSettings: {
     currencySymbol: 'Rs.',
@@ -576,9 +744,14 @@ export const KaveeStoreService = {
   },
 
   resetConfig(): KaveeStorefrontConfig {
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined') {
+      return DEFAULT_KAVEE_CONFIG;
+    }
+    try {
       localStorage.removeItem(STORAGE_KEY);
       window.dispatchEvent(new CustomEvent('kadeo_config_updated', { detail: DEFAULT_KAVEE_CONFIG }));
+    } catch (e) {
+      console.error('Failed to reset kavee config', e);
     }
     return DEFAULT_KAVEE_CONFIG;
   },
