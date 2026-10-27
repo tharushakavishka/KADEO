@@ -394,21 +394,18 @@ export const StorageService = {
 
   // ORDERS
   getOrders(): Order[] {
-    return loadFromStorage<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+    const rawOrders = loadFromStorage<Order[]>(STORAGE_KEYS.ORDERS, []);
+    // Purify any legacy hardcoded demo orders (ord-1001 to ord-1008) so the site only displays genuine orders
+    const genuineOrders = rawOrders.filter(o => !o.id.startsWith('ord-100'));
+    if (genuineOrders.length !== rawOrders.length) {
+      saveToStorage(STORAGE_KEYS.ORDERS, genuineOrders);
+    }
+    return genuineOrders;
   },
 
   getOrdersByShop(shopId: string): Order[] {
     const orders = this.getOrders();
-    const shopOrders = orders.filter(o => o.shopId === shopId);
-    if (shopOrders.length > 0) return shopOrders;
-
-    const seedOrders = INITIAL_ORDERS.filter(o => o.shopId === shopId);
-    if (seedOrders.length > 0) {
-      orders.push(...seedOrders);
-      saveToStorage(STORAGE_KEYS.ORDERS, orders);
-      return seedOrders;
-    }
-    return [];
+    return orders.filter(o => o.shopId === shopId);
   },
 
   getOrderByCode(orderCode: string): Order | undefined {
