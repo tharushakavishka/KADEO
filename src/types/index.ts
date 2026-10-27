@@ -9,6 +9,7 @@ export interface User {
   status: 'active' | 'suspended';
   shopId?: string;
   avatar?: string;
+  password?: string;
   createdAt: string;
 }
 

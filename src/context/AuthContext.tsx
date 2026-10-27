@@ -202,6 +202,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const users = StorageService.getUsers();
     const existing = users.find(u => u.email.toLowerCase() === cleanEmail);
     if (existing) {
+      if (existing.password && password && existing.password !== password) {
+        return { success: false, message: 'Invalid password. Please check your credentials.' };
+      }
       loginAsUser(existing.id);
       loadUserData();
       return { success: true, user: existing };
@@ -274,6 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       phone: data.phone?.trim() || '',
       role: 'customer',
       status: 'active',
+      password: data.password,
       avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=10B981&color=fff`,
       createdAt: new Date().toISOString(),
     };
@@ -344,6 +348,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: 'seller',
       status: 'active',
       shopId: newShopId,
+      password: data.password,
       createdAt: new Date().toISOString(),
     };
 

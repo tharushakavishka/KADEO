@@ -42,6 +42,14 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
+// On-demand database connection guard for serverless/cold-start environments (Vercel)
+app.use(async (req, _res, next) => {
+  if (req.path.startsWith('/api') && getDbStatus().readyState === 0) {
+    await connectDB().catch(() => {});
+  }
+  next();
+});
+
 // API Status & MongoDB Health Check
 app.get('/api/health', (_req, res) => {
   const status = getDbStatus();
@@ -95,4 +103,9 @@ const startServer = async () => {
   });
 };
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
+export { app };
