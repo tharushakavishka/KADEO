@@ -215,59 +215,35 @@ export const SellerCategoriesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div
-        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b transition-colors ${
-          isDark ? 'border-white/10' : 'border-[#E4E4E7]'
-        }`}
-      >
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full font-bold ${
-                isDark
-                  ? 'bg-white/10 text-neutral-300 border border-white/10'
-                  : 'bg-neutral-100 text-[#0F0F11] border border-neutral-200'
-              }`}
-            >
-              Taxonomy & Collections
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Store Categories
+          <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-block mb-1.5 shadow-2xs">
+            COLLECTIONS & TAXONOMY
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Store Categories & Curations
           </h1>
-          <p className={`text-xs mt-1 ${isDark ? 'text-neutral-400' : 'text-[#71717A]'}`}>
-            Organize products into curated lookbooks and navigation filters for your buyers.
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            Organize products into curated lookbooks, category shelves, and navigation filters for your boutique.
           </p>
         </div>
 
         <button
           onClick={handleOpenAdd}
-          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-luxury-xs cursor-pointer ${
-            isDark
-              ? 'bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-extrabold'
-              : 'bg-[#0F0F11] hover:bg-neutral-800 text-white'
-          }`}
+          className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold bg-[#00B074] hover:bg-[#009E67] text-white shadow-md shadow-[#00B074]/25 transition-all cursor-pointer active:scale-95"
         >
           <Plus className="h-4 w-4 stroke-[2.5]" />
-          <span>Add Category</span>
+          <span>Add New Category</span>
         </button>
       </div>
 
       {/* Categories Table */}
       <div
-        className={`rounded-3xl border overflow-hidden transition-all ${
-          isDark
-            ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
-            : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
-        }`}
+        className={`bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden`}
       >
         <table className="w-full text-left text-xs">
           <thead
-            className={`border-b font-semibold ${
-              isDark
-                ? 'bg-white/5 border-white/10 text-neutral-400'
-                : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#71717A]'
-            }`}
+            className={`border-b border-slate-100 bg-[#FAFBFD] text-slate-500 font-semibold select-none`}
           >
             <tr>
               <th className="py-4 px-6">Icon / Image</th>

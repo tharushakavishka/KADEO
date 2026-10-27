@@ -216,42 +216,36 @@ export const SellerShopDesignPage: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div
-        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b transition-colors ${
-          isDark ? 'border-white/10' : 'border-[#E4E4E7]'
-        }`}
-      >
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full font-bold ${
-                isDark
-                  ? 'bg-white/10 text-neutral-300 border border-white/10'
-                  : 'bg-neutral-100 text-[#0F0F11] border border-neutral-200'
-              }`}
-            >
-              Lookbook Atelier
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Storefront Design Studio
+          <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-block mb-1.5 shadow-2xs">
+            STOREFRONT THEMES & BRANDING
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Storefront Design & Brand Studio
           </h1>
-          <p className={`text-xs mt-1 ${isDark ? 'text-neutral-400' : 'text-[#71717A]'}`}>
-            Choose your layout theme and customize your boutique branding and ambient cover video.
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            Choose your storefront layout theme, manage ambient banners, and brand typography for your public store.
           </p>
         </div>
 
-        <button
-          onClick={handleSave}
-          className={`inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-xs font-bold transition-all shadow-luxury-xs cursor-pointer ${
-            isDark
-              ? 'bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-extrabold'
-              : 'bg-[#0F0F11] hover:bg-neutral-800 text-white'
-          }`}
-        >
-          {isSaved ? <Check className="h-4 w-4 stroke-[3]" /> : <Save className="h-4 w-4" />}
-          <span>{isSaved ? 'Changes Published!' : 'Publish Updates'}</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <a
+            href="/seller/customize"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-2xs transition-colors"
+          >
+            <Sparkles className="h-4 w-4 text-[#00B074]" />
+            <span>Open Live Studio</span>
+          </a>
+
+          <button
+            onClick={handleSave}
+            className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold bg-[#00B074] hover:bg-[#009E67] text-white shadow-md shadow-[#00B074]/25 transition-all cursor-pointer active:scale-95"
+          >
+            {isSaved ? <Check className="h-4 w-4 stroke-[3]" /> : <Save className="h-4 w-4" />}
+            <span>{isSaved ? 'Changes Published!' : 'Publish Updates'}</span>
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -275,10 +269,10 @@ export const SellerShopDesignPage: React.FC = () => {
           {/* Theme A: Minimal */}
           <div
             onClick={() => setThemeId('minimal')}
-            className={`cursor-pointer rounded-3xl border-2 p-6 transition-all ${
+            className={`cursor-pointer rounded-2xl border border-slate-200/80 shadow-2xs-2 p-6 transition-all ${
               themeId === 'minimal'
                 ? isDark
-                  ? 'border-emerald-500 bg-[#161622] ring-2 ring-emerald-500/20 shadow-2xl'
+                  ? 'border-[#00B074] bg-[#161622] ring-2 ring-[#00B074]/20 shadow-2xl'
                   : 'border-[#0F0F11] bg-white ring-2 ring-[#0F0F11]/10 shadow-luxury-sm'
                 : isDark
                 ? 'border-white/10 bg-[#121217]/90 hover:border-white/25'
@@ -288,7 +282,7 @@ export const SellerShopDesignPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3.5">
               <span className="text-xs font-bold">Theme A — Minimal Editorial</span>
               {themeId === 'minimal' && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-neutral-950 font-bold">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00B074] text-neutral-950 font-bold">
                   <Check className="h-3 w-3 stroke-[3]" />
                 </span>
               )}
@@ -315,10 +309,10 @@ export const SellerShopDesignPage: React.FC = () => {
           {/* Theme B: Beauty */}
           <div
             onClick={() => setThemeId('beauty')}
-            className={`cursor-pointer rounded-3xl border-2 p-6 transition-all ${
+            className={`cursor-pointer rounded-2xl border border-slate-200/80 shadow-2xs-2 p-6 transition-all ${
               themeId === 'beauty'
                 ? isDark
-                  ? 'border-emerald-500 bg-[#161622] ring-2 ring-emerald-500/20 shadow-2xl'
+                  ? 'border-[#00B074] bg-[#161622] ring-2 ring-[#00B074]/20 shadow-2xl'
                   : 'border-[#0F0F11] bg-[#FAF7F0] ring-2 ring-[#0F0F11]/10 shadow-luxury-sm'
                 : isDark
                 ? 'border-white/10 bg-[#121217]/90 hover:border-white/25'
@@ -328,7 +322,7 @@ export const SellerShopDesignPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3.5">
               <span className="text-xs font-bold text-amber-950 dark:text-amber-200">Theme B — Organic Beauty</span>
               {themeId === 'beauty' && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-neutral-950 font-bold">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00B074] text-neutral-950 font-bold">
                   <Check className="h-3 w-3 stroke-[3]" />
                 </span>
               )}
@@ -351,10 +345,10 @@ export const SellerShopDesignPage: React.FC = () => {
           {/* Theme C: Modern Store */}
           <div
             onClick={() => setThemeId('modern')}
-            className={`cursor-pointer rounded-3xl border-2 p-6 transition-all ${
+            className={`cursor-pointer rounded-2xl border border-slate-200/80 shadow-2xs-2 p-6 transition-all ${
               themeId === 'modern'
                 ? isDark
-                  ? 'border-emerald-500 bg-[#161622] ring-2 ring-emerald-500/20 shadow-2xl'
+                  ? 'border-[#00B074] bg-[#161622] ring-2 ring-[#00B074]/20 shadow-2xl'
                   : 'border-[#0F0F11] bg-white ring-2 ring-[#0F0F11]/10 shadow-luxury-sm'
                 : isDark
                 ? 'border-white/10 bg-[#121217]/90 hover:border-white/25'
@@ -364,7 +358,7 @@ export const SellerShopDesignPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3.5">
               <span className="text-xs font-bold">Theme C — Modern Atelier</span>
               {themeId === 'modern' && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-neutral-950 font-bold">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#00B074] text-neutral-950 font-bold">
                   <Check className="h-3 w-3 stroke-[3]" />
                 </span>
               )}
@@ -388,7 +382,7 @@ export const SellerShopDesignPage: React.FC = () => {
 
       {/* 2. Shop Details Form */}
       <div
-        className={`rounded-3xl border p-6 sm:p-8 space-y-6 transition-all ${
+        className={`rounded-2xl border border-slate-200/80 shadow-2xs p-6 sm:p-8 space-y-6 transition-all ${
           isDark
             ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
             : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
@@ -411,7 +405,7 @@ export const SellerShopDesignPage: React.FC = () => {
               onChange={e => setName(e.target.value)}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -433,7 +427,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 onChange={e => setSlug(e.target.value)}
                 className={`w-full rounded-r-2xl border py-2.5 px-3.5 text-xs font-mono transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -450,7 +444,7 @@ export const SellerShopDesignPage: React.FC = () => {
               onChange={e => setWhatsappNumber(e.target.value)}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs font-mono transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -464,7 +458,7 @@ export const SellerShopDesignPage: React.FC = () => {
               onChange={e => setDisplayPhone(e.target.value)}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -478,7 +472,7 @@ export const SellerShopDesignPage: React.FC = () => {
               onChange={e => setCity(e.target.value)}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -493,7 +487,7 @@ export const SellerShopDesignPage: React.FC = () => {
               placeholder="e.g. Islandwide 2-3 Business Days via PromptX"
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -507,7 +501,7 @@ export const SellerShopDesignPage: React.FC = () => {
               onChange={e => setDescription(e.target.value)}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -521,7 +515,7 @@ export const SellerShopDesignPage: React.FC = () => {
               onChange={e => setLogo(e.target.value)}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -548,7 +542,7 @@ export const SellerShopDesignPage: React.FC = () => {
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     coverMediaType === 'video'
                       ? isDark
-                        ? 'bg-emerald-500 text-neutral-950 font-extrabold'
+                        ? 'bg-[#00B074] text-neutral-950 font-extrabold'
                         : 'bg-[#0F0F11] text-white'
                       : isDark
                       ? 'text-neutral-400 hover:text-white'
@@ -564,7 +558,7 @@ export const SellerShopDesignPage: React.FC = () => {
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
                     coverMediaType === 'image'
                       ? isDark
-                        ? 'bg-emerald-500 text-neutral-950 font-extrabold'
+                        ? 'bg-[#00B074] text-neutral-950 font-extrabold'
                         : 'bg-[#0F0F11] text-white'
                       : isDark
                       ? 'text-neutral-400 hover:text-white'
@@ -596,7 +590,7 @@ export const SellerShopDesignPage: React.FC = () => {
                       placeholder="https://assets.mixkit.co/.../video.mp4"
                       className={`w-full rounded-2xl border py-2.5 pl-10 pr-3.5 text-xs transition-colors ${
                         isDark
-                          ? 'bg-[#181820] border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                          ? 'bg-[#181820] border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                           : 'bg-white border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:outline-none'
                       }`}
                     />
@@ -658,7 +652,7 @@ export const SellerShopDesignPage: React.FC = () => {
                       onClick={() => setCoverVideo('https://assets.mixkit.co/videos/preview/mixkit-rain-falling-on-green-leaves-40243-large.mp4')}
                       className={`text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
                         isDark
-                          ? 'border-white/10 bg-white/5 hover:border-emerald-500/50 text-neutral-300'
+                          ? 'border-white/10 bg-white/5 hover:border-[#00B074]/50 text-neutral-300'
                           : 'border-[#E4E4E7] bg-white hover:border-[#0F0F11] text-[#0F0F11]'
                       }`}
                     >
@@ -669,7 +663,7 @@ export const SellerShopDesignPage: React.FC = () => {
                       onClick={() => setCoverVideo('https://assets.mixkit.co/videos/preview/mixkit-herbs-and-flowers-in-glass-tubes-43666-large.mp4')}
                       className={`text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
                         isDark
-                          ? 'border-white/10 bg-white/5 hover:border-emerald-500/50 text-neutral-300'
+                          ? 'border-white/10 bg-white/5 hover:border-[#00B074]/50 text-neutral-300'
                           : 'border-[#E4E4E7] bg-white hover:border-[#0F0F11] text-[#0F0F11]'
                       }`}
                     >
@@ -680,7 +674,7 @@ export const SellerShopDesignPage: React.FC = () => {
                       onClick={() => setCoverVideo('https://assets.mixkit.co/videos/preview/mixkit-tea-plantation-field-42798-large.mp4')}
                       className={`text-xs px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
                         isDark
-                          ? 'border-white/10 bg-white/5 hover:border-emerald-500/50 text-neutral-300'
+                          ? 'border-white/10 bg-white/5 hover:border-[#00B074]/50 text-neutral-300'
                           : 'border-[#E4E4E7] bg-white hover:border-[#0F0F11] text-[#0F0F11]'
                       }`}
                     >
@@ -704,7 +698,7 @@ export const SellerShopDesignPage: React.FC = () => {
                     placeholder="https://images.unsplash.com/..."
                     className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                       isDark
-                        ? 'bg-[#181820] border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                        ? 'bg-[#181820] border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                         : 'bg-white border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:outline-none'
                     }`}
                   />
@@ -742,7 +736,7 @@ export const SellerShopDesignPage: React.FC = () => {
 
       {/* 2.5 Hero Section Text & Content Customizer */}
       <div
-        className={`rounded-3xl border p-6 sm:p-8 space-y-6 transition-all ${
+        className={`rounded-2xl border border-slate-200/80 shadow-2xs p-6 sm:p-8 space-y-6 transition-all ${
           isDark
             ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
             : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
@@ -767,7 +761,7 @@ export const SellerShopDesignPage: React.FC = () => {
           className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border transition-all ${
             showHeroBanner
               ? isDark
-                ? 'bg-emerald-500/10 border-emerald-500/30'
+                ? 'bg-[#00B074]/10 border-[#00B074]/30'
                 : 'bg-emerald-50/80 border-emerald-200'
               : isDark
               ? 'bg-white/5 border-white/10'
@@ -794,7 +788,7 @@ export const SellerShopDesignPage: React.FC = () => {
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer shrink-0 ${
               showHeroBanner
                 ? isDark
-                  ? 'bg-emerald-500 text-neutral-950 shadow-md'
+                  ? 'bg-[#00B074] text-neutral-950 shadow-md'
                   : 'bg-[#10B981] text-white shadow-sm'
                 : isDark
                 ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -817,7 +811,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   showWelcomeBadge
                     ? isDark
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-[#00B074]/20 text-emerald-400 border border-[#00B074]/30'
                       : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : isDark
                     ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -839,7 +833,7 @@ export const SellerShopDesignPage: React.FC = () => {
               disabled={!showWelcomeBadge}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showWelcomeBadge ? 'opacity-40' : ''} ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -855,7 +849,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   showCtaButtons
                     ? isDark
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-[#00B074]/20 text-emerald-400 border border-[#00B074]/30'
                       : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : isDark
                     ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -877,7 +871,7 @@ export const SellerShopDesignPage: React.FC = () => {
               disabled={!showCtaButtons}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showCtaButtons ? 'opacity-40' : ''} ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -893,7 +887,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   showHeadline
                     ? isDark
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-[#00B074]/20 text-emerald-400 border border-[#00B074]/30'
                       : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : isDark
                     ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -915,7 +909,7 @@ export const SellerShopDesignPage: React.FC = () => {
               disabled={!showHeadline}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showHeadline ? 'opacity-40' : ''} ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -932,7 +926,7 @@ export const SellerShopDesignPage: React.FC = () => {
               disabled={!showHeadline}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showHeadline ? 'opacity-40' : ''} ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -949,7 +943,7 @@ export const SellerShopDesignPage: React.FC = () => {
               disabled={!showCtaButtons}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showCtaButtons ? 'opacity-40' : ''} ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -965,7 +959,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   showDescription
                     ? isDark
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-[#00B074]/20 text-emerald-400 border border-[#00B074]/30'
                       : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : isDark
                     ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -987,7 +981,7 @@ export const SellerShopDesignPage: React.FC = () => {
               disabled={!showDescription}
               className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showDescription ? 'opacity-40' : ''} ${
                 isDark
-                  ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                  ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                   : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
               }`}
             />
@@ -1003,7 +997,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   showSpotlightImage
                     ? isDark
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-[#00B074]/20 text-emerald-400 border border-[#00B074]/30'
                       : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : isDark
                     ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -1026,7 +1020,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 disabled={!showSpotlightImage}
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${!showSpotlightImage ? 'opacity-40' : ''} ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -1064,7 +1058,7 @@ export const SellerShopDesignPage: React.FC = () => {
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                   showTrustBadges
                     ? isDark
-                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      ? 'bg-[#00B074]/20 text-emerald-400 border border-[#00B074]/30'
                       : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                     : isDark
                     ? 'bg-neutral-800 text-neutral-300 border border-neutral-700'
@@ -1162,7 +1156,7 @@ export const SellerShopDesignPage: React.FC = () => {
             onClick={handleSave}
             className={`rounded-full px-5 py-2 text-xs font-bold transition-all shadow-luxury-xs cursor-pointer ${
               isDark
-                ? 'bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-extrabold'
+                ? 'bg-[#00B074] hover:bg-emerald-400 text-neutral-950 font-extrabold'
                 : 'bg-[#0F0F11] hover:bg-neutral-800 text-white'
             }`}
           >
@@ -1171,7 +1165,7 @@ export const SellerShopDesignPage: React.FC = () => {
         </div>
 
         <div
-          className={`rounded-3xl border overflow-hidden shadow-2xl ${
+          className={`rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden shadow-2xl ${
             isDark ? 'border-white/15 bg-[#0F0F12]' : 'border-[#E4E4E7] bg-white'
           }`}
         >

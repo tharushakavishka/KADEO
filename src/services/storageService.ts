@@ -116,6 +116,19 @@ export const StorageService = {
       return seed;
     }
 
+    if (slug.toLowerCase() === 'kavee-3') {
+      const kaveeShop: Shop = {
+        ...INITIAL_SHOPS[0],
+        id: 'shop-kavee-3',
+        name: 'Kadeo',
+        slug: 'kavee-3',
+        description: 'Discover amazing products from local sellers. Support small businesses. Shop with confidence.',
+      };
+      shops.push(kaveeShop);
+      saveToStorage(STORAGE_KEYS.SHOPS, shops);
+      return kaveeShop;
+    }
+
     if (slug.toLowerCase() === 'kavee') {
       const kaveeShop: Shop = {
         ...INITIAL_SHOPS[0],
@@ -197,7 +210,7 @@ export const StorageService = {
       saveToStorage(STORAGE_KEYS.PRODUCTS, products);
       return seedProds;
     }
-    if (shopId === 'shop-kavee') {
+    if (shopId === 'shop-kavee' || shopId === 'shop-kavee-3') {
       return products.slice(0, 8);
     }
     return [];

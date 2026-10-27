@@ -54,7 +54,7 @@ export const SellerDashboardPage: React.FC = () => {
         </p>
         <Link
           to="/seller/register"
-          className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#10B981] text-white text-xs font-bold"
+          className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00B074] text-white text-xs font-bold"
         >
           Register Boutique
         </Link>
@@ -350,26 +350,35 @@ export const SellerDashboardPage: React.FC = () => {
       {/* ──────────────────────────────────────────────────────────────────────────
           1. HEADER & STORE IDENTITY (100% Real Store Profile)
       ────────────────────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight flex items-center gap-2">
-            <span>Good morning, {shopName}</span>
-            <span>👋</span>
+          <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-block mb-1.5 shadow-2xs">
+            DASHBOARD OVERVIEW
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Merchant Performance & Overview
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-            Real-time merchant overview · {activeShop.contactDetails?.city || 'Colombo'} Atelier · {activeShop.subscriptionPlanId.toUpperCase()} Tier
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            Real-time revenue analytics, order dispatch velocity, and live catalog health for {shopName}.
           </p>
         </div>
 
-        {/* Live Shop Link */}
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+        <div className="flex items-center gap-3">
           <Link
             to={`/shop/${activeShop.slug}`}
             target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:text-[#10B981] transition-colors shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-2xs transition-colors"
           >
-            <span>Live Boutique</span>
-            <ExternalLink className="h-3.5 w-3.5" />
+            <ExternalLink className="h-4 w-4 text-slate-400" />
+            <span>Live Storefront</span>
+          </Link>
+
+          <Link
+            to="/seller/orders"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00B074] hover:bg-[#009E67] text-white text-xs font-bold shadow-md shadow-[#00B074]/25 transition-all"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            <span>Manage Orders</span>
           </Link>
         </div>
       </div>
@@ -381,7 +390,7 @@ export const SellerDashboardPage: React.FC = () => {
         {/* Card 1: Real Total Sales */}
         <div className="rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <div className="h-10 w-10 rounded-xl bg-[#EAF7EE] flex items-center justify-center text-[#10B981]">
+            <div className="h-10 w-10 rounded-xl bg-[#EAF7EE] flex items-center justify-center text-[#00B074]">
               <ShoppingCart className="h-5 w-5" />
             </div>
             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
@@ -465,7 +474,7 @@ export const SellerDashboardPage: React.FC = () => {
               {products.length}
             </span>
             <span className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-500 mt-1.5">
-              <span className="text-[#10B981] font-semibold">{inStockProductsCount} in stock</span>
+              <span className="text-[#00B074] font-semibold">{inStockProductsCount} in stock</span>
               {outOfStockCount > 0 && (
                 <>
                   <span>·</span>
@@ -487,7 +496,7 @@ export const SellerDashboardPage: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-bold text-neutral-900">Revenue Timeline</h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-[#10B981] border border-emerald-100">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-[#00B074] border border-emerald-100">
                   Live Computed
                 </span>
               </div>
@@ -550,8 +559,8 @@ export const SellerDashboardPage: React.FC = () => {
               >
                 <defs>
                   <linearGradient id="emeraldRealGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10B981" stopOpacity="0.30" />
-                    <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor="#00B074" stopOpacity="0.30" />
+                    <stop offset="100%" stopColor="#00B074" stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
 
@@ -562,7 +571,7 @@ export const SellerDashboardPage: React.FC = () => {
                 <path
                   d={chartPoints.pathD}
                   fill="none"
-                  stroke="#10B981"
+                  stroke="#00B074"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                 />
@@ -574,7 +583,7 @@ export const SellerDashboardPage: React.FC = () => {
                       cx={p.x}
                       cy={p.y}
                       r={p.sales > 0 ? 4.5 : 2.5}
-                      fill={p.sales > 0 ? '#10B981' : '#CBD5E1'}
+                      fill={p.sales > 0 ? '#00B074' : '#CBD5E1'}
                       className="stroke-2 stroke-white cursor-pointer transition-transform hover:scale-150"
                     >
                       <title>{`${p.label}: Rs. ${p.sales.toLocaleString()} (${p.orderCount} orders)`}</title>
@@ -612,7 +621,7 @@ export const SellerDashboardPage: React.FC = () => {
             </div>
             <Link
               to="/seller/orders"
-              className="text-xs font-bold text-[#10B981] hover:underline"
+              className="text-xs font-bold text-[#00B074] hover:underline"
             >
               View All
             </Link>
@@ -679,9 +688,9 @@ export const SellerDashboardPage: React.FC = () => {
             {/* Add Product */}
             <Link
               to="/seller/products"
-              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#10B981] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
+              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#00B074] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
             >
-              <div className="h-10 w-10 rounded-xl bg-[#EAF7EE] flex items-center justify-center text-[#10B981] mb-3 group-hover:scale-105 transition-transform">
+              <div className="h-10 w-10 rounded-xl bg-[#EAF7EE] flex items-center justify-center text-[#00B074] mb-3 group-hover:scale-105 transition-transform">
                 <Plus className="h-5 w-5" />
               </div>
               <div>
@@ -695,7 +704,7 @@ export const SellerDashboardPage: React.FC = () => {
             {/* Manage Orders */}
             <Link
               to="/seller/orders"
-              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#10B981] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
+              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#00B074] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
             >
               <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 mb-3 group-hover:scale-105 transition-transform">
                 <Calendar className="h-5 w-5" />
@@ -711,7 +720,7 @@ export const SellerDashboardPage: React.FC = () => {
             {/* View Customers */}
             <Link
               to="/seller/customers"
-              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#10B981] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
+              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#00B074] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
             >
               <div className="h-10 w-10 rounded-xl bg-pink-50 flex items-center justify-center text-pink-500 mb-3 group-hover:scale-105 transition-transform">
                 <Users className="h-5 w-5" />
@@ -727,7 +736,7 @@ export const SellerDashboardPage: React.FC = () => {
             {/* Store Settings */}
             <Link
               to="/seller/settings"
-              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#10B981] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
+              className="rounded-2xl border border-neutral-200/80 bg-white p-4 hover:border-[#00B074] hover:shadow-xs transition-all flex flex-col justify-between group cursor-pointer"
             >
               <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-3 group-hover:scale-105 transition-transform">
                 <Settings className="h-5 w-5" />
@@ -754,7 +763,7 @@ export const SellerDashboardPage: React.FC = () => {
             <div className="pt-2">
               <Link
                 to="/seller/subscription"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white px-3.5 py-1.5 text-xs font-bold transition-colors shadow-2xs"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#00B074] hover:bg-[#059669] text-white px-3.5 py-1.5 text-xs font-bold transition-colors shadow-2xs"
               >
                 <span>Current Plan: {activeShop.subscriptionPlanId.toUpperCase()}</span>
               </Link>
@@ -780,7 +789,7 @@ export const SellerDashboardPage: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-bold text-neutral-900">Top Products by Revenue</h2>
-              <Link to="/seller/products" className="text-xs font-bold text-[#10B981] hover:underline">
+              <Link to="/seller/products" className="text-xs font-bold text-[#00B074] hover:underline">
                 View All ({products.length})
               </Link>
             </div>
@@ -833,7 +842,7 @@ export const SellerDashboardPage: React.FC = () => {
                   Real instructions from buyer checkouts
                 </span>
               </div>
-              <Link to="/seller/customers" className="text-xs font-bold text-[#10B981] hover:underline">
+              <Link to="/seller/customers" className="text-xs font-bold text-[#00B074] hover:underline">
                 View ({customers.length})
               </Link>
             </div>
@@ -852,7 +861,7 @@ export const SellerDashboardPage: React.FC = () => {
                   <div key={i} className="p-3 rounded-xl bg-neutral-50/70 border border-neutral-100 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-[#10B981]/10 text-[#10B981] flex items-center justify-center font-bold text-[10px]">
+                        <div className="h-6 w-6 rounded-full bg-[#00B074]/10 text-[#00B074] flex items-center justify-center font-bold text-[10px]">
                           {noteItem.initials}
                         </div>
                         <div>
@@ -896,7 +905,7 @@ export const SellerDashboardPage: React.FC = () => {
                   />
                   {/* Dynamic Green Progress */}
                   <path
-                    className="text-[#10B981]"
+                    className="text-[#00B074]"
                     strokeDasharray={`${storeHealthPercentage}, 100`}
                     strokeWidth="3.5"
                     strokeLinecap="round"
@@ -912,7 +921,7 @@ export const SellerDashboardPage: React.FC = () => {
 
               <div>
                 <span className="text-xs font-bold text-neutral-900 block">Inventory Health</span>
-                <span className="text-xs font-semibold text-[#10B981] block mt-0.5">
+                <span className="text-xs font-semibold text-[#00B074] block mt-0.5">
                   {storeHealthPercentage >= 80 ? 'Healthy Stock' : 'Needs Restock'}
                 </span>
                 <span className="text-[10px] text-neutral-400 block mt-0.5">

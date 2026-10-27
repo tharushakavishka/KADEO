@@ -62,7 +62,7 @@ export const SellerStoragePage: React.FC = () => {
 
   if (!activeShop || !storageData) {
     return (
-      <div className="text-center py-24 bg-white rounded-3xl border border-neutral-200">
+      <div className="text-center py-24 bg-white rounded-2xl border border-slate-200/80 shadow-2xs border-neutral-200">
         <HardDrive className="h-12 w-12 mx-auto text-neutral-400 mb-3" />
         <h2 className="text-base font-bold text-neutral-800">No Store Data Found</h2>
         <p className="text-xs text-neutral-500 mt-1">Please sign in as a seller to monitor storage quota.</p>
@@ -80,20 +80,20 @@ export const SellerStoragePage: React.FC = () => {
       {/* ──────────────────────────────────────────────────────────────────────────
           1. HEADER & UPGRADE ACTION
       ────────────────────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-              Cloud Infrastructure
+            <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-block shadow-2xs">
+              CLOUD INFRASTRUCTURE
             </span>
-            <span className="text-xs font-semibold text-neutral-500">
-              Plan: <span className="text-neutral-900 font-bold">{storageData.planName}</span>
+            <span className="text-xs font-semibold text-slate-500">
+              Plan: <span className="text-slate-900 font-bold">{storageData.planName}</span>
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900">
-            Cloud Storage & Assets
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Cloud Storage & Media Library
           </h1>
-          <p className="text-xs text-neutral-500 mt-1 max-w-xl">
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
             Monitor your boutique's high-resolution product media, hero banners, and invoice storage quota.
           </p>
         </div>
@@ -101,10 +101,10 @@ export const SellerStoragePage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <Link
             to="/seller/subscription"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold transition-all shadow-xs active:scale-95"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#00B074] hover:bg-[#009E67] text-white text-xs font-bold shadow-md shadow-[#00B074]/25 transition-all cursor-pointer active:scale-95"
           >
             <Zap className="h-3.5 w-3.5" />
-            <span>Increase Quota</span>
+            <span>Upgrade Capacity</span>
           </Link>
         </div>
       </div>
@@ -112,18 +112,18 @@ export const SellerStoragePage: React.FC = () => {
       {/* ──────────────────────────────────────────────────────────────────────────
           2. MAIN STORAGE USAGE HERO CARD
       ────────────────────────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-3xl border border-[#E5E7EB] p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs border-[#E5E7EB] p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
             <div className="h-12 w-12 rounded-2xl bg-neutral-900 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <HardDrive className="h-6 w-6 text-[#10B981]" />
+              <HardDrive className="h-6 w-6 text-[#00B074]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-bold text-neutral-900">
                   {storageData.usedFormatted} of {storageData.maxFormatted} Used
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-[#10B981] border border-emerald-200">
+                <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-[#00B074] border border-emerald-200">
                   {storageData.percentage}% Used
                 </span>
               </div>
@@ -136,7 +136,7 @@ export const SellerStoragePage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 text-xs font-semibold text-neutral-600 bg-neutral-50 px-3.5 py-2 rounded-xl border border-neutral-200 shrink-0">
-            <Cloud className="h-4 w-4 text-[#10B981]" />
+            <Cloud className="h-4 w-4 text-[#00B074]" />
             <span>Edge CDN: Active</span>
           </div>
         </div>
@@ -146,7 +146,7 @@ export const SellerStoragePage: React.FC = () => {
           <div className="h-3.5 w-full bg-neutral-100 rounded-full overflow-hidden flex p-0.5 border border-neutral-200">
             <div
               style={{ width: `${Math.max(productPercent, 4)}%` }}
-              className="h-full bg-[#10B981] rounded-l-full transition-all duration-500"
+              className="h-full bg-[#00B074] rounded-l-full transition-all duration-500"
               title={`Product Media: ${storageData.breakdown.productImagesFormatted}`}
             />
             <div
@@ -164,7 +164,7 @@ export const SellerStoragePage: React.FC = () => {
           {/* Legend */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-neutral-600 pt-1">
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#10B981]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#00B074]" />
               <span className="font-medium">Product Media ({storageData.breakdown.productImagesFormatted})</span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -191,7 +191,7 @@ export const SellerStoragePage: React.FC = () => {
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 shadow-2xs space-y-1">
           <div className="flex items-center justify-between text-neutral-500">
             <span className="text-xs font-semibold">Catalog Images</span>
-            <ImageIcon className="h-4 w-4 text-[#10B981]" />
+            <ImageIcon className="h-4 w-4 text-[#00B074]" />
           </div>
           <p className="text-xl font-extrabold text-neutral-900">
             {storageData.breakdown.productImagesFormatted}
@@ -247,7 +247,7 @@ export const SellerStoragePage: React.FC = () => {
       {/* ──────────────────────────────────────────────────────────────────────────
           4. MEDIA ASSETS EXPLORER (Search & Filter files)
       ────────────────────────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-3xl border border-[#E5E7EB] shadow-xs p-6 space-y-5">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs border-[#E5E7EB] shadow-xs p-6 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100">
           <div>
             <h3 className="text-base font-bold text-neutral-900">Media Assets Explorer</h3>
@@ -262,7 +262,7 @@ export const SellerStoragePage: React.FC = () => {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Filter by filename..."
-              className="w-full bg-neutral-50 border border-neutral-200 rounded-xl py-2 pl-8 pr-3 text-xs focus:outline-none focus:border-[#10B981] focus:bg-white text-neutral-800 placeholder:text-neutral-400"
+              className="w-full bg-neutral-50 border border-neutral-200 rounded-xl py-2 pl-8 pr-3 text-xs focus:outline-none focus:border-[#00B074] focus:bg-white text-neutral-800 placeholder:text-neutral-400"
             />
           </div>
         </div>
@@ -401,7 +401,7 @@ export const SellerStoragePage: React.FC = () => {
 
         <Link
           to="/seller/subscription"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold transition-all shadow-sm shrink-0"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#00B074] hover:bg-[#009E67] text-white text-xs font-bold transition-all shadow-sm shrink-0"
         >
           <span>Upgrade to 25 GB Pro Storage</span>
           <ArrowUpRight className="h-4 w-4" />

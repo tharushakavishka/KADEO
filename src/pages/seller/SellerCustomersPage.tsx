@@ -81,7 +81,7 @@ export const SellerCustomersPage: React.FC = () => {
                   : 'bg-neutral-100 text-[#0F0F11] border border-neutral-200'
               }`}
             >
-              Clientele Roster
+              CLIENTELE DIRECTORY & CRM
             </span>
             <span
               className={`text-[11px] font-semibold ${

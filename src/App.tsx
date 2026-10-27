@@ -225,6 +225,16 @@ export function App() {
             <Route path="/seller/login" element={<SellerLoginPage />} />
             <Route path="/seller/register" element={<SellerRegisterPage />} />
 
+            {/* FULL-SCREEN SELLER CUSTOMIZE STUDIO (Dedicated Route to prevent layout outlet blank-screen) */}
+            <Route
+              path="/seller/customize"
+              element={
+                <SellerProtectedRoute>
+                  <SellerCustomizePage />
+                </SellerProtectedRoute>
+              }
+            />
+
             {/* SELLER DASHBOARD ROUTE GROUP */}
             <Route
               path="/seller"
@@ -243,7 +253,6 @@ export function App() {
               <Route path="orders" element={<SellerOrdersPage />} />
               <Route path="orders/:id" element={<SellerOrdersPage />} />
               <Route path="customers" element={<SellerCustomersPage />} />
-              <Route path="customize" element={<SellerCustomizePage />} />
               <Route path="shop-design" element={<SellerShopDesignPage />} />
               <Route path="subscription" element={<SellerSubscriptionPage />} />
               <Route path="storage" element={<SellerStoragePage />} />

@@ -52,35 +52,23 @@ export const SellerSettingsPage: React.FC = () => {
   return (
     <div className="space-y-8 max-w-4xl">
       {/* Header */}
-      <div
-        className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b transition-colors ${
-          isDark ? 'border-white/10' : 'border-[#E4E4E7]'
-        }`}
-      >
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`text-[10px] font-mono tracking-widest uppercase px-2.5 py-0.5 rounded-full font-bold ${
-                isDark
-                  ? 'bg-white/10 text-neutral-300 border border-white/10'
-                  : 'bg-neutral-100 text-[#0F0F11] border border-neutral-200'
-              }`}
-            >
-              Merchant Preferences
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-block mb-1.5 shadow-2xs">
+            STORE & ACCOUNT PREFERENCES
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Account & Store Settings
           </h1>
-          <p className={`text-xs mt-1 ${isDark ? 'text-neutral-400' : 'text-[#71717A]'}`}>
-            Manage your boutique credentials, contact lines, security, and trilingual i18n hooks.
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            Manage your boutique credentials, contact lines, WhatsApp order recipient, and security configurations.
           </p>
         </div>
 
         {savedSuccess && (
-          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/15 px-4 py-2 rounded-full border border-emerald-500/30 font-bold anim-slide-top">
-            <Check className="h-4 w-4 stroke-[3]" />
-            <span>Settings Saved!</span>
+          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200 font-bold shadow-2xs">
+            <Check className="h-4 w-4 stroke-[3] text-[#00B074]" />
+            <span>Settings Saved Successfully!</span>
           </span>
         )}
       </div>
@@ -88,7 +76,7 @@ export const SellerSettingsPage: React.FC = () => {
       <form onSubmit={handleSaveSettings} className="space-y-6">
         {/* Account Details */}
         <div
-          className={`rounded-3xl border p-6 sm:p-8 space-y-5 transition-all ${
+          className={`rounded-2xl border border-slate-200/80 shadow-2xs p-6 sm:p-8 space-y-5 transition-all ${
             isDark
               ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
               : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
@@ -111,7 +99,7 @@ export const SellerSettingsPage: React.FC = () => {
                 onChange={e => setOwnerName(e.target.value)}
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -125,7 +113,7 @@ export const SellerSettingsPage: React.FC = () => {
                 onChange={e => setEmail(e.target.value)}
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -139,7 +127,7 @@ export const SellerSettingsPage: React.FC = () => {
                 onChange={e => setDisplayPhone(e.target.value)}
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -153,7 +141,7 @@ export const SellerSettingsPage: React.FC = () => {
                 onChange={e => setWhatsappNumber(e.target.value)}
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs font-mono transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -163,14 +151,14 @@ export const SellerSettingsPage: React.FC = () => {
 
         {/* Trilingual Readiness Preview */}
         <div
-          className={`rounded-3xl border p-6 sm:p-8 space-y-5 transition-all ${
+          className={`rounded-2xl border border-slate-200/80 shadow-2xs p-6 sm:p-8 space-y-5 transition-all ${
             isDark
               ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
               : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 text-emerald-500" />
+            <Globe className="h-4 w-4 text-[#00B074]" />
             <h2 className="text-xs font-extrabold uppercase tracking-wider">
               2. Sri Lankan Trilingual Localization Readiness
             </h2>
@@ -186,8 +174,8 @@ export const SellerSettingsPage: React.FC = () => {
               className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                 lang === 'en'
                   ? isDark
-                    ? 'bg-emerald-500 text-neutral-950 font-extrabold'
-                    : 'bg-[#0F0F11] text-white'
+                    ? 'bg-[#00B074] text-neutral-950 font-extrabold'
+                    : 'bg-[#00B074] text-white'
                   : isDark
                   ? 'border border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10'
                   : 'bg-neutral-100 text-[#71717A] hover:bg-neutral-200'
@@ -201,8 +189,8 @@ export const SellerSettingsPage: React.FC = () => {
               className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                 lang === 'si'
                   ? isDark
-                    ? 'bg-emerald-500 text-neutral-950 font-extrabold'
-                    : 'bg-[#0F0F11] text-white'
+                    ? 'bg-[#00B074] text-neutral-950 font-extrabold'
+                    : 'bg-[#00B074] text-white'
                   : isDark
                   ? 'border border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10'
                   : 'bg-neutral-100 text-[#71717A] hover:bg-neutral-200'
@@ -216,8 +204,8 @@ export const SellerSettingsPage: React.FC = () => {
               className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
                 lang === 'ta'
                   ? isDark
-                    ? 'bg-emerald-500 text-neutral-950 font-extrabold'
-                    : 'bg-[#0F0F11] text-white'
+                    ? 'bg-[#00B074] text-neutral-950 font-extrabold'
+                    : 'bg-[#00B074] text-white'
                   : isDark
                   ? 'border border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10'
                   : 'bg-neutral-100 text-[#71717A] hover:bg-neutral-200'
@@ -264,14 +252,14 @@ export const SellerSettingsPage: React.FC = () => {
 
         {/* Security & Access */}
         <div
-          className={`rounded-3xl border p-6 sm:p-8 space-y-5 transition-all ${
+          className={`rounded-2xl border border-slate-200/80 shadow-2xs p-6 sm:p-8 space-y-5 transition-all ${
             isDark
               ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
               : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Lock className="h-4 w-4 text-emerald-500" />
+            <Lock className="h-4 w-4 text-[#00B074]" />
             <h2 className="text-xs font-extrabold uppercase tracking-wider">
               3. Security & Access Passcode
             </h2>
@@ -284,7 +272,7 @@ export const SellerSettingsPage: React.FC = () => {
                 placeholder="Leave blank to keep current password"
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white placeholder-neutral-500 focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white placeholder-neutral-500 focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -296,7 +284,7 @@ export const SellerSettingsPage: React.FC = () => {
                 placeholder="Repeat new password"
                 className={`w-full rounded-2xl border py-2.5 px-3.5 text-xs transition-colors ${
                   isDark
-                    ? 'bg-white/5 border-white/10 text-white placeholder-neutral-500 focus:border-emerald-500 focus:outline-none'
+                    ? 'bg-white/5 border-white/10 text-white placeholder-neutral-500 focus:border-[#00B074] focus:outline-none'
                     : 'bg-[#FAFAF9] border-[#E4E4E7] text-[#0F0F11] focus:border-[#0F0F11] focus:bg-white focus:outline-none'
                 }`}
               />
@@ -306,7 +294,7 @@ export const SellerSettingsPage: React.FC = () => {
 
         {/* 4. Live Storefront Hero Section Content & Media (Dedicated Customize Studio) */}
         <div
-          className={`rounded-3xl border p-6 sm:p-8 transition-all ${
+          className={`rounded-2xl border border-slate-200/80 shadow-2xs p-6 sm:p-8 transition-all ${
             isDark
               ? 'bg-[#121217]/90 border-white/10 shadow-2xl'
               : 'bg-white border-[#E4E4E7] shadow-luxury-xs'
@@ -319,7 +307,7 @@ export const SellerSettingsPage: React.FC = () => {
                 <h2 className="text-xs font-extrabold uppercase tracking-wider">
                   4. Live Storefront Hero Section Content & Media
                 </h2>
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25">
+                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-[#00B074]/15 text-emerald-400 border border-[#00B074]/25">
                   DEDICATED STUDIO
                 </span>
               </div>
@@ -333,8 +321,8 @@ export const SellerSettingsPage: React.FC = () => {
               to="/seller/customize"
               className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold transition-all shadow-luxury-xs cursor-pointer shrink-0 ${
                 isDark
-                  ? 'bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-extrabold'
-                  : 'bg-[#0F0F11] hover:bg-neutral-800 text-white'
+                  ? 'bg-[#00B074] hover:bg-emerald-400 text-neutral-950 font-extrabold'
+                  : 'bg-[#00B074] hover:bg-neutral-800 text-white'
               }`}
             >
               <Sparkles className="h-3.5 w-3.5" />
@@ -348,8 +336,8 @@ export const SellerSettingsPage: React.FC = () => {
             type="submit"
             className={`rounded-full px-8 py-3 text-xs font-bold uppercase tracking-wider transition-all shadow-luxury-xs cursor-pointer ${
               isDark
-                ? 'bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-extrabold shadow-emerald-500/10'
-                : 'bg-[#0F0F11] hover:bg-neutral-800 text-white'
+                ? 'bg-[#00B074] hover:bg-emerald-400 text-neutral-950 font-extrabold shadow-emerald-500/10'
+                : 'bg-[#00B074] hover:bg-neutral-800 text-white'
             }`}
           >
             Save All Preferences

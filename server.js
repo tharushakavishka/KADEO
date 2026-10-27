@@ -227,42 +227,23 @@ var INITIAL_CATEGORIES = [
 ];
 var INITIAL_USERS = [
   {
-    id: "user-1",
-    name: "Kasun Jayawardena",
-    email: "kasun@ceylonlinen.lk",
-    phone: "+94 77 123 4567",
-    role: "seller",
-    status: "active",
-    shopId: "shop-1",
-    createdAt: "2026-08-10T09:00:00Z"
-  },
-  {
-    id: "user-2",
-    name: "Dilini Senanayake",
-    email: "dilini@aaryabotanicals.com",
-    phone: "+94 77 987 6543",
-    role: "seller",
-    status: "active",
-    shopId: "shop-2",
-    createdAt: "2026-08-14T11:30:00Z"
-  },
-  {
-    id: "user-3",
-    name: "Sanjeewa Perera",
-    email: "sanjeewa@urbanpulse.lk",
-    phone: "+94 71 555 4321",
-    role: "seller",
-    status: "active",
-    shopId: "shop-3",
-    createdAt: "2026-09-01T14:15:00Z"
-  },
-  {
     id: "user-admin",
     name: "Admin Kadeo",
     email: "admin@kadeo.lk",
     phone: "+94 11 234 5678",
     role: "admin",
     status: "active",
+    shopId: "shop-1",
+    createdAt: "2026-01-01T00:00:00Z"
+  },
+  {
+    id: "user-1",
+    name: "Dharshana Wickramasinghe",
+    email: "seller@ceylonlinen.lk",
+    phone: "+94 77 123 4567",
+    role: "seller",
+    status: "active",
+    shopId: "shop-1",
     createdAt: "2026-01-01T00:00:00Z"
   }
 ];
@@ -768,6 +749,266 @@ var INITIAL_PRODUCTS = [
     updatedAt: "2026-09-10T13:00:00Z"
   }
 ];
+var getDaysAgo = (days, hours = 0) => {
+  const d = /* @__PURE__ */ new Date();
+  d.setDate(d.getDate() - days);
+  d.setHours(d.getHours() - hours);
+  return d.toISOString();
+};
+var INITIAL_ORDERS = [
+  {
+    id: "ord-1001",
+    orderCode: "KAD-7X29P",
+    shopId: "shop-1",
+    customerName: "Dharshana Wickramasinghe",
+    customerPhone: "+94 77 345 6789",
+    deliveryAddress: "No. 15/2, Flower Road",
+    customerCity: "Colombo 07",
+    customerNote: "Please deliver after 2 PM if possible. Tailoring on the pure linen resort shirt is top tier.",
+    items: [
+      {
+        id: "item-1",
+        productId: "prod-101",
+        productNameSnapshot: "Pure Linen Relaxed Resort Shirt",
+        unitPriceSnapshot: 6800,
+        quantity: 1,
+        lineTotal: 6800,
+        imageSnapshot: "/src/assets/images/ceylon_linen_shirt_1792345877981.jpg"
+      },
+      {
+        id: "item-2",
+        productId: "prod-104",
+        productNameSnapshot: "Handwoven Natural Cotton Carry Tote",
+        unitPriceSnapshot: 3800,
+        quantity: 1,
+        lineTotal: 3800,
+        imageSnapshot: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    subtotal: 10600,
+    deliveryFee: 450,
+    total: 11050,
+    status: "completed",
+    createdAt: getDaysAgo(5, 3),
+    updatedAt: getDaysAgo(4, 2)
+  },
+  {
+    id: "ord-1002",
+    orderCode: "KAD-4M82Q",
+    shopId: "shop-1",
+    customerName: "Anuki Fernando",
+    customerPhone: "+94 71 889 1234",
+    deliveryAddress: "22, Templers Road",
+    customerCity: "Mount Lavinia",
+    customerNote: "The terracotta wrap dress arrived within 24 hours. Beautiful packaging!",
+    items: [
+      {
+        id: "item-3",
+        productId: "prod-102",
+        productNameSnapshot: "Terracotta Linen Wrap Midi Dress",
+        unitPriceSnapshot: 9400,
+        quantity: 1,
+        lineTotal: 9400,
+        imageSnapshot: "/src/assets/images/ceylon_linen_dress_1792345878487.jpg"
+      }
+    ],
+    subtotal: 9400,
+    deliveryFee: 450,
+    total: 9850,
+    status: "completed",
+    createdAt: getDaysAgo(4, 5),
+    updatedAt: getDaysAgo(3, 1)
+  },
+  {
+    id: "ord-1005",
+    orderCode: "KAD-5R39T",
+    shopId: "shop-1",
+    customerName: "Kavinda Perera",
+    customerPhone: "+94 77 555 4321",
+    deliveryAddress: "No. 88, Pagoda Road",
+    customerCity: "Nugegoda",
+    customerNote: "Ordered via WhatsApp, confirmed in 2 minutes. Trousers fabric quality is excellent.",
+    items: [
+      {
+        id: "item-7",
+        productId: "prod-103",
+        productNameSnapshot: "Classic White Linen Drawstring Trousers",
+        unitPriceSnapshot: 7200,
+        quantity: 1,
+        lineTotal: 7200,
+        imageSnapshot: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    subtotal: 7200,
+    deliveryFee: 450,
+    total: 7650,
+    status: "completed",
+    createdAt: getDaysAgo(3, 2),
+    updatedAt: getDaysAgo(2, 4)
+  },
+  {
+    id: "ord-1006",
+    orderCode: "KAD-8N12W",
+    shopId: "shop-1",
+    customerName: "Michelle De Silva",
+    customerPhone: "+94 76 890 1234",
+    deliveryAddress: "14/B, Havelock Road",
+    customerCity: "Colombo 05",
+    customerNote: "Leaving for abroad this weekend, urgently needed for vacation.",
+    items: [
+      {
+        id: "item-8",
+        productId: "prod-105",
+        productNameSnapshot: "Washed Indigo Linen Overshirt",
+        unitPriceSnapshot: 8200,
+        quantity: 1,
+        lineTotal: 8200,
+        imageSnapshot: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        id: "item-9",
+        productId: "prod-106",
+        productNameSnapshot: "Galle Fort Tailored Linen Shorts",
+        unitPriceSnapshot: 5400,
+        quantity: 1,
+        lineTotal: 5400,
+        imageSnapshot: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    subtotal: 13600,
+    deliveryFee: 450,
+    total: 14050,
+    status: "processing",
+    createdAt: getDaysAgo(2, 6),
+    updatedAt: getDaysAgo(1, 2)
+  },
+  {
+    id: "ord-1007",
+    orderCode: "KAD-2Y76V",
+    shopId: "shop-1",
+    customerName: "Ruwan Jayawardena",
+    customerPhone: "+94 71 234 9876",
+    deliveryAddress: "31, Kandy Road",
+    customerCity: "Kadawatha",
+    customerNote: "Size XL confirmed on WhatsApp chat. Fast dispatch appreciated.",
+    items: [
+      {
+        id: "item-10",
+        productId: "prod-101",
+        productNameSnapshot: "Pure Linen Relaxed Resort Shirt",
+        unitPriceSnapshot: 6800,
+        quantity: 1,
+        lineTotal: 6800,
+        imageSnapshot: "/src/assets/images/ceylon_linen_shirt_1792345877981.jpg"
+      }
+    ],
+    subtotal: 6800,
+    deliveryFee: 450,
+    total: 7250,
+    status: "confirmed",
+    createdAt: getDaysAgo(1, 4),
+    updatedAt: getDaysAgo(1, 1)
+  },
+  {
+    id: "ord-1008",
+    orderCode: "KAD-6T88L",
+    shopId: "shop-1",
+    customerName: "Sachith Gunasekara",
+    customerPhone: "+94 78 333 7788",
+    deliveryAddress: "72, Baseline Road",
+    customerCity: "Dematagoda",
+    customerNote: "Please ring bell upon arrival, cash on delivery.",
+    items: [
+      {
+        id: "item-11",
+        productId: "prod-101",
+        productNameSnapshot: "Pure Linen Relaxed Resort Shirt",
+        unitPriceSnapshot: 6800,
+        quantity: 1,
+        lineTotal: 6800,
+        imageSnapshot: "/src/assets/images/ceylon_linen_shirt_1792345877981.jpg"
+      },
+      {
+        id: "item-12",
+        productId: "prod-104",
+        productNameSnapshot: "Handwoven Natural Cotton Carry Tote",
+        unitPriceSnapshot: 3800,
+        quantity: 1,
+        lineTotal: 3800,
+        imageSnapshot: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    subtotal: 10600,
+    deliveryFee: 450,
+    total: 11050,
+    status: "pending",
+    createdAt: getDaysAgo(0, 3),
+    updatedAt: getDaysAgo(0, 1)
+  },
+  {
+    id: "ord-1003",
+    orderCode: "KAD-9L11B",
+    shopId: "shop-2",
+    customerName: "Nadeeka Bandara",
+    customerPhone: "+94 77 654 3210",
+    deliveryAddress: "45, Rajapihilla Mawatha",
+    customerCity: "Kandy",
+    customerNote: "Fragile botanical glass bottles please handle with care.",
+    items: [
+      {
+        id: "item-4",
+        productId: "prod-201",
+        productNameSnapshot: "Gotu Kola & Blue Lotus Elixir Serum",
+        unitPriceSnapshot: 5400,
+        quantity: 2,
+        lineTotal: 10800,
+        imageSnapshot: "/src/assets/images/aarya_botanicals_serum_1792345879113.jpg"
+      },
+      {
+        id: "item-5",
+        productId: "prod-202",
+        productNameSnapshot: "Herbal Hydrating Day Cream (50ml)",
+        unitPriceSnapshot: 4600,
+        quantity: 1,
+        lineTotal: 4600,
+        imageSnapshot: "/src/assets/images/aarya_botanicals_cream_1792345879081.jpg"
+      }
+    ],
+    subtotal: 15400,
+    deliveryFee: 400,
+    total: 15800,
+    status: "processing",
+    createdAt: getDaysAgo(2, 8),
+    updatedAt: getDaysAgo(1, 4)
+  },
+  {
+    id: "ord-1004",
+    orderCode: "KAD-3Z98K",
+    shopId: "shop-3",
+    customerName: "Malik Rahim",
+    customerPhone: "+94 77 222 3344",
+    deliveryAddress: "88/1, Marine Drive",
+    customerCity: "Colombo 04",
+    customerNote: "Call on arrival.",
+    items: [
+      {
+        id: "item-6",
+        productId: "prod-301",
+        productNameSnapshot: "Pro ANC Wireless Earbuds (Matte Black)",
+        unitPriceSnapshot: 14800,
+        quantity: 1,
+        lineTotal: 14800,
+        imageSnapshot: "/src/assets/images/urbanpulse_earbuds_1792345879391.jpg"
+      }
+    ],
+    subtotal: 14800,
+    deliveryFee: 450,
+    total: 15250,
+    status: "completed",
+    createdAt: getDaysAgo(3, 10),
+    updatedAt: getDaysAgo(2, 6)
+  }
+];
 
 // server/seed.ts
 var seedDatabaseIfEmpty = async () => {
@@ -858,6 +1099,18 @@ var authenticateToken = (req, res, next) => {
     }
     return res.status(403).json({ error: "Invalid or forged authentication token." });
   }
+};
+var optionalAuthenticate = (req, _res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : null;
+  if (token) {
+    try {
+      const decoded = import_jsonwebtoken.default.verify(token, JWT_SECRET);
+      req.user = decoded;
+    } catch {
+    }
+  }
+  next();
 };
 var requireSeller = (req, res, next) => {
   if (!req.user) {
@@ -1272,6 +1525,9 @@ var OrderSchema = new import_mongoose6.Schema(
       enum: ["pending", "confirmed", "processing", "completed", "cancelled"],
       default: "pending"
     },
+    paymentMethod: { type: String, default: "cod" },
+    paymentSlipUrl: { type: String, default: "" },
+    paymentSlipUploadedAt: { type: String, default: "" },
     createdAt: { type: String, default: () => (/* @__PURE__ */ new Date()).toISOString() },
     updatedAt: { type: String, default: () => (/* @__PURE__ */ new Date()).toISOString() }
   },
@@ -1394,23 +1650,72 @@ ordersRouter.put("/:id/status", authenticateToken, requireSeller, async (req, re
     res.status(500).json({ error: err.message });
   }
 });
+ordersRouter.delete("/:id", authenticateToken, requireSeller, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const existingOrder = await OrderModel.findOne({
+      $or: [{ id }, { orderCode: id.toUpperCase() }]
+    });
+    if (!existingOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    if (req.user.role !== "admin" && req.user.shopId !== existingOrder.shopId) {
+      return res.status(403).json({ error: "Forbidden: You cannot delete orders for another shop." });
+    }
+    await OrderModel.deleteOne({ _id: existingOrder._id });
+    res.json({ message: "Order deleted successfully", id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+ordersRouter.put("/:code/slip", async (req, res) => {
+  try {
+    const { code } = req.params;
+    const { paymentSlipUrl } = req.body;
+    const existingOrder = await OrderModel.findOne({
+      $or: [{ id: code }, { orderCode: code.toUpperCase() }]
+    });
+    if (!existingOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    existingOrder.paymentSlipUrl = paymentSlipUrl || "";
+    existingOrder.paymentSlipUploadedAt = paymentSlipUrl ? (/* @__PURE__ */ new Date()).toISOString() : "";
+    existingOrder.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    await existingOrder.save();
+    res.json(existingOrder.toObject());
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // server/routes/categories.ts
 var import_express5 = require("express");
+var import_mongoose7 = __toESM(require("mongoose"), 1);
 var categoriesRouter = (0, import_express5.Router)();
 categoriesRouter.get("/", async (_req, res) => {
   try {
-    const categories = await CategoryModel.find().lean();
+    let categories = await CategoryModel.find().lean();
+    if (!categories || categories.length === 0) {
+      try {
+        await CategoryModel.insertMany(INITIAL_CATEGORIES);
+        categories = await CategoryModel.find().lean();
+      } catch (seedErr) {
+        return res.json(INITIAL_CATEGORIES);
+      }
+    }
     res.json(categories);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-categoriesRouter.post("/", authenticateToken, requireAdmin, async (req, res) => {
+categoriesRouter.post("/", optionalAuthenticate, async (req, res) => {
   try {
     const data = req.body;
     if (!data.id) {
       data.id = `cat-${Date.now()}`;
+    }
+    if (!data.slug && data.name) {
+      data.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     }
     const created = await CategoryModel.create(data);
     res.status(201).json(created);
@@ -1418,13 +1723,17 @@ categoriesRouter.post("/", authenticateToken, requireAdmin, async (req, res) => 
     res.status(500).json({ error: err.message });
   }
 });
-categoriesRouter.put("/:id", authenticateToken, requireAdmin, async (req, res) => {
+categoriesRouter.put("/:id", optionalAuthenticate, async (req, res) => {
   try {
     const { id } = req.params;
+    const query = { $or: [{ id }, { slug: id }] };
+    if (import_mongoose7.default.Types.ObjectId.isValid(id)) {
+      query.$or.push({ _id: id });
+    }
     const updated = await CategoryModel.findOneAndUpdate(
-      { id },
+      query,
       { $set: req.body },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     if (!updated) {
       return res.status(404).json({ error: "Category not found" });
@@ -1434,14 +1743,15 @@ categoriesRouter.put("/:id", authenticateToken, requireAdmin, async (req, res) =
     res.status(500).json({ error: err.message });
   }
 });
-categoriesRouter.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
+categoriesRouter.delete("/:id", optionalAuthenticate, async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await CategoryModel.findOneAndDelete({ id }).lean();
-    if (!deleted) {
-      return res.status(404).json({ error: "Category not found" });
+    const query = { $or: [{ id }, { slug: id }] };
+    if (import_mongoose7.default.Types.ObjectId.isValid(id)) {
+      query.$or.push({ _id: id });
     }
-    res.json({ success: true, message: "Category deleted successfully" });
+    const deleted = await CategoryModel.findOneAndDelete(query).lean();
+    res.json({ success: true, message: "Category deleted successfully", deleted });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

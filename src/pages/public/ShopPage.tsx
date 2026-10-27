@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { StorageService } from '../../services/storageService';
 import { StorefrontView } from '../../components/storefront/StorefrontView';
+import { KaveeStorefront } from '../../components/storefront/KaveeStorefront';
 import { Store, ArrowLeft } from 'lucide-react';
 import { setActiveStorefrontSlug } from '../../hooks/useActiveStorefront';
 
@@ -30,6 +31,15 @@ export const ShopPage: React.FC = () => {
       window.removeEventListener('kadeo_categories_updated', handleStorage);
     };
   }, []);
+
+  // Dedicated pixel-perfect landing page for kavee-3 matching user provided design
+  if (slug === 'kavee-3' || shop?.slug === 'kavee-3') {
+    return (
+      <div key={slug} className="page-transition min-h-screen">
+        <KaveeStorefront shop={shop} />
+      </div>
+    );
+  }
 
   if (!shop) {
     return (

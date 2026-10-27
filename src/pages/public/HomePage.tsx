@@ -1,558 +1,953 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Store,
   ArrowRight,
-  Sparkles,
-  MessageCircle,
-  Palette,
-  Package,
+  ShieldCheck,
   Truck,
+  Leaf,
+  Heart,
+  Star,
+  ShoppingBag,
+  Store,
+  Sparkles,
   Smartphone,
-  CheckCircle2,
+  Palette,
+  MessageCircle,
   ExternalLink,
   Check,
-  HelpCircle,
-  ChevronDown,
-  Instagram,
-  Facebook,
+  Zap,
+  Grid2X2,
+  ChevronRight,
+  LogIn,
 } from 'lucide-react';
-import { ReelmarkHero } from '../../components/home/ReelmarkHero';
+import { useCart } from '../../context/CartContext';
+import { ScrollReveal } from '../../components/common/ScrollReveal';
+
+// Asset Images matching the screenshot
+import heroArtisanImg from '../../assets/images/marketplace_hero_lifestyle_1792347748759.jpg';
+import catLinenImg from '../../assets/images/category_apparel_linen_1792347729400.jpg';
+import catBeautyImg from '../../assets/images/category_beauty_wellness_1792347729900.jpg';
+import catTechImg from '../../assets/images/category_audio_tech_1792347731311.jpg';
+import catCraftImg from '../../assets/images/category_handcrafted_living_1792347730298.jpg';
+import catSpicesImg from '../../assets/images/ceylon_cinnamon_spices.jpg';
+import prodLinenShirtImg from '../../assets/images/ceylon_linen_shirt_1792345877981.jpg';
+import prodSkincareImg from '../../assets/images/aarya_botanicals_cream_1792345879081.jpg';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const { addItem, setIsCartOpen } = useCart();
+  const [wishlist, setWishlist] = useState<Record<string, boolean>>({
+    'prod-1': false,
+    'prod-2': true,
+    'prod-3': false,
+    'prod-4': false,
+    'prod-5': false,
+  });
+  const [addedMap, setAddedMap] = useState<Record<string, boolean>>({});
 
-  const toggleFaq = (index: number) => {
-    setOpenFaq(prev => (prev === index ? null : index));
+  // Interactive Live Theme Simulator for Sellers
+  const [activeSellerTheme, setActiveSellerTheme] = useState<'linen' | 'tech' | 'craft' | 'pantry'>('linen');
+
+  const toggleWishlist = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setWishlist(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const features = [
+  // 5 Featured Products matching the reference screenshot
+  const featuredProducts = [
     {
-      icon: Store,
-      title: 'Your Own Store Link',
-      desc: 'Get your unique branded URL (e.g. kadeo.lk/shop/your-brand) ready to share on Instagram, TikTok, and Facebook bio.',
+      id: 'prod-1',
+      title: 'Linen Oversized Shirt',
+      category: 'Apparel & Linen',
+      categoryLink: '/categories',
+      price: 4500,
+      priceFormatted: 'Rs. 4,500',
+      rating: 4.8,
+      reviews: 120,
+      badge: 'Bestseller',
+      image: prodLinenShirtImg,
+      shopSlug: 'ceylon-linen',
     },
     {
-      icon: MessageCircle,
-      title: 'Direct WhatsApp Orders',
-      desc: 'Customers place orders with 1-click on WhatsApp with product names, SKU, and delivery address pre-filled.',
+      id: 'prod-2',
+      title: 'Natural Skincare Set',
+      category: 'Beauty & Wellness',
+      categoryLink: '/categories',
+      price: 3200,
+      priceFormatted: 'Rs. 3,200',
+      rating: 4.7,
+      reviews: 86,
+      badge: null,
+      image: prodSkincareImg,
+      shopSlug: 'ceylon-linen',
+    },
+    {
+      id: 'prod-3',
+      title: 'Wireless Headphones',
+      category: 'Audio & Mobile Tech',
+      categoryLink: '/categories',
+      price: 12900,
+      priceFormatted: 'Rs. 12,900',
+      rating: 4.6,
+      reviews: 64,
+      badge: null,
+      image: catTechImg,
+      shopSlug: 'ceylon-linen',
+    },
+    {
+      id: 'prod-4',
+      title: 'Wooden Planter Box',
+      category: 'Handcrafted Living',
+      categoryLink: '/categories',
+      price: 2800,
+      priceFormatted: 'Rs. 2,800',
+      rating: 4.9,
+      reviews: 52,
+      badge: null,
+      image: catCraftImg,
+      shopSlug: 'ceylon-linen',
+    },
+    {
+      id: 'prod-5',
+      title: 'Ceylon Cinnamon Powder',
+      category: 'Ceylon Artisanal Pantry',
+      categoryLink: '/categories',
+      price: 1250,
+      priceFormatted: 'Rs. 1,250',
+      rating: 4.8,
+      reviews: 93,
+      badge: null,
+      image: catSpicesImg,
+      shopSlug: 'ceylon-linen',
+    },
+  ];
+
+  const handleAddToCart = (product: typeof featuredProducts[0], e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    addItem(
+      {
+        id: product.id,
+        shopId: 'shop-kavee-3',
+        categoryId: 'cat-featured',
+        name: product.title,
+        slug: product.title.toLowerCase().replace(/\s+/g, '-'),
+        price: product.price,
+        description: `Authentic ${product.title} made by Sri Lankan artisans.`,
+        images: [product.image],
+        sku: `SKU-${product.id}`,
+        stockQuantity: 25,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        id: 'shop-kavee-3',
+        ownerId: 'user-seller-1',
+        name: 'Kadeo Verified Seller',
+        slug: product.shopSlug,
+        description: 'Handpicked artisan goods direct from local creators',
+        logo: product.image,
+        coverImage: product.image,
+        displayPhone: '+94 77 123 4567',
+        whatsappNumber: '94771234567',
+        contactDetails: {
+          email: 'support@kadeo.lk',
+          city: 'Colombo',
+          address: 'Kadeo Marketplace Hub',
+          deliveryCoverage: 'Islandwide Sri Lanka',
+        },
+        themeId: 'modern',
+        status: 'active',
+        subscriptionPlanId: 'pro',
+        createdAt: new Date().toISOString(),
+      },
+      1
+    );
+
+    setAddedMap(prev => ({ ...prev, [product.id]: true }));
+    setTimeout(() => {
+      setAddedMap(prev => ({ ...prev, [product.id]: false }));
+    }, 2000);
+    setIsCartOpen(true);
+  };
+
+  // Seller Theme Simulator Data
+  const sellerThemes = {
+    linen: {
+      name: 'Linen & Apparel Atelier',
+      storeName: 'Ceylon Linen Co.',
+      tagline: 'Pure Handwoven Linen Fashion',
+      url: 'kadeo.lk/shop/ceylon-linen',
+      primaryColor: '#00B074',
+      badgeText: 'Pure Sri Lankan Organic Linen',
+      bannerImg: catLinenImg,
+      sampleItem: 'Linen Oversized Shirt • Rs. 4,500',
+    },
+    tech: {
+      name: 'Modern Tech & Audio',
+      storeName: 'UrbanPulse Tech',
+      tagline: 'Acoustic Audio & Gadgets',
+      url: 'kadeo.lk/shop/urbanpulse',
+      primaryColor: '#0284C7',
+      badgeText: 'Official Islandwide Warranty',
+      bannerImg: catTechImg,
+      sampleItem: 'Wireless Headphones • Rs. 12,900',
+    },
+    craft: {
+      name: 'Handcrafted Home & Decor',
+      storeName: 'Kavee Living Atelier',
+      tagline: 'Natural Teak & Woven Goods',
+      url: 'kadeo.lk/shop/kavee-living',
+      primaryColor: '#D97706',
+      badgeText: '100% Handcrafted by Artisans',
+      bannerImg: catCraftImg,
+      sampleItem: 'Wooden Planter Box • Rs. 2,800',
+    },
+    pantry: {
+      name: 'Ceylon Artisanal Pantry',
+      storeName: 'SpiceRoot Heritage',
+      tagline: 'Farm-Fresh Spices & Herbal Wellness',
+      url: 'kadeo.lk/shop/spiceroot',
+      primaryColor: '#16A34A',
+      badgeText: 'Certified Pure Organic Ceylon Spices',
+      bannerImg: catSpicesImg,
+      sampleItem: 'Ceylon Cinnamon Powder • Rs. 1,250',
+    },
+  };
+
+  const activeTheme = sellerThemes[activeSellerTheme];
+
+  const sellerPerks = [
+    {
+      icon: Store,
+      title: 'Your Dedicated Store URL',
+      desc: 'Claim kadeo.lk/shop/your-brand in 30 seconds. Put it in your Instagram bio, TikTok, and WhatsApp catalogue.',
     },
     {
       icon: Palette,
-      title: 'Full Storefront Design Control',
-      desc: 'Customize your hero banner, cover media, welcome pill tags, headlines, and floating badges with zero code.',
+      title: 'Visual Lookbook & Theme Studio',
+      desc: 'Customize hero banners, brand typography, and colors with instant live preview. Zero coding required.',
     },
     {
-      icon: Package,
-      title: 'Smart Inventory & Orders',
-      desc: 'Real-time stock decrement, low-stock warnings, and order status tracking from Packed to Out for Delivery.',
+      icon: MessageCircle,
+      title: '1-Click Direct WhatsApp Orders',
+      desc: 'Customers place verified orders with pre-filled items, customer name, and delivery address sent straight to your WhatsApp.',
+    },
+    {
+      icon: Zap,
+      title: '0% Sales Commission',
+      desc: 'Keep 100% of your earnings. No hidden charges or transaction cuts on your hard-earned sales.',
     },
     {
       icon: Truck,
-      title: 'Built for Sri Lankan Commerce',
-      desc: 'Full support for Cash on Delivery (COD), Islandwide Courier coverage, and direct bank transfer instructions.',
+      title: 'Islandwide Cash on Delivery (COD)',
+      desc: 'Integrated courier support for all 25 Sri Lankan districts with automated delivery slips and tracking.',
     },
     {
       icon: Smartphone,
-      title: '100% Mobile Optimized',
-      desc: 'Looks and feels like a luxury mobile app on every phone, with responsive bottom navigation and fast gallery swipe.',
-    },
-  ];
-
-  const steps = [
-    {
-      n: '01',
-      title: 'Name Your Store',
-      desc: 'Pick your boutique name and claim your free store link in 30 seconds. No credit card required.',
-    },
-    {
-      n: '02',
-      title: 'Add Your Products',
-      desc: 'Upload high-resolution photos, set your price in LKR, and organize pieces into categories.',
-    },
-    {
-      n: '03',
-      title: 'Start Getting Orders',
-      desc: 'Share your store link on social media. Receive verified orders straight into WhatsApp and your dashboard.',
-    },
-  ];
-
-  const showcaseStores = [
-    {
-      name: 'Ceylon Linen Co.',
-      category: 'Fashion & Apparel',
-      desc: 'Clean minimal aesthetics, custom linen lookbook, and direct WhatsApp checkout.',
-      image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80',
-      link: '/shop/ceylon-linen',
-    },
-    {
-      name: 'Glow & Grace',
-      category: 'Beauty & Cosmetics',
-      desc: 'Skincare highlights, floating trust badges, and appointment coordination.',
-      image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
-      link: '/shop/glow-and-grace',
-    },
-    {
-      name: 'UrbanPulse Tech',
-      category: 'Modern Tech & Accessories',
-      desc: 'Dark modern theme, specifications checklist, and fast courier dispatch badges.',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
-      link: '/shop/urbanpulse-tech',
-    },
-  ];
-
-  const pricingPlans = [
-    {
-      name: 'Free Starter',
-      price: 'Rs. 0',
-      period: 'forever',
-      description: 'Ideal for independent makers and new side-hustles starting online.',
-      features: [
-        'Up to 5 products',
-        'Direct WhatsApp ordering',
-        'Standard Minimal theme',
-        'Islandwide courier support',
-        '0% commission on orders',
-      ],
-      buttonText: 'Start for Free',
-      popular: false,
-    },
-    {
-      name: 'Boutique Pro',
-      price: 'Rs. 1,490',
-      period: '/ month',
-      description: 'For growing retail brands that need custom styling and more items.',
-      features: [
-        'Up to 50 products',
-        'Full Hero Section Customizer',
-        'All 3 Luxury Themes (Minimal, Beauty, Modern)',
-        'Order & Customer CRM directory',
-        'Priority Sri Lankan seller support',
-        '0% commission on orders',
-      ],
-      buttonText: 'Start 14-Day Free Trial',
-      popular: true,
-    },
-    {
-      name: 'Enterprise Brand',
-      price: 'Rs. 2,990',
-      period: '/ month',
-      description: 'For established ateliers, flagship boutiques, and volume sellers.',
-      features: [
-        'Unlimited products',
-        'Custom domain setup',
-        'Video hero banners & custom badges',
-        'Advanced sales analytics',
-        'Dedicated onboarding manager',
-        '0% commission on orders',
-      ],
-      buttonText: 'Get Started Pro',
-      popular: false,
-    },
-  ];
-
-  const faqs = [
-    {
-      q: 'Can I link my Kadeo store to Instagram and TikTok?',
-      a: 'Yes! Simply copy your dedicated store link (e.g. kadeo.lk/shop/your-name) and paste it into your Instagram bio, TikTok profile, or WhatsApp Business catalogue.',
-    },
-    {
-      q: 'Can I edit my storefront banner and colors later?',
-      a: 'Yes, anytime. Your Seller Dashboard includes a visual Shop Design Studio where you can change background images, headlines, text toggles, and badge visibility with instant live preview.',
-    },
-    {
-      q: 'Does Kadeo charge commission on my orders?',
-      a: 'No. Kadeo charges 0% commission on every order, so you keep 100% of your earnings. You only pay if you choose to upgrade to a paid plan.',
-    },
-    {
-      q: 'Do I need web design or coding skills to create my website?',
-      a: 'None at all. Kadeo is built so any boutique owner or artisan can launch a professional, mobile-ready online store in less than 2 minutes using simple form inputs.',
+      title: 'App-Like Mobile Experience',
+      desc: 'Fast, responsive, and stunning on every smartphone. Seamless product zoom, bottom drawers, and instant cart.',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-transparent text-neutral-900 font-sans antialiased selection:bg-[#10B981] selection:text-white">
-      {/* ──────────────────────────────────────────────────────────────────────────
-          1. REELMARK INTERACTIVE CURVED VIDEO HERO SECTION
-      ────────────────────────────────────────────────────────────────────────── */}
-      <ReelmarkHero
-        badgeText="Sri Lanka's #1 Boutique Commerce Platform"
-        headlineLine1="Build Your Boutique"
-        headlineLine2="with Snackable Reels"
-        subline={[
-          'The easiest way for Sri Lankan brands & creators to sell online.',
-          'Showcase video reels, accept instant orders on WhatsApp,',
-          'and manage your inventory with zero code.',
-        ]}
-        ctaText="Create Your Store"
-        ctaLink="/seller/register"
-        note1Text={'Direct\nWhatsApp Orders'}
-        note2Text="0% Commission"
-      />
+    <div className="min-h-screen bg-[#FDFEFC] text-slate-900 font-sans antialiased overflow-x-hidden selection:bg-[#00B074] selection:text-white">
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          1. HERO SECTION (With "Create Shop" & "Log in" Buttons instead of Search)
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative pt-6 sm:pt-10 pb-16 sm:pb-24 overflow-hidden bg-gradient-to-b from-[#F5F8F6]/80 via-[#FAFBF9] to-[#F3F6F4]">
+        {/* Subtle blurred green foliage element on the left edge */}
+        <div className="absolute top-1/4 -left-16 w-48 h-72 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-1/3 -left-10 w-28 h-40 bg-emerald-600/15 rounded-full blur-xl pointer-events-none" />
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          2. CHANNELS STRIP (Benefits for Social Media Sellers)
-      ────────────────────────────────────────────────────────────────────────── */}
-      <div id="benefits" className="border-b border-[#E5E7EB] bg-white/70 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-center gap-x-10 gap-y-3 flex-wrap text-sm text-neutral-500">
-          <p className="font-semibold text-neutral-700">
-            Sell everywhere your customers already are:
-          </p>
-          <span className="inline-flex items-center gap-2 font-bold text-neutral-800">
-            <MessageCircle className="h-4 w-4 text-[#10B981]" /> WhatsApp
-          </span>
-          <span className="inline-flex items-center gap-2 font-bold text-neutral-800">
-            <Instagram className="h-4 w-4 text-pink-600" /> Instagram
-          </span>
-          <span className="inline-flex items-center gap-2 font-bold text-neutral-800">
-            <Smartphone className="h-4 w-4 text-neutral-900" /> TikTok
-          </span>
-          <span className="inline-flex items-center gap-2 font-bold text-neutral-800">
-            <Facebook className="h-4 w-4 text-blue-600" /> Facebook
-          </span>
-        </div>
-      </div>
-
-      {/* ──────────────────────────────────────────────────────────────────────────
-          3. FEATURES SECTION (Stop Losing Orders in DMs)
-      ────────────────────────────────────────────────────────────────────────── */}
-      <section id="features" className="py-20 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-[#E5E7EB]">
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
-            Everything You Need to Succeed Online
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-neutral-950 tracking-tight">
-            Stop Losing Orders in Social Media DMs.
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-600 leading-relaxed">
-            Kadeo transforms your scattered Instagram DMs, TikTok comments, and phone calls into an automated, elegant online shop.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {features.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={idx}
-                className="rounded-2xl border border-[#E5E7EB] bg-white p-7 shadow-xs hover:border-emerald-300 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-[#F8F8F5] border border-[#E5E7EB] text-[#10B981] flex items-center justify-center mb-6 group-hover:bg-[#10B981] group-hover:text-white group-hover:border-[#10B981] transition-colors duration-300">
-                  <Icon className="h-6 w-6 stroke-[2]" />
-                </div>
-                <h3 className="text-lg font-bold text-neutral-900 tracking-tight mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-neutral-600 leading-relaxed">
-                  {item.desc}
-                </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+            {/* Left Column: Hero Tag, Headline, Subtitle, Create Shop & Log in Buttons, Trust Badges */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Green Sub-label with Leaf & Accent Line */}
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-700 uppercase">
+                  <Leaf className="h-3.5 w-3.5 text-[#00B074]" />
+                  <span>SUPPORT LOCAL • SHOP SRI LANKA</span>
+                </span>
+                <span className="h-[1.5px] w-14 bg-slate-300 rounded-full inline-block" />
               </div>
-            );
-          })}
+
+              {/* Main Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold text-slate-900 tracking-tight leading-[1.12]">
+                Discover Unique Products <br />
+                from <span className="text-[#00B074]">Local Sellers</span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
+                From handcrafts to everyday essentials — find authentic, high-quality products made by talented Sri Lankan sellers, or start selling your own products online today.
+              </p>
+
+              {/* 🌟 TWO PROMINENT ACTION BUTTONS: "Create Shop" & "Log in" (Replacing Search Bar) */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1 max-w-lg">
+                <Link
+                  to="/seller/register"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 sm:py-4 rounded-full bg-[#00B074] hover:bg-[#009E67] text-white text-sm sm:text-base font-extrabold shadow-lg shadow-[#00B074]/30 hover:shadow-xl hover:shadow-[#00B074]/35 transition-all active:scale-95 cursor-pointer"
+                >
+                  <Store className="h-4 w-4" />
+                  <span>Create Shop</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  to="/seller/login"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 sm:py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 text-sm sm:text-base font-bold border-2 border-slate-200/90 shadow-2xs hover:border-[#00B074] hover:text-[#00B074] transition-all active:scale-95 cursor-pointer"
+                >
+                  <LogIn className="h-4 w-4" />
+                  <span>Log in</span>
+                </Link>
+              </div>
+
+              {/* 3 Trust Badges */}
+              <div className="pt-2 flex flex-wrap items-center gap-6 sm:gap-10 text-xs text-slate-600 font-medium">
+                {/* 1. Secure Shopping */}
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
+                    <ShieldCheck className="h-4 w-4 text-[#00B074]" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 leading-tight">Secure Platform</p>
+                    <p className="text-[11px] text-slate-400">100% Guaranteed ➔</p>
+                  </div>
+                </div>
+
+                {/* 2. Fast Delivery */}
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
+                    <Truck className="h-4 w-4 text-[#00B074]" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 leading-tight">Fast Delivery</p>
+                    <p className="text-[11px] text-slate-400">Islandwide</p>
+                  </div>
+                </div>
+
+                {/* 3. Support Local Businesses */}
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
+                    <Leaf className="h-4 w-4 text-[#00B074]" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 leading-tight">Support</p>
+                    <p className="text-[11px] text-slate-400">Local Businesses</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Artisan Lifestyle Image with Cursive Script & Dots */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-slate-300/50 border-[3px] border-white aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/3] group">
+                <img
+                  src={heroArtisanImg}
+                  alt="Sri Lankan Local Artisan"
+                  className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 ease-out"
+                />
+
+                {/* Cursive Artistic Script matching screenshot in upper right */}
+                <div className="absolute top-5 right-5 sm:top-7 sm:right-7 pointer-events-none select-none text-right">
+                  <span className="font-serif italic text-slate-800 text-xl sm:text-2xl drop-shadow-sm tracking-wide block leading-[1.1]">
+                    Local <br />
+                    Hands <br />
+                    Global <br />
+                    <span className="text-slate-700 font-sans text-lg sm:text-xl">♡</span> Dreams
+                  </span>
+                </div>
+
+                {/* Carousel Indicator Dots in bottom right */}
+                <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/20 backdrop-blur-xs px-3 py-1.5 rounded-full">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#00B074] shadow-xs" />
+                  <span className="h-2 w-2 rounded-full bg-white/90" />
+                  <span className="h-2 w-2 rounded-full bg-white/50" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          4. 3-STEP ONBOARDING
-      ────────────────────────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="py-20 sm:py-24 bg-[#F0F1ED]/40 backdrop-blur-xs border-b border-[#E5E7EB]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
-              Simple & Fast Onboarding
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-neutral-950 tracking-tight">
-              From Idea to First Sale in 3 Steps
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-600">
-              No technical expertise needed. You can set up your store directly from your mobile phone.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {steps.map((st, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl bg-white border border-[#E5E7EB] p-8 shadow-xs flex flex-col justify-between hover:-translate-y-0.5 transition-transform"
-              >
-                <div>
-                  <div className="w-11 h-11 rounded-full bg-[#10B981] text-white flex items-center justify-center font-black text-sm mb-6 ring-8 ring-emerald-500/10 shadow-2xs">
-                    {st.n}
-                  </div>
-                  <h3 className="text-lg font-bold text-neutral-950 mb-2">
-                    {st.title}
-                  </h3>
-                  <p className="text-sm text-neutral-600 leading-relaxed">
-                    {st.desc}
-                  </p>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-[#E5E7EB] flex items-center justify-between text-xs font-bold text-[#10B981]">
-                  <span>Step {idx + 1} of 3</span>
-                  <CheckCircle2 className="h-4 w-4" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          2. FLOATING CATEGORY RIBBON BAR
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative -mt-8 sm:-mt-12 z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/90 p-3 sm:p-4">
+          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+            {/* 1. All Categories */}
             <Link
-              to="/seller/register"
-              className="inline-flex items-center gap-2 h-12 px-8 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-sm shadow-xs transition-all active:scale-95 cursor-pointer"
+              to="/categories"
+              className="flex items-center gap-3 p-2.5 pr-5 rounded-xl bg-[#F0FDF4] hover:bg-emerald-100/60 border border-emerald-200/70 transition-all shrink-0 group cursor-pointer"
             >
-              <span>Get Started Now — It's Free</span>
-              <ArrowRight className="h-4 w-4" />
+              <div className="h-10 w-10 rounded-lg bg-[#00B074] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Grid2X2 className="h-5 w-5" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors leading-tight">
+                  All Categories
+                </p>
+                <p className="text-[10px] text-slate-500 flex items-center gap-1 mt-0.5">
+                  <span>Explore all products</span>
+                  <ArrowRight className="h-2.5 w-2.5 text-[#00B074]" />
+                </p>
+              </div>
+            </Link>
+
+            {/* 2. Apparel & Linen */}
+            <Link
+              to="/category/fashion"
+              className="flex items-center gap-3 p-2.5 pr-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all shrink-0 group cursor-pointer"
+            >
+              <img
+                src={catLinenImg}
+                alt="Apparel & Linen"
+                className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors leading-tight flex items-center gap-1">
+                  <span>Apparel & Linen</span>
+                  <ChevronRight className="h-3 w-3 text-slate-400 group-hover:text-[#00B074]" />
+                </p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Fashion & Clothing</p>
+              </div>
+            </Link>
+
+            {/* 3. Beauty & Wellness */}
+            <Link
+              to="/category/beauty"
+              className="flex items-center gap-3 p-2.5 pr-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all shrink-0 group cursor-pointer"
+            >
+              <img
+                src={catBeautyImg}
+                alt="Beauty & Wellness"
+                className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors leading-tight flex items-center gap-1">
+                  <span>Beauty & Wellness</span>
+                  <ChevronRight className="h-3 w-3 text-slate-400 group-hover:text-[#00B074]" />
+                </p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Skincare & Self Care</p>
+              </div>
+            </Link>
+
+            {/* 4. Audio & Mobile Tech */}
+            <Link
+              to="/category/electronics"
+              className="flex items-center gap-3 p-2.5 pr-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all shrink-0 group cursor-pointer"
+            >
+              <img
+                src={catTechImg}
+                alt="Audio & Mobile Tech"
+                className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors leading-tight flex items-center gap-1">
+                  <span>Audio & Mobile Tech</span>
+                  <ChevronRight className="h-3 w-3 text-slate-400 group-hover:text-[#00B074]" />
+                </p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Gadgets & Accessories</p>
+              </div>
+            </Link>
+
+            {/* 5. Handcrafted Living */}
+            <Link
+              to="/category/lifestyle"
+              className="flex items-center gap-3 p-2.5 pr-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all shrink-0 group cursor-pointer"
+            >
+              <img
+                src={catCraftImg}
+                alt="Handcrafted Living"
+                className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors leading-tight flex items-center gap-1">
+                  <span>Handcrafted Living</span>
+                  <ChevronRight className="h-3 w-3 text-slate-400 group-hover:text-[#00B074]" />
+                </p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Home & Decor</p>
+              </div>
+            </Link>
+
+            {/* 6. Ceylon Artisanal Pantry */}
+            <Link
+              to="/category/groceries"
+              className="flex items-center gap-3 p-2.5 pr-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all shrink-0 group cursor-pointer"
+            >
+              <img
+                src={catSpicesImg}
+                alt="Ceylon Artisanal Pantry"
+                className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0"
+              />
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors leading-tight">
+                  Ceylon Artisanal Pantry
+                </p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Food & Beverages</p>
+              </div>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          5. STOREFRONT SHOWCASE
-      ────────────────────────────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-[#E5E7EB]">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
-              Storefront Showcase
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-neutral-950 tracking-tight mt-1">
-              Beautiful Stores Built on Kadeo
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-600 mt-2">
-              Every seller gets a customized, responsive storefront tailored to their niche.
-            </p>
-          </div>
-
-          <Link
-            to="/shop/ceylon-linen"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#10B981] hover:underline"
-          >
-            <span>View Ceylon Linen Live Store</span>
-            <ExternalLink className="h-4 w-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {showcaseStores.map((st, idx) => (
-            <article
-              key={idx}
-              className="rounded-2xl border border-[#E5E7EB] overflow-hidden bg-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 group"
-            >
-              <div className="relative h-60 overflow-hidden bg-neutral-100">
-                <span className="absolute top-3.5 left-3.5 z-10 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-neutral-800 border border-[#E5E7EB] shadow-2xs">
-                  {st.category}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          3. FEATURED PRODUCTS ("Handpicked Just for You" - Exact 5 Cards)
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section id="featured-products" className="pt-16 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animationStyle="slide-up">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="h-[2px] w-6 bg-[#00B074] rounded-full inline-block" />
+                <span className="text-[11px] font-bold tracking-widest text-[#00B074] uppercase">
+                  FEATURED PRODUCTS
                 </span>
-                <img
-                  src={st.image}
-                  alt={st.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                />
               </div>
-              <div className="p-6 space-y-2">
-                <h3 className="text-lg font-bold text-neutral-900 tracking-tight">
-                  {st.name}
-                </h3>
-                <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed pb-2">
-                  {st.desc}
-                </p>
-                <Link
-                  to={st.link}
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#10B981] group-hover:translate-x-1 transition-transform"
-                >
-                  <span>Preview Storefront</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Handpicked Just for You
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                Discover our top-selling products, loved by customers across Sri Lanka.
+              </p>
+            </div>
+
+            <Link
+              to="/shop/ceylon-linen"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00B074] hover:text-[#009E67] transition-colors group self-start sm:self-auto cursor-pointer"
+            >
+              <span>View All Products</span>
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </ScrollReveal>
+
+        {/* 5-Card Product Grid matching the uploaded image */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
+          {featuredProducts.map((p, idx) => (
+            <ScrollReveal key={p.id} delay={idx * 80} animationStyle="slide-up">
+              <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden group">
+                {/* Product Thumbnail Container with Wishlist & Bestseller badge */}
+                <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  />
+
+                  {/* Bestseller Badge on Top Left */}
+                  {p.badge && (
+                    <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#00B074] text-white shadow-2xs">
+                      {p.badge}
+                    </span>
+                  )}
+
+                  {/* Wishlist Heart Button on Top Right in white circle */}
+                  <button
+                    type="button"
+                    onClick={e => toggleWishlist(p.id, e)}
+                    aria-label="Wishlist"
+                    className="absolute top-2.5 right-2.5 h-7 w-7 rounded-full bg-white/95 hover:bg-white text-slate-600 hover:text-rose-500 flex items-center justify-center transition-all shadow-xs active:scale-90 cursor-pointer"
+                  >
+                    <Heart
+                      className={`h-3.5 w-3.5 ${
+                        wishlist[p.id] ? 'fill-rose-500 text-rose-500' : 'text-slate-600'
+                      }`}
+                    />
+                  </button>
+
+                  {/* Quick Add To Cart Hover Pill */}
+                  <div className="absolute inset-x-2.5 bottom-2.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <button
+                      type="button"
+                      onClick={e => handleAddToCart(p, e)}
+                      className="w-full py-1.5 rounded-xl bg-white/95 hover:bg-white text-slate-900 text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <ShoppingBag className="h-3 w-3 text-[#00B074]" />
+                      <span>{addedMap[p.id] ? 'Added!' : 'Add to Cart'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Card Meta Content */}
+                <div className="p-3.5 flex flex-col flex-1 justify-between space-y-2">
+                  <div>
+                    <p className="text-[10px] font-medium text-slate-400 truncate">{p.category}</p>
+                    <h3 className="text-xs font-bold text-slate-900 group-hover:text-[#00B074] transition-colors line-clamp-1 leading-snug">
+                      {p.title}
+                    </h3>
+                  </div>
+
+                  <div>
+                    <p className="text-xs sm:text-sm font-extrabold text-slate-900">
+                      {p.priceFormatted}
+                    </p>
+                    <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
+                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                      <span className="font-bold text-slate-800">{p.rating}</span>
+                      <span className="text-slate-400">({p.reviews})</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </article>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          6. PRICING PLANS
-      ────────────────────────────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-20 sm:py-24 bg-[#F0F1ED]/40 backdrop-blur-xs border-b border-[#E5E7EB]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
-              Transparent Pricing
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-neutral-950 tracking-tight">
-              Simple Plans for Every Stage of Your Business
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-600">
-              No hidden fees. 0% commission on orders. Keep 100% of your earnings.
-            </p>
-          </div>
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          4. SELLER EMPOWERMENT LIVE STUDIO SIMULATOR
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="py-20 bg-gradient-to-b from-[#FAFBF9] via-white to-[#F6F9F7] border-y border-slate-200/80 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <ScrollReveal animationStyle="slide-up">
+            <div className="text-center max-w-3xl mx-auto mb-14">
+              <span className="px-3.5 py-1 rounded-full text-[11px] font-extrabold tracking-wider uppercase bg-emerald-50 text-[#00B074] border border-emerald-200/80 inline-block mb-3 shadow-2xs">
+                EMPOWERING LOCAL MAKERS & BRANDS
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+                Turn Your Craft into a Website. <br />
+                <span className="text-[#00B074]">Launch Your Store in 3 Minutes.</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-3 max-w-2xl mx-auto leading-relaxed">
+                Stop managing orders in messy Instagram direct messages and lost WhatsApp chats. Kadeo empowers every Sri Lankan creator, boutique owner, and artisan to build their own branded online storefront with zero code and 0% commission.
+              </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-            {pricingPlans.map((plan, idx) => (
-              <div
-                key={idx}
-                className={`rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 ${
-                  plan.popular
-                    ? 'bg-[#111613] text-white shadow-md ring-2 ring-[#10B981] scale-100 md:scale-[1.02] relative'
-                    : 'bg-white border border-[#E5E7EB] text-neutral-900 shadow-xs'
-                }`}
-              >
-                {plan.popular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#10B981] text-white text-[11px] font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow-2xs">
-                    MOST POPULAR
-                  </span>
-                )}
-
-                <div>
-                  <h3 className="text-xl font-bold tracking-tight">{plan.name}</h3>
-                  <p
-                    className={`text-xs mt-1.5 min-h-[40px] leading-relaxed ${
-                      plan.popular ? 'text-neutral-400' : 'text-neutral-600'
-                    }`}
-                  >
-                    {plan.description}
-                  </p>
-
-                  <div className="my-6 pb-6 border-b border-neutral-200/20 flex items-baseline gap-1">
-                    <span className="text-4xl font-black tracking-tight">{plan.price}</span>
-                    <span
-                      className={`text-sm font-medium ${
-                        plan.popular ? 'text-neutral-400' : 'text-neutral-500'
+              {/* Theme Simulator Pills */}
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+                <span className="text-xs font-semibold text-slate-400 mr-2">Try Themes:</span>
+                {(
+                  [
+                    { key: 'linen', label: 'Linen & Apparel', color: '#00B074' },
+                    { key: 'tech', label: 'Gadgets & Tech', color: '#0284C7' },
+                    { key: 'craft', label: 'Handcrafted Living', color: '#D97706' },
+                    { key: 'pantry', label: 'Ceylon Spices', color: '#16A34A' },
+                  ] as const
+                ).map(tab => {
+                  const isSelected = activeSellerTheme === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => setActiveSellerTheme(tab.key)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                        isSelected
+                          ? 'bg-slate-900 text-white shadow-md ring-2 ring-slate-900/10 scale-105'
+                          : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
                     >
-                      {plan.period}
-                    </span>
-                  </div>
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ backgroundColor: tab.color }}
+                      />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </ScrollReveal>
 
-                  <ul className="space-y-3.5 text-xs sm:text-sm">
-                    {plan.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2.5">
-                        <Check
-                          className={`h-4 w-4 shrink-0 mt-0.5 ${
-                            plan.popular ? 'text-emerald-400' : 'text-[#10B981]'
-                          } stroke-[2.5]`}
-                        />
-                        <span className={plan.popular ? 'text-neutral-200' : 'text-neutral-700'}>
-                          {feat}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+          {/* Interactive Live Storefront Mockup Canvas */}
+          <ScrollReveal animationStyle="scale">
+            <div className="max-w-5xl mx-auto bg-slate-950 rounded-3xl p-3 sm:p-5 shadow-2xl border border-slate-800 text-white relative">
+              {/* Fake Browser Top Chrome */}
+              <div className="flex items-center justify-between pb-3 px-2 border-b border-slate-800 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-rose-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-amber-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
                 </div>
 
-                <div className="pt-8">
+                <div className="flex items-center gap-2 bg-slate-900 px-4 py-1.5 rounded-full border border-slate-800 text-[11px] font-mono text-slate-300">
+                  <span className="text-emerald-400">https://</span>
+                  <span>{activeTheme.url}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-[#00B074] animate-pulse" />
+                  <span className="text-[10px] text-slate-400 font-semibold hidden sm:inline">LIVE PREVIEW</span>
+                </div>
+              </div>
+
+              {/* Inside Storefront Preview Frame */}
+              <div className="relative rounded-2xl overflow-hidden mt-3 bg-slate-900 min-h-[360px] sm:min-h-[420px] flex flex-col justify-between p-6 sm:p-10 transition-all duration-500">
+                {/* Background Banner Image with Gradient Overlay */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <img
+                    src={activeTheme.bannerImg}
+                    alt={activeTheme.storeName}
+                    className="w-full h-full object-cover object-center opacity-30 blur-xs transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+                </div>
+
+                {/* Simulated Storefront Header & Hero */}
+                <div className="relative z-10 max-w-xl space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-white/10 backdrop-blur-md border border-white/20 text-white">
+                    <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                    <span>{activeTheme.badgeText}</span>
+                  </div>
+
+                  <h3 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                    {activeTheme.storeName}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    {activeTheme.tagline}. Curated Sri Lankan craftsmanship with instant 1-click WhatsApp order fulfillment and islandwide delivery.
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <span
+                      style={{ backgroundColor: activeTheme.primaryColor }}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-lg cursor-pointer hover:opacity-95"
+                    >
+                      <ShoppingBag className="h-3.5 w-3.5" />
+                      <span>Shop Collection</span>
+                    </span>
+
+                    <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20">
+                      <MessageCircle className="h-3.5 w-3.5 text-[#25D366]" />
+                      <span>Chat on WhatsApp</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Floating Realistic Store Badges */}
+                <div className="relative z-10 pt-8 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="bg-slate-900/90 backdrop-blur-md p-3 rounded-xl border border-slate-700/80 flex items-center gap-3 shadow-xl">
+                    <div className="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                      <Zap className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold text-white">⚡ New Order Dispatched!</p>
+                      <p className="text-[10px] text-slate-400">{activeTheme.sampleItem}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-700/80 flex items-center gap-2 text-[11px] font-medium text-slate-300">
+                    <Truck className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Islandwide Cash on Delivery (COD) Active</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Callout Actions */}
+              <div className="mt-4 pt-3 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2">
+                <p className="text-xs text-slate-400">
+                  Want your brand to look like this? Create your store in 3 clicks.
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/shop/ceylon-linen"
+                    target="_blank"
+                    className="text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>View Live Shop</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Link>
+
                   <Link
                     to="/seller/register"
-                    className={`w-full h-12 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-98 ${
-                      plan.popular
-                        ? 'bg-[#10B981] hover:bg-[#059669] text-white shadow-emerald-900/30'
-                        : 'bg-[#111111] hover:bg-neutral-800 text-white'
-                    }`}
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#00B074] hover:bg-[#009E67] text-white text-xs font-extrabold shadow-md transition-all active:scale-95 cursor-pointer"
                   >
-                    <span>{plan.buttonText}</span>
-                    <ArrowRight className="h-4 w-4" />
+                    <span>Claim Your Storefront Free</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          7. FAQ ACCORDION
-      ────────────────────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-20 sm:py-24 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-[#E5E7EB]">
-        <div className="text-center mb-12 space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#10B981]">
-            Got Questions?
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-neutral-950 tracking-tight">
-            Frequently Asked Questions
-          </h2>
-        </div>
-
-        <div className="space-y-3.5">
-          {faqs.map((faq, idx) => {
-            const isOpen = openFaq === idx;
-            return (
-              <div
-                key={idx}
-                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-                  isOpen
-                    ? 'border-emerald-300 bg-white shadow-xs'
-                    : 'border-[#E5E7EB] bg-white hover:border-neutral-300'
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleFaq(idx)}
-                  className="w-full flex items-center gap-3.5 p-5 sm:p-6 text-left font-bold text-sm sm:text-base text-neutral-900 cursor-pointer"
-                  aria-expanded={isOpen}
-                >
-                  <span className="w-7 h-7 rounded-full bg-emerald-50 text-[#10B981] flex items-center justify-center shrink-0">
-                    <HelpCircle className="h-4 w-4" />
-                  </span>
-                  <span className="flex-1">{faq.q}</span>
-                  <ChevronDown
-                    className={`h-4 w-4 text-neutral-400 transition-transform duration-300 ${
-                      isOpen ? 'rotate-180 text-[#10B981]' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-6 pb-6 pt-1 text-xs sm:text-sm text-neutral-600 leading-relaxed pl-16">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ──────────────────────────────────────────────────────────────────────────
-          8. BOTTOM HERO CTA (Radiant Dark Mesh Card)
-      ────────────────────────────────────────────────────────────────────────── */}
-      <section className="py-14 px-4 sm:px-6 lg:px-8 mb-6">
-        <div className="max-w-6xl mx-auto rounded-[32px] bg-[#111613] text-white p-10 sm:p-14 lg:p-16 text-center relative overflow-hidden border border-emerald-950/60 shadow-md">
-          {/* Subtle Radiant Mesh Glows */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
-
-          <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-            <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-4 py-1.5 text-xs font-semibold text-emerald-300">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Join Sri Lanka's Modern Merchant Community</span>
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          5. SCROLLING STEP-BY-STEP WORKFLOW
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animationStyle="slide-up">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="text-[11px] font-bold tracking-widest text-[#00B074] uppercase">
+              SIMPLE 3-STEP ONBOARDING
             </span>
-
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-              Ready to Open Your Online Store Today?
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Start Selling in Three Simple Steps
             </h2>
-
-            <p className="text-sm sm:text-base text-neutral-400 max-w-lg mx-auto leading-relaxed">
-              It takes less than 2 minutes to claim your store link, upload your collection, and start selling across Sri Lanka.
+            <p className="text-xs sm:text-sm text-slate-500 mt-2">
+              No technical expertise needed. You can launch your own e-commerce website right from your smartphone.
             </p>
+          </div>
+        </ScrollReveal>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {[
+            {
+              n: '01',
+              title: 'Name & Claim Your Store URL',
+              desc: 'Choose your unique brand link (e.g. kadeo.lk/shop/your-name). Setup takes under 30 seconds with no credit card required.',
+              highlight: '30-second setup',
+            },
+            {
+              n: '02',
+              title: 'Customize Your Website & Theme',
+              desc: 'Select from handcrafted editorial themes (Linen, Tech, Minimal, Handcrafted). Upload your logo and custom banners effortlessly.',
+              highlight: 'Visual theme editor',
+            },
+            {
+              n: '03',
+              title: 'Receive Direct WhatsApp Orders',
+              desc: 'Share your store link on your Instagram bio, TikTok, and Facebook. Receive customer orders pre-formatted straight into WhatsApp.',
+              highlight: '0% sales commission',
+            },
+          ].map((step, idx) => (
+            <ScrollReveal key={step.n} delay={idx * 120} animationStyle="slide-up">
+              <div className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-2xs hover:shadow-lg transition-all duration-300 relative group flex flex-col justify-between h-full">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-3xl font-black text-slate-200 group-hover:text-[#00B074] transition-colors font-mono">
+                      {step.n}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-[#00B074] border border-emerald-200/60">
+                      {step.highlight}
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 group-hover:text-[#00B074] transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+
+                <div className="pt-6 border-t border-slate-100 mt-6 flex items-center text-xs font-bold text-[#00B074] gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Learn more</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          6. BENTO GRID OF SELLER ADVANTAGES
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="py-20 bg-slate-50 border-t border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal animationStyle="slide-up">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+              <div>
+                <span className="text-[11px] font-bold tracking-widest text-[#00B074] uppercase">
+                  EVERYTHING YOU NEED TO SCALE
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+                  Built Specifically for Sri Lankan Sellers
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
+                  From payment trust to local courier dispatch, Kadeo provides all the tools you need to run a profitable online boutique.
+                </p>
+              </div>
+
               <Link
                 to="/seller/register"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-13 px-8 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white text-sm font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00B074] hover:bg-[#009E67] text-white text-xs font-bold shadow-md shadow-[#00B074]/25 transition-all active:scale-95 self-start sm:self-auto cursor-pointer"
               >
-                <span>Create Your Store for Free</span>
+                <span>Open Your Free Shop</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
-
-              <Link
-                to="/shop/ceylon-linen"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-13 px-6 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold border border-white/15 transition-all"
-              >
-                <span>View Live Demo</span>
-                <ExternalLink className="h-4 w-4" />
-              </Link>
             </div>
+          </ScrollReveal>
+
+          {/* 6 Perk Bento Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {sellerPerks.map((perk, idx) => {
+              const Icon = perk.icon;
+              return (
+                <ScrollReveal key={perk.title} delay={idx * 70} animationStyle="slide-up">
+                  <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between h-full group">
+                    <div className="space-y-3">
+                      <div className="h-11 w-11 rounded-xl bg-emerald-50 text-[#00B074] flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#00B074] transition-colors">
+                        {perk.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {perk.desc}
+                      </p>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              );
+            })}
           </div>
         </div>
+      </section>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          7. GRAND FINALE SELLER CTA BANNER
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal animationStyle="scale">
+          <div className="rounded-3xl bg-gradient-to-r from-slate-950 via-[#0A1A14] to-slate-950 p-8 sm:p-14 text-white relative overflow-hidden shadow-2xl border border-emerald-900/40">
+            {/* Luminous Glow */}
+            <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 max-w-2xl space-y-5">
+              <span className="px-3.5 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-emerald-500/20 text-[#00D084] border border-[#00D084]/30 inline-block shadow-2xs">
+                JOIN 1,200+ SRI LANKAN CREATORS
+              </span>
+
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Ready to Build Your Own Brand Website?
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Take your boutique or craft business to the next level. Get your branded link, customize your storefront theme, and receive orders directly on WhatsApp.
+              </p>
+
+              <div className="pt-3 flex flex-wrap items-center gap-4">
+                <Link
+                  to="/seller/register"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#00B074] hover:bg-[#009E67] text-white text-xs sm:text-sm font-extrabold shadow-lg shadow-[#00B074]/30 transition-all active:scale-95 cursor-pointer"
+                >
+                  <span>Create Your Free Store Now</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+
+                <Link
+                  to="/shop/ceylon-linen"
+                  target="_blank"
+                  className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs sm:text-sm font-semibold border border-white/20 transition-all cursor-pointer"
+                >
+                  <span>Explore Demo Store</span>
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+
+              <div className="pt-2 flex items-center gap-6 text-[11px] text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <Check className="h-3.5 w-3.5 text-[#00D084]" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="h-3.5 w-3.5 text-[#00D084]" />
+                  <span>Free forever starter plan</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Check className="h-3.5 w-3.5 text-[#00D084]" />
+                  <span>Setup in 2 minutes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
       </section>
     </div>
   );
