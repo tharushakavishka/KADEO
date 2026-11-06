@@ -68,7 +68,7 @@ export async function updateProductAction(
   try {
     const auth = await getAuthorizedShop();
     const result = await updateProductService(auth, productId, formData);
-    if (result.error && !result.partialSuccess) {
+    if (result.error) {
       return { error: result.error };
     }
 
