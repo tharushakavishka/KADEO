@@ -2,10 +2,12 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
-import { isValidPhoneNumber, buildWhatsAppUrl, formatPhoneDisplay } from "@/lib/phone";
+import { isValidPhoneNumber } from "@/lib/phone";
 import s from "@/components/dashboard/DashboardShell.module.css";
 import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
 import { StoreShareBar } from "@/components/dashboard/StoreShareBar";
+import { QuickStockAlert } from "@/components/dashboard/QuickStockAlert";
+import { RecentOrdersTable } from "@/components/dashboard/RecentOrdersTable";
 import {
   Package,
   ShoppingBag,
@@ -15,11 +17,9 @@ import {
   Users,
   Plus,
   Monitor,
-  AlertTriangle,
   ChevronRight,
   TrendingUp,
   Wallet,
-  MessageCircle,
 } from "lucide-react";
 
 export default async function DashboardOverviewPage() {
@@ -142,7 +142,7 @@ export default async function DashboardOverviewPage() {
   const { data: recentOrders } = await supabase
     .from("orders")
     .select(
-      "id, order_code, customer_name_snapshot, customer_phone_snapshot, total, status, created_at, order_note"
+      "id, order_code, customer_name_snapshot, customer_phone_snapshot, total, status, created_at, order_note, courier_name, tracking_number"
     )
     .eq("shop_id", shop.id)
     .order("created_at", { ascending: false })
@@ -252,7 +252,7 @@ export default async function DashboardOverviewPage() {
 
   return (
     <div className={s.overview}>
-      {/* Top Header Welcome Banner with 1-Click Store Sharing */}
+      {/* Top Header Welcome Banner with 1-Click Store Sharing & QR Generator */}
       <div className={s.welcome}>
         <div className={s.welcomeInfo}>
           <div className={s.welcomeTag}>
@@ -355,64 +355,17 @@ export default async function DashboardOverviewPage() {
         })}
       </div>
 
-      {/* Low-Stock Inventory Alert (conditional) */}
+      {/* Low-Stock Inventory Alert with 1-Click Instant Restock Buttons */}
       {lowStockProducts && lowStockProducts.length > 0 && (
-        <div className={s.lowStockCard}>
-          <div className={s.lowStockHeader}>
-            <div className={s.lowStockIcon}>
-              <AlertTriangle size={20} />
-            </div>
-            <div>
-              <strong style={{ fontSize: "14px", color: "#92400e" }}>
-                Low Inventory Alert ({lowStockProducts.length}{" "}
-                {lowStockProducts.length === 1 ? "item" : "items"})
-              </strong>
-              <p
-                style={{
-                  margin: "2px 0 0",
-                  fontSize: "12px",
-                  color: "#b45309",
-                }}
-              >
-                These products have 3 or fewer items remaining. Restock soon to
-                prevent missed sales.
-              </p>
-            </div>
-          </div>
-          <div className={s.lowStockList}>
-            {lowStockProducts.map((item) => (
-              <Link
-                key={item.id}
-                href={`/dashboard/products/${item.id}/edit`} className={s.lowStockItem}
-              >
-                <span>{item.name}</span>
-                <span
-                  style={{
-                    background:
-                      item.stock_quantity === 0 ? "#ef4444" : "#f59e0b",
-                    color: "#ffffff",
-                    padding: "2px 6px",
-                    borderRadius: "6px",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                  }}
-                >
-                  {item.stock_quantity === 0
-                    ? "Out of Stock"
-                    : `${item.stock_quantity} left`}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <QuickStockAlert items={lowStockProducts} />
       )}
 
-      {/* Recent Orders Section */}
+      {/* Recent Orders Section with 1-Click Confirm and Courier Tracking */}
       <div className={s.ordersCard}>
         <div className={s.ordersHeader}>
           <div>
             <h2>Recent Orders</h2>
-            <p>Latest customer inquiries and purchases with instant WhatsApp access</p>
+            <p>Latest customer inquiries, 1-click confirmations, and live courier tracking</p>
           </div>
           <Link
             href="/dashboard/orders"
@@ -431,162 +384,7 @@ export default async function DashboardOverviewPage() {
           </Link>
         </div>
 
-        <div className={s.ordersTableWrap}>
-          {recentOrders && recentOrders.length > 0 ? (
-            <table className={s.ordersTable}>
-              <thead>
-                <tr>
-                  <th>Order Code</th>
-                  <th>Customer</th>
-                  <th>Date</th>
-                  <th>Payment</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentOrders.map((order: any) => {
-                  const statusClass =
-                    order.status === "pending"
-                      ? s.badgePending
-                      : order.status === "confirmed"
-                      ? s.badgeConfirmed
-                      : order.status === "shipped"
-                      ? s.badgeShipped
-                      : order.status === "completed"
-                      ? s.badgeCompleted
-                      : s.badgeCancelled;
-
-                  const orderDate = new Date(
-                    order.created_at
-                  ).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  });
-
-                  // Detect payment method (Cash on delivery vs Bank Transfer)
-                  const isBankTransfer =
-                    (order.order_note &&
-                      order.order_note.toLowerCase().includes("bank")) ||
-                    (order.payment_method &&
-                      order.payment_method.toLowerCase().includes("bank"));
-
-                  const customerPhone = order.customer_phone_snapshot || "";
-                  const customerName = order.customer_name_snapshot || "Buyer";
-                  const waMessage = `Hello ${customerName}! Thank you for your order #${order.order_code} on ${shop.name}. We are currently processing your order.`;
-                  const waUrl = buildWhatsAppUrl(customerPhone, waMessage);
-
-                  return (
-                    <tr key={order.id}>
-                      <td style={{ fontWeight: 700, color: "#0f172a" }}>
-                        #{order.order_code || order.id.slice(0, 8)}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span style={{ fontWeight: 600, color: "#0f172a" }}>
-                            {customerName}
-                          </span>
-                          {customerPhone && (
-                            <span style={{ fontSize: "11px", color: "#64748b" }}>
-                              {formatPhoneDisplay(customerPhone)}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td style={{ color: "#64748b" }}>{orderDate}</td>
-                      <td>
-                        <span
-                          className={
-                            isBankTransfer
-                              ? s.badgePaymentBank
-                              : s.badgePaymentCod
-                          }
-                        >
-                          {isBankTransfer ? "Bank Transfer" : "Cash on Delivery"}
-                        </span>
-                      </td>
-                      <td style={{ fontWeight: 700, color: "#047857" }}>
-                        {formatCurrency(Number(order.total) || 0)}
-                      </td>
-                      <td>
-                        <span className={`${s.badgeStatus} ${statusClass}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          {customerPhone ? (
-                            <a
-                              href={waUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={s.whatsappActionBtn}
-                              title="Chat directly with customer on WhatsApp"
-                            >
-                              <MessageCircle size={13} />
-                              <span>WhatsApp</span>
-                            </a>
-                          ) : null}
-                          <Link
-                            href={`/dashboard/orders/${order.id}`}
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: 700,
-                              color: "#047857",
-                              textDecoration: "none",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            Details →
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <div
-              style={{
-                padding: "48px 24px",
-                textAlign: "center",
-                color: "#64748b",
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  background: "#f1f5f9",
-                  color: "#94a3b8",
-                  display: "grid",
-                  placeItems: "center",
-                  margin: "0 auto 12px",
-                }}
-              >
-                <ShoppingBag size={22} />
-              </div>
-              <p
-                style={{
-                  margin: "0 0 6px",
-                  fontWeight: 700,
-                  color: "#0f172a",
-                  fontSize: "14px",
-                }}
-              >
-                No orders received yet
-              </p>
-              <p style={{ margin: 0, fontSize: "12.5px" }}>
-                When customers order products through WhatsApp, they will appear
-                here.
-              </p>
-            </div>
-          )}
-        </div>
+        <RecentOrdersTable orders={recentOrders || []} shopName={shop.name} />
       </div>
     </div>
   );

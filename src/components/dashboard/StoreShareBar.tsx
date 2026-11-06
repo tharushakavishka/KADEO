@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Store, ArrowUpRight, Copy, Check, MessageCircle, Plus } from "lucide-react";
+import { StoreQrModal } from "./StoreQrModal";
 import s from "./DashboardShell.module.css";
 
 interface StoreShareBarProps {
@@ -79,6 +80,8 @@ export function StoreShareBar({ shopSlug, shopName }: StoreShareBarProps) {
         <MessageCircle size={15} />
         <span>Share to WhatsApp</span>
       </button>
+
+      <StoreQrModal shopSlug={shopSlug} shopName={shopName} />
 
       <Link href="/dashboard/products/new" className={s.btnWhite}>
         <Plus size={15} />

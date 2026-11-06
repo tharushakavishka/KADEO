@@ -40,30 +40,25 @@ export async function createProductAction(formData: FormData | Record<string, an
     if (serviceResult.error && !serviceResult.partialSuccess) {
       return { error: serviceResult.error };
     }
-
-    revalidatePath("/dashboard/products");
-    revalidatePath("/dashboard");
-    if (shopSlugToRevalidate) {
-      revalidatePath(`/shop/${shopSlugToRevalidate}`);
-    }
-
-    if (serviceResult.partialSuccess) {
-      return serviceResult;
-    }
   } catch (err: any) {
     return { error: err.message || "Failed to create product" };
   }
 
-  // Native form submission redirect
-  if (formData instanceof FormData && !formData.has("_no_redirect")) {
-    redirect("/dashboard/products");
+  revalidatePath("/dashboard/products");
+  revalidatePath("/dashboard");
+  if (shopSlugToRevalidate) {
+    revalidatePath(`/shop/${shopSlugToRevalidate}`);
   }
 
-  return {
-    success: true,
-    productId: serviceResult?.productId,
-    redirectUrl: "/dashboard/products",
-  };
+  if (serviceResult?.partialSuccess) {
+    return {
+      partialSuccess: true,
+      error: serviceResult.error,
+      productId: serviceResult.productId,
+    };
+  }
+
+  redirect("/dashboard/products");
 }
 
 export async function updateProductAction(
@@ -73,7 +68,7 @@ export async function updateProductAction(
   try {
     const auth = await getAuthorizedShop();
     const result = await updateProductService(auth, productId, formData);
-    if (result.error) {
+    if (result.error && !result.partialSuccess) {
       return { error: result.error };
     }
 
@@ -122,5 +117,44 @@ export async function deleteProductAction(productId: string) {
     return result;
   } catch (err: any) {
     return { error: err.message || "Failed to delete product" };
+  }
+}
+
+export async function quickUpdateStockAction(productId: string, addQuantity: number) {
+  try {
+    const auth = await getAuthorizedShop();
+    const { data: product, error: fetchErr } = await auth.supabase
+      .from("products")
+      .select("id, stock_quantity, status")
+      .eq("id", productId)
+      .eq("shop_id", auth.shopId)
+      .single();
+
+    if (fetchErr || !product) {
+      return { error: "Product not found or access denied." };
+    }
+
+    const currentStock = Number(product.stock_quantity) || 0;
+    const newStock = Math.max(0, currentStock + addQuantity);
+    const newStatus = newStock > 0 && product.status === "draft" ? "active" : product.status;
+
+    const { error: updateErr } = await auth.supabase
+      .from("products")
+      .update({ stock_quantity: newStock, status: newStatus, updated_at: new Date().toISOString() })
+      .eq("id", productId)
+      .eq("shop_id", auth.shopId);
+
+    if (updateErr) {
+      return { error: updateErr.message };
+    }
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/products");
+    if (auth.shopSlug) {
+      revalidatePath(`/shop/${auth.shopSlug}`);
+    }
+    return { success: true, newStock };
+  } catch (err: any) {
+    return { error: err.message || "Failed to update stock." };
   }
 }
