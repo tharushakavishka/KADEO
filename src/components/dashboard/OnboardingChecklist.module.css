@@ -1,0 +1,301 @@
+.checklistCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 28px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.checklistCardCollapsed {
+  padding: 24px 32px;
+  background: #fcfdfd;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  max-width: 680px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.4px;
+  margin: 12px 0 4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.collapseToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s;
+}
+
+.collapseToggleBtn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.targetArt {
+  position: absolute;
+  right: 0;
+  top: -6px;
+  width: 140px;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Progress bar container */
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
+  border-radius: 18px;
+  padding: 14px 20px;
+  margin: 24px 0 20px;
+  transition: all 0.2s ease;
+}
+
+.progressContainerCompact {
+  margin: 16px 0 0;
+  padding: 10px 16px;
+  background: #f0fdf4;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.progressLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressPercent {
+  color: #059669;
+  font-weight: 800;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.progressBarTrack {
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: #10b981;
+  border-radius: 9999px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Steps list */
+.stepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 20px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.stepItem:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+/* Incomplete / active pending step highlight */
+.stepItemPendingHighlight {
+  background: #faf5ff !important;
+  border: 1.5px solid #e9d5ff !important;
+}
+
+.stepLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.stepCategoryIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.stepCategoryIconGreen {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.stepCategoryIconPurple {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.statusCheck {
+  flex-shrink: 0;
+}
+
+.statusDone {
+  color: #10b981;
+}
+
+.statusPending {
+  color: #7c3aed;
+}
+
+.stepInfo {
+  min-width: 0;
+}
+
+.stepTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.stepDesc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 0;
+  line-height: 1.4;
+}
+
+/* Action button */
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s;
+}
+
+.btnSecondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.btnPurple {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 12px;
+  background: #6d28d9;
+  border: 1px solid #5b21b6;
+  color: #ffffff;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25);
+  transition: all 0.15s;
+}
+
+.btnPurple:hover {
+  background: #5b21b6;
+}
+
+@media (max-width: 767px) {
+  .checklistCard {
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
+  .targetArt {
+    display: none;
+  }
+  .stepItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .btnSecondary,
+  .btnPurple {
+    width: 100%;
+    justify-content: center;
+  }
+}

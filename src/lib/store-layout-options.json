@@ -1,0 +1,5 @@
+[
+  {"key":"layout:card","area":"card","default":"stacked","options":[{"value":"stacked","label":"Image above","description":"Photo above the product details"},{"value":"horizontal","label":"Image beside","description":"Photo and details side by side"},{"value":"overlay","label":"Image overlay","description":"Details layered over a full photo"}]},
+  {"key":"layout:navbar","area":"navbar","default":"left","options":[{"value":"left","label":"Logo left","description":"Classic shop header"},{"value":"center","label":"Logo centred","description":"Centred brand with navigation below"},{"value":"floating","label":"Floating header","description":"Inset navigation floating above the store"}]},
+  {"key":"layout:search","area":"search","default":"inline","options":[{"value":"inline","label":"Inline search","description":"Search box inside the header"},{"value":"expand","label":"Expandable icon","description":"Click the search icon to open the box"},{"value":"row","label":"Separate row","description":"Full-width search below the brand"}]}
+]

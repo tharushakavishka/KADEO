@@ -1,0 +1,97 @@
+[
+  {
+    "key": "style:card",
+    "label": "Product cards",
+    "default": "glass",
+    "options": [
+      {
+        "value": "glass",
+        "label": "iOS Glass"
+      },
+      {
+        "value": "solid",
+        "label": "Soft solid"
+      },
+      {
+        "value": "outline",
+        "label": "Minimal outline"
+      }
+    ]
+  },
+  {
+    "key": "style:navbar",
+    "label": "Navbar",
+    "default": "glass",
+    "options": [
+      {
+        "value": "glass",
+        "label": "iOS Glass"
+      },
+      {
+        "value": "solid",
+        "label": "Clean white"
+      },
+      {
+        "value": "dark",
+        "label": "Dark green"
+      }
+    ]
+  },
+  {
+    "key": "style:search",
+    "label": "Search bar",
+    "default": "glass",
+    "options": [
+      {
+        "value": "glass",
+        "label": "Glass pill"
+      },
+      {
+        "value": "solid",
+        "label": "Solid rounded"
+      },
+      {
+        "value": "outline",
+        "label": "Outline"
+      }
+    ]
+  },
+  {
+    "key": "style:buttons",
+    "label": "Buttons",
+    "default": "glass",
+    "options": [
+      {
+        "value": "glass",
+        "label": "Glass rounded"
+      },
+      {
+        "value": "solid",
+        "label": "Solid rounded"
+      },
+      {
+        "value": "square",
+        "label": "Soft square"
+      }
+    ]
+  },
+  {
+    "key": "style:font",
+    "label": "Font Family",
+    "default": "sans",
+    "options": [
+      {
+        "value": "sans",
+        "label": "Modern Clean Sans"
+      },
+      {
+        "value": "serif",
+        "label": "Editorial Serif"
+      },
+      {
+        "value": "rounded",
+        "label": "Friendly Rounded"
+      }
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+[
+  {"key":"visibility:hero:content","label":"Main text card"},
+  {"key":"visibility:hero:eyebrow","label":"Small heading above the title"},
+  {"key":"visibility:hero:title","label":"Main heading"},
+  {"key":"visibility:hero:description","label":"Description"},
+  {"key":"visibility:hero:button","label":"Shop button"},
+  {"key":"visibility:hero:trust","label":"Trust labels and icons"},
+  {"key":"visibility:hero:note","label":"Side promotion card"}
+]
