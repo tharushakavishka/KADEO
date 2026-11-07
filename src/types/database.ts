@@ -29,6 +29,8 @@ export interface Shop {
   theme_id: string;
   storefront_content?: Record<string, string>;
   status: ShopStatus;
+  storage_used_bytes: number;
+  custom_storage_quota_mb: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -140,6 +142,8 @@ export interface Plan {
   description: string;
   monthly_price: number;
   yearly_price: number;
+  storage_quota_mb: number;
+  max_products: number;
   features: string[];
   is_active: boolean;
 }
@@ -151,7 +155,10 @@ export interface Subscription {
   status: SubscriptionStatus;
   billing_period: BillingPeriod;
   started_at: string;
-  expires_at: string;
+  expires_at: string | null;
+  grace_period_ends_at: string | null;
+  assigned_by: string | null;
+  admin_notes: string | null;
   created_at: string;
   updated_at: string;
 }

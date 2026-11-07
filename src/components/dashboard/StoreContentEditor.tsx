@@ -16,6 +16,7 @@ import { ModernRetailTheme } from "../storefront/themes/ModernRetailTheme";
 import { MinimalTheme } from "../storefront/themes/MinimalTheme";
 import { BoutiqueTheme } from "../storefront/themes/BoutiqueTheme";
 import { ClassicTheme } from "../storefront/themes/ClassicTheme";
+import { ShopAppTheme } from "../storefront/themes/ShopAppTheme";
 import s from "./StoreContentEditor.module.css";
 type Props = Omit<ComponentProps<typeof ModernRetailTheme>, "shop"> & { shop: ComponentProps<typeof ModernRetailTheme>["shop"] & { theme_id: string; storefront_content?: Record<string,string> } };
 export function StoreContentEditor({ shop, categories, products }: Props) {
@@ -85,7 +86,7 @@ export function StoreContentEditor({ shop, categories, products }: Props) {
     catch { setError("Could not save. Your draft is still here; please try again."); }
     finally {setPending(false);}
   }
-  const Theme = shop.theme_id === "modern_retail" ? ModernRetailTheme : shop.theme_id === "modern_boutique" ? BoutiqueTheme : shop.theme_id === "classic" ? ClassicTheme : MinimalTheme;
+  const Theme = shop.theme_id === "shop_app" ? ShopAppTheme : shop.theme_id === "modern_retail" ? ModernRetailTheme : shop.theme_id === "modern_boutique" ? BoutiqueTheme : shop.theme_id === "classic" ? ClassicTheme : MinimalTheme;
   return <div className={s.editor}>
     <div className={s.heading}><div><Link href="/dashboard/design">← Store design</Link><h1>Make your store yours.</h1><p>Change styles, images and wording, preview your draft, then publish.</p></div><a href={`/shop/${shop.slug}`} target="_blank" rel="noreferrer">View live store ↗</a></div>
     <div className={s.bar}><span>{dirty ? "Unpublished changes" : "All changes published"}</span><div><button type="button" onClick={() => {setPreview(!preview);if(preview){setSelected(null);setHint("Edit your store content using the fields below.");}}}>{preview ? "All fields" : "Visual editor"}</button><button type="button" disabled={!dirty || pending || !!uploading} onClick={() => {setDraft(JSON.parse(saved));setError("");setMessage("");}}>Discard draft</button><button type="button" className={s.publish} disabled={pending || !!uploading || !dirty} onClick={save}>{pending ? "Publishing…" : "Publish changes"}</button></div></div>
@@ -100,7 +101,7 @@ export function StoreContentEditor({ shop, categories, products }: Props) {
     </section>
     {shop.theme_id === "modern_retail" && <HeroVisibilityControls values={draft.storefront_content} onChange={updateIcon}/>}
     {preview ? <div className={s.visualLayout}><div className={s.preview}><p role="status">{hint}</p><div className={s.canvas} onClickCapture={selectFromPreview} onKeyDownCapture={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setHint("Use All fields to edit every field with your keyboard.");}}} onSubmitCapture={e=>{e.preventDefault();e.stopPropagation();}}><StoreContent values={draft.storefront_content}><CartProvider shopSlug={`preview-${shop.slug}`}>
-      {shop.theme_id !== "modern_retail" && <StorefrontHeader shopName={draft.name} shopSlug={shop.slug || ""} whatsappNumber={shop.whatsapp_number} logoUrl={draft.logo_url} />}
+      {shop.theme_id !== "modern_retail" && shop.theme_id !== "shop_app" && <StorefrontHeader shopName={draft.name} shopSlug={shop.slug || ""} whatsappNumber={shop.whatsapp_number} logoUrl={draft.logo_url} />}
       <Theme shop={{...shop,...draft}} categories={categories} products={products}/>
     </CartProvider></StoreContent></div></div><aside className={`${s.card} ${s.inspector}`} aria-label="Selected content editor">
       <div className={s.inspectorHeading}><span className={s.eyebrow}>{styleSelected ? "STYLE SETTINGS" : "CONTENT SETTINGS"}</span><h2>{styleSelected ? `${styleSelected.label} style` : iconSelected ? `Change ${iconSelected} icon` : selectedProduct ? "Product content" : selected === "logo_url" ? "Store logo" : selected === "banner_url" ? "Hero / banner image" : selected === "name" ? "Store name" : selected === "description" ? "Store description" : selectedField ? "Edit text" : "Click to customise"}</h2><p>{styleSelected ? "Make it your own, one detail at a time." : "Select a field or click directly on the preview."}</p></div>

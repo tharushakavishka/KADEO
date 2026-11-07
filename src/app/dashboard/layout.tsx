@@ -4,8 +4,10 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { DashboardSearchBar } from "@/components/dashboard/DashboardSearchBar";
 import { logoutAction } from "@/features/auth/actions";
 import s from "@/components/dashboard/DashboardShell.module.css";
+import Link from "next/link";
 import {
   Home,
+  ShieldCheck,
   Bell,
   HelpCircle,
   ChevronRight,
@@ -35,6 +37,14 @@ export default async function DashboardLayout({
     .eq("owner_id", user.id)
     .single();
 
+  // Check admin role
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  const isAdmin = profile?.role === "admin";
+
   const shopInitial = (shop?.name || user?.email || "A")
     .slice(0, 1)
     .toUpperCase();
@@ -61,6 +71,16 @@ export default async function DashboardLayout({
 
           {/* Search & Actions */}
           <div className={s.topbarRight}>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 transition shadow-2xs mr-1"
+                title="Super Admin Privileges Active � Click to open Platform Console"
+              >
+                <ShieldCheck size={14} className="text-amber-600" />
+                <span>Super Admin</span>
+              </Link>
+            )}
             <DashboardSearchBar shopSlug={shop?.slug} />
 
             <button

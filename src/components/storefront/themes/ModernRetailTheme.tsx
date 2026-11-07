@@ -61,7 +61,7 @@ export function ModernRetailTheme({ shop, categories, products }: ThemeProps) {
   }
   function photo(p: ProductItem) {
     const url = p.images?.[0]?.storage_path;
-    return url && !brokenImages.includes(p.id) ? <img src={url} alt={p.name} loading="lazy" ref={node => { if (node?.complete && node.naturalWidth === 0) setBrokenImages(old => old.includes(p.id) ? old : [...old, p.id]); }} onError={() => setBrokenImages(old => [...old, p.id])} /> : <span className={styles.placeholder}><StoreIcon name="Package" size={36} /><span>{t("a50418a19380", "Image coming soon")}</span></span>;
+    return url && !brokenImages.includes(p.id) ? <img src={url} alt={p.name} loading="lazy" ref={node => { if (node?.complete && node.naturalWidth === 0) setBrokenImages(old => old.includes(p.id) ? old : [...old, p.id]); }} onError={() => setBrokenImages(old => [...old, p.id])} /> : <span className={styles.placeholder}><StoreIcon name="Package" size={32} strokeWidth={1.4} /></span>;
   }
   const heroVisible = (part: string) => t(`visibility:hero:${part}`, "shown") !== "hidden";
   const heroContentVisible = heroVisible("content") && ["eyebrow","title","description","button","trust"].some(heroVisible);
@@ -95,9 +95,17 @@ export function ModernRetailTheme({ shop, categories, products }: ThemeProps) {
         {heroVisible("note") && <div className={styles.heroNote}><span>{t("c06135fbcd9c", "THE EVERYDAY EDIT")}</span><strong>{t("56acf6d3861d", "Small details.")}<br />{t("fff129d40982", "Big difference.")}</strong><a href="#retail-products">{t("1fd8cd4d6d59", "Find your favourite")}<StoreIcon name="ArrowRight" size={14} /></a></div>}
       </section>
       {categoryNames.length > 0 && <section className={styles.categories} aria-label="Browse by category">{categoryNames.map((name, i) => {
-        const item = products.find(p => p.category?.name === name && p.images?.[0]?.storage_path);
-        return <button key={name} aria-pressed={category === name} onClick={() => browse(name)}><span className={styles.categoryCircle} style={{ backgroundColor: ["#edf1ed", "#f1e9df", "#eee8e6", "#e8edf0"][i % 4] }}>{item ? photo(item) : <StoreIcon name="Package" size={25} strokeWidth={1.3} />}</span><span>{name}</span></button>;
-      })}<button onClick={() => browse()}><span className={styles.categoryCircle}><StoreIcon name="LayoutGrid" size={25} strokeWidth={1.3} /></span><span>{t("54fd70af2dcc", "Shop all")}</span></button></section>}
+        const item = products.find(p => p.category?.name === name && p.images?.[0]?.storage_path && !brokenImages.includes(p.id));
+        const catGradients = [
+          "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
+          "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+          "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
+          "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)",
+          "linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%)",
+        ];
+        const catIcons = ["Sparkles", "ShoppingBag", "Tag", "Package", "Grid"] as const;
+        return <button key={name} aria-pressed={category === name} onClick={() => browse(name)}><span className={styles.categoryCircle} style={{ background: catGradients[i % catGradients.length] }}>{item && item.images?.[0]?.storage_path ? <img src={item.images[0].storage_path} alt={name} loading="lazy" onError={() => setBrokenImages(old => [...old, item.id])} /> : <StoreIcon name={catIcons[i % catIcons.length]} size={24} strokeWidth={1.4} />}</span><span>{name}</span></button>;
+      })}<button onClick={() => browse()}><span className={styles.categoryCircle} style={{ background: "linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)" }}><StoreIcon name="LayoutGrid" size={24} strokeWidth={1.4} /></span><span>{t("54fd70af2dcc", "Shop all")}</span></button></section>}
       <section id="retail-products" className={styles.catalog} aria-labelledby="retail-products-title">
         <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>{t("bbf99ed7c027", "FIND YOUR NEW FAVOURITE")}</span><h2 id="retail-products-title">{savedOnly ? t("4b7755700fe9", "Your saved finds") : category !== "all" ? category : t("bddff8ac6906", "Top picks for you")}<span> ✧</span></h2></div><span aria-live="polite">{filtered.length} {filtered.length === 1 ? "product" : "products"}</span></div>
         <div className={styles.toolbar}><label className={styles.stock}><input type="checkbox" checked={inStock} onChange={e => setInStock(e.target.checked)} />{t("95c6a15bc701", "In stock only")}</label>{active && <button className={styles.clear} onClick={reset}>{t("412226715c56", "Clear filters")}<StoreIcon name="X" size={13} /></button>}<label className={styles.sort}><StoreIcon name="SlidersHorizontal" size={14} /><span>{t("8b335a234e41", "Sort:")}</span><select aria-label="Sort products" value={sort} onChange={e => setSort(e.target.value)}><option value="featured">{t("ae31ad5d6f76", "Featured")}</option><option value="price-low">{t("2585bcdd1947", "Price: low to high")}</option><option value="price-high">{t("d1fbecd113d3", "Price: high to low")}</option><option value="name">{t("d7fd54f0f4f9", "Name: A–Z")}</option></select></label></div>

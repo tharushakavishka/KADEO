@@ -10,6 +10,7 @@ import { MinimalTheme } from "@/components/storefront/themes/MinimalTheme";
 import { BoutiqueTheme } from "@/components/storefront/themes/BoutiqueTheme";
 import { ClassicTheme } from "@/components/storefront/themes/ClassicTheme";
 import { ModernRetailTheme } from "@/components/storefront/themes/ModernRetailTheme";
+import { ShopAppTheme } from "@/components/storefront/themes/ShopAppTheme";
 import { Eye, Lock, ArrowLeft, ShieldAlert } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -138,7 +139,7 @@ export default async function StorefrontPage({ params }: PageProps) {
     logo_url: shop.logo_url,
   };
 
-  const isRetailTheme = shop.theme_id === "modern_retail";
+  const hasCustomHeader = shop.theme_id === "modern_retail" || shop.theme_id === "shop_app";
 
   // Render matching theme
   function renderTheme() {
@@ -162,6 +163,14 @@ export default async function StorefrontPage({ params }: PageProps) {
       case "classic":
         return (
           <ClassicTheme
+            shop={shopData}
+            categories={categories || []}
+            products={(products as any) || []}
+          />
+        );
+      case "shop_app":
+        return (
+          <ShopAppTheme
             shop={shopData}
             categories={categories || []}
             products={(products as any) || []}
@@ -198,7 +207,7 @@ export default async function StorefrontPage({ params }: PageProps) {
           </div>
         )}
 
-        {!isRetailTheme && (
+        {!hasCustomHeader && (
           <StorefrontHeader
             shopName={shop.name}
             shopSlug={shop.slug}

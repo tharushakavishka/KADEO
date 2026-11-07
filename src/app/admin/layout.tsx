@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ShieldCheck, Store, Users, ShoppingBag, ArrowLeft, LogOut } from "lucide-react";
-import { logoutAction } from "@/features/auth/actions";
+import { ShieldCheck, Search, Bell, HelpCircle, ChevronRight, Home } from "lucide-react";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -30,54 +29,70 @@ export default async function AdminLayout({
     redirect("/dashboard");
   }
 
+  const initialLetter = (user.email?.[0] || "A").toUpperCase();
+
   return (
-    <div className="min-h-screen bg-zinc-50 flex flex-col md:flex-row">
-      <aside className="w-64 border-r border-zinc-200 bg-zinc-900 text-white flex flex-col h-screen sticky top-0 shrink-0">
-        <div className="p-5 border-b border-zinc-800">
-          <div className="flex items-center gap-2 mb-1">
-            <ShieldCheck className="w-5 h-5 text-emerald-400" />
-            <span className="font-extrabold text-base tracking-tight text-white">
-              KADEO ADMIN
+    <div className="min-h-screen bg-[#f1f6f5] flex flex-col md:flex-row text-zinc-900 font-sans">
+      <AdminSidebar userEmail={user.email || "admin@kadeo.lk"} />
+
+      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-y-auto">
+        {/* Header Bar matching mockup */}
+        <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 px-6 sm:px-8 py-3 flex items-center justify-between gap-4 shadow-2xs">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
+            <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+              <Home className="w-3.5 h-3.5" />
             </span>
+            <span className="hover:text-zinc-800 transition">Platform Governance</span>
+            <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+            <span className="font-bold text-zinc-900">Super Admin Console</span>
           </div>
-          <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-semibold">
-            Platform Operations
-          </span>
-        </div>
 
-        <nav className="flex-1 p-3 space-y-1">
-          <Link
-            href="/admin"
-            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-zinc-800 text-white"
-          >
-            <Store className="w-4 h-4" />
-            <span>Platform Overview</span>
-          </Link>
-        </nav>
+          {/* Search Bar + Controls */}
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-100 border border-zinc-200/80 text-xs text-zinc-400 w-72">
+              <Search className="w-3.5 h-3.5 text-zinc-400" />
+              <input
+                type="text"
+                placeholder="Search stores, merchants, orders..."
+                className="bg-transparent border-none outline-none text-xs text-zinc-800 placeholder:text-zinc-400 flex-1"
+                disabled
+              />
+              <span className="text-[10px] font-mono bg-white px-1.5 py-0.5 rounded border border-zinc-200 text-zinc-500 shadow-2xs">
+                Ctrl + K
+              </span>
+            </div>
 
-        <div className="p-3 border-t border-zinc-800">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400 hover:text-white transition"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Go to Seller Dashboard</span>
-          </Link>
-
-          <form action={logoutAction} className="mt-2">
             <button
-              type="submit"
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-red-400 hover:bg-zinc-800 transition"
+              type="button"
+              className="p-2 rounded-full hover:bg-zinc-100 text-zinc-500 transition relative"
+              title="Notifications"
             >
-              <LogOut className="w-4 h-4" />
-              Sign Out
+              <Bell className="w-4 h-4" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 absolute top-1.5 right-1.5" />
             </button>
-          </form>
-        </div>
-      </aside>
 
-      <main className="flex-1 min-w-0 p-6 sm:p-8 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">{children}</div>
+            <button
+              type="button"
+              className="p-2 rounded-full hover:bg-zinc-100 text-zinc-500 transition"
+              title="Documentation & Help"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </button>
+
+            {/* Profile Avatar Badge */}
+            <div
+              className="w-8 h-8 rounded-full bg-[#0a4d3c] text-white flex items-center justify-center font-bold text-xs shadow-2xs border border-[#0a4d3c]"
+              title={`Logged in as ${user.email}`}
+            >
+              {initialLetter}
+            </div>
+          </div>
+        </header>
+
+        <div className="flex-1 p-6 sm:p-8">
+          <div className="max-w-7xl mx-auto space-y-6">{children}</div>
+        </div>
       </main>
     </div>
   );

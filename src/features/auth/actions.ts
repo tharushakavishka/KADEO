@@ -50,6 +50,23 @@ export async function loginAction(formData: FormData) {
     return { error: error.message };
   }
 
+  // If user is admin and rawRedirect was not explicitly set to a custom path, route directly to /admin
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.role === "admin" && (!formData.get("redirectTo") || rawRedirect === "/dashboard")) {
+      redirect("/admin");
+    }
+  }
+
   redirect(redirectTo);
 }
 
@@ -78,6 +95,57 @@ export async function registerAction(formData: FormData) {
     return { error: error.message };
   }
 
+  redirect("/dashboard/new-store");
+}
+
+export async function forgotPasswordAction(formData: FormData) {
+  const email = formData.get("email") as string;
+  const validated = z.string().email().safeParse(email);
+  if (!validated.success) {
+    return { error: "Please enter a valid email address." };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  if (error) {
+    return { error: error.message };
+  }
+  return { success: true };
+}
+
+export async function updatePasswordAction(formData: FormData) {
+  const password = formData.get("password") as string;
+  if (!password || password.length < 6) {
+    return { error: "Password must be at least 6 characters." };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    return { error: error.message };
+  }
+  return { success: true };
+}
+
+export async function resetPasswordAction(formData: FormData) {
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  const validated = resetPasswordSchema.safeParse({
+    password,
+    confirmPassword,
+  });
+  if (!validated.success) {
+    return { error: validated.error.issues[0].message };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
   redirect("/dashboard");
 }
 
@@ -85,45 +153,4 @@ export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
-}
-
-export async function forgotPasswordAction(formData: FormData) {
-  const email = formData.get("email") as string;
-  if (!email || !email.includes("@")) {
-    return { error: "Please enter a valid email address." };
-  }
-
-  const supabase = await createClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  // Direct recovery flow to dedicated /reset-password page
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  return { success: true };
-}
-
-export async function updatePasswordAction(formData: FormData) {
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
-
-  const validated = resetPasswordSchema.safeParse({ password, confirmPassword });
-  if (!validated.success) {
-    return { error: validated.error.issues[0].message };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({
-    password: validated.data.password,
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  return { success: true };
 }

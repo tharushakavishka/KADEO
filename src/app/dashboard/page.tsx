@@ -8,6 +8,9 @@ import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist"
 import { StoreShareBar } from "@/components/dashboard/StoreShareBar";
 import { QuickStockAlert } from "@/components/dashboard/QuickStockAlert";
 import { RecentOrdersTable } from "@/components/dashboard/RecentOrdersTable";
+import { getShopStorageQuota } from "@/features/subscriptions/quota-service";
+import { SubscriptionExpiryBanner } from "@/components/dashboard/SubscriptionExpiryBanner";
+import { StorageQuotaMeter } from "@/components/dashboard/StorageQuotaMeter";
 import {
   Package,
   ShoppingBag,
@@ -30,6 +33,17 @@ export default async function DashboardOverviewPage() {
 
   if (!user) redirect("/login");
 
+  // Check role: Super Admin platform operators are routed directly to the Admin Console
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.role === "admin") {
+    redirect("/admin");
+  }
+
   // Query shop and join settings relation for local adapter & supabase compatibility
   const { data: shop } = await supabase
     .from("shops")
@@ -42,6 +56,9 @@ export default async function DashboardOverviewPage() {
   if (!shop) {
     redirect("/dashboard/new-store");
   }
+
+  // Fetch storage and subscription quota status
+  const quota = await getShopStorageQuota(shop.id);
 
   // 1. Fetch real product count
   const { count: totalProducts } = await supabase
@@ -252,6 +269,11 @@ export default async function DashboardOverviewPage() {
 
   return (
     <div className={s.overview}>
+      {/* Subscription Expiry / Grace Period Alert Banner */}
+      {quota?.subscription && (
+        <SubscriptionExpiryBanner subscription={quota.subscription} />
+      )}
+
       {/* Top Header Welcome Banner with 1-Click Store Sharing & QR Generator */}
       <div className={s.welcome}>
         <div className={s.welcomeInfo}>
@@ -349,11 +371,17 @@ export default async function DashboardOverviewPage() {
                   <Icon size={18} />
                 </div>
               </div>
+              <div className={stat.label} style={{ display: "none" }} />
               <div className={s.statValue}>{stat.value}</div>
             </Link>
           );
         })}
       </div>
+
+      {/* Storage Quota & Subscription Health Meter */}
+      {quota && (
+        <StorageQuotaMeter quota={quota} />
+      )}
 
       {/* Low-Stock Inventory Alert with 1-Click Instant Restock Buttons */}
       {lowStockProducts && lowStockProducts.length > 0 && (

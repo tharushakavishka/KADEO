@@ -1,6 +1,9 @@
-﻿import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { formatCurrency } from "@/lib/utils";
+import { getShopStorageQuota } from "@/features/subscriptions/quota-service";
+import { StorageQuotaMeter } from "@/components/dashboard/StorageQuotaMeter";
+import { SubscriptionExpiryBanner } from "@/components/dashboard/SubscriptionExpiryBanner";
 import {
   Check,
   ShieldCheck,
@@ -24,6 +27,9 @@ export default async function SubscriptionPage() {
     .single();
 
   if (!shop) redirect("/dashboard/new-store");
+
+  // Fetch live storage quota and plan details
+  const quota = await getShopStorageQuota(shop.id);
 
   // Derive subscription safely for both local adapter and Supabase SSR
   let currentSub = shop.subscriptions?.[0];
@@ -56,6 +62,8 @@ export default async function SubscriptionPage() {
         "Mobile-first seller management dashboard",
         "Delivery and return policy configuration",
         "0% sales commission",
+        "250 MB media storage quota",
+        "Up to 25 catalog products",
       ],
       current: activePlanId === "free",
       isUpgrade: false,
@@ -66,7 +74,8 @@ export default async function SubscriptionPage() {
       price: null,
       description: "Additional merchant capabilities currently in development for Sri Lankan businesses.",
       features: [
-        "Expanded product catalog capacity",
+        "Expanded 5 GB (5,120 MB) storage quota",
+        "Up to 1,000 catalog products",
         "Advanced storefront customization controls",
         "Merchant support channels",
       ],
@@ -79,17 +88,27 @@ export default async function SubscriptionPage() {
 
   return (
     <div className="max-w-4xl space-y-8">
+      {/* Expiry Banner if in Grace Period or Expired */}
+      {quota?.subscription && (
+        <SubscriptionExpiryBanner subscription={quota.subscription} />
+      )}
+
       <div>
         <span className="text-xs font-semibold text-[#7960df] uppercase tracking-wider">
           Billing & Plans
         </span>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#191b30] mt-1">
-          Subscription Plan
+          Subscription Plan & Storage
         </h1>
         <p className="text-sm text-zinc-500 mt-1">
           Kadeo operates on a 0% commission SaaS model with flat-rate pricing.
         </p>
       </div>
+
+      {/* Storage Quota & Capacity Overview Meter */}
+      {quota && (
+        <StorageQuotaMeter quota={quota} />
+      )}
 
       {/* Transparency Notice */}
       <div className="rounded-2xl border border-[#ded5ef] bg-[#f6f3ff] p-5 flex items-start gap-3.5 shadow-sm">

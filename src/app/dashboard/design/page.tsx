@@ -21,6 +21,7 @@ export const ALLOWED_THEME_IDS = new Set([
   "classic",
   "viva_glass",
   "bold_editorial",
+  "shop_app",
 ]);
 
 export default async function StoreDesignPage() {
@@ -118,6 +119,26 @@ export default async function StoreDesignPage() {
         cardTitle: "Everyday Essential",
         cardPrice: "LKR 1,850",
         badge: "Available",
+      },
+    },
+    {
+      id: "shop_app",
+      name: "Shop.com Inspired (Shop App)",
+      description:
+        "Clean modern marketplace feed with pill search, rounded white cards, package tracking and purple accents",
+      badge: "Shopify Style",
+      bestFor: "Multi-category stores, trending products & lifestyle brands",
+      preview: {
+        bgColor: "bg-[#f8f7ff]",
+        headerColor: "bg-[#5c24ff] text-white",
+        accentColor: "bg-[#5c24ff]",
+        heroText: "Discover & Track",
+        heroSub: "Streamlined shopping with instant WhatsApp updates",
+        fontStyle: "font-sans",
+        cardBg: "bg-white border-purple-100",
+        cardTitle: "Trending Release",
+        cardPrice: "LKR 5,200",
+        badge: "Shop App",
       },
     },
   ];

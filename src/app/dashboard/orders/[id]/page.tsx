@@ -85,12 +85,16 @@ export default async function OrderDetailPage({ params }: OrderDetailProps) {
           )}
         </div>
 
-        {/* Client Status Form with Courier fields */}
+        {/* Client Status Form with Courier fields and WhatsApp quick notify */}
         <OrderStatusForm
           orderId={order.id}
           initialStatus={order.status}
           initialCourierName={order.courier_name}
           initialTrackingNumber={order.tracking_number}
+          customerPhone={customerPhone}
+          customerName={order.customer_name_snapshot}
+          orderCode={order.order_code}
+          shopSlug={shop.slug}
         />
       </div>
 
@@ -121,7 +125,7 @@ export default async function OrderDetailPage({ params }: OrderDetailProps) {
               <div className="pt-2 border-t border-zinc-100">
                 <span className="font-semibold text-zinc-500 block mb-1">Customer Note:</span>
                 <p className="bg-zinc-50 p-2.5 rounded-lg text-zinc-600 italic">
-                  "{order.order_note}"
+                  &ldquo;{order.order_note}&rdquo;
                 </p>
               </div>
             )}

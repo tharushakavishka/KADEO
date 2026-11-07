@@ -73,6 +73,7 @@ export function OrderThermalReceipt({
 }: OrderThermalReceiptProps) {
   const receiptCardRef = useRef<HTMLDivElement>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedImage, setCopiedImage] = useState(false);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -346,6 +347,34 @@ export function OrderThermalReceipt({
   }
 
   // Share Slip as Image (Web Share API with file -> Direct WhatsApp share on mobile, or clipboard copy + download on desktop)
+  
+  // Dedicated 1-Click Copy Receipt Image directly to system clipboard (for WhatsApp Web / desktop paste)
+  async function handleCopyImageToClipboard() {
+    if (isProcessingImage) return;
+    setIsProcessingImage(true);
+    try {
+      const blob = await generateReceiptBlob();
+      if (!blob) throw new Error("Could not generate image.");
+
+      if (typeof navigator !== "undefined" && navigator.clipboard && (window as any).ClipboardItem) {
+        const item = new (window as any).ClipboardItem({ "image/png": blob });
+        await navigator.clipboard.write([item]);
+        setCopiedImage(true);
+        showToast("Slip image copied to clipboard! Paste directly (Ctrl+V) into WhatsApp Web.");
+        setTimeout(() => setCopiedImage(false), 3000);
+        return;
+      }
+      throw new Error("ClipboardItem not supported in this browser.");
+    } catch (err: any) {
+      console.warn("Direct clipboard copy failed, downloading fallback:", err);
+      // Fallback: download the image so the user still has it
+      await handleDownloadImage();
+      showToast("Direct clipboard write not supported; image downloaded instead!");
+    } finally {
+      setIsProcessingImage(false);
+    }
+  }
+
   async function handleShareImage() {
     if (isProcessingImage) return;
     setIsProcessingImage(true);
@@ -619,6 +648,26 @@ export function OrderThermalReceipt({
       {showActions && (
         <div className="w-full mt-4 space-y-2.5 no-print">
           {/* Primary Action 1: Share Slip as Image (Direct Image Share to WhatsApp / Mobile Share / Clipboard) */}
+          {/* Dedicated Action: Copy Image to Clipboard */}
+          <button
+            type="button"
+            onClick={handleCopyImageToClipboard}
+            disabled={isProcessingImage}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-indigo-200 bg-indigo-50/80 hover:bg-indigo-100/80 text-indigo-900 font-bold text-xs transition shadow-xs cursor-pointer disabled:opacity-60"
+          >
+            {copiedImage ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-600" />
+                <span className="text-emerald-700">Image Copied to Clipboard! (Paste in WhatsApp)</span>
+              </>
+            ) : (
+              <>
+                <FileImage className="w-4 h-4 text-indigo-600" />
+                <span>Copy Image to Clipboard</span>
+              </>
+            )}
+          </button>
+
           <button
             type="button"
             onClick={handleShareImage}

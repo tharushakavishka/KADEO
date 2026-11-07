@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 
 // Local JSON Database path
-const DB_FILE = path.join(process.cwd(), "kadeo-local-db.json");
+const DB_FILE = process.env.LOCAL_DB_PATH || path.join(process.cwd(), "kadeo-local-db.json");
 
 export interface LocalDB {
   users: Array<{
@@ -38,6 +38,8 @@ export interface LocalDB {
     theme_id: string;
     storefront_content?: Record<string, string>;
     status?: "active" | "suspended" | "pending";
+    storage_used_bytes?: number;
+    custom_storage_quota_mb?: number | null;
     created_at: string;
     updated_at: string;
   }>;
@@ -134,6 +136,17 @@ export interface LocalDB {
     created_at: string;
     updated_at: string;
   }>;
+  plans?: Array<{
+    id: string;
+    name: string;
+    description: string;
+    monthly_price: number;
+    yearly_price: number;
+    storage_quota_mb: number;
+    max_products: number;
+    features: string[];
+    is_active: boolean;
+  }>;
   subscriptions?: Array<{
     id: string;
     shop_id: string;
@@ -142,6 +155,9 @@ export interface LocalDB {
     billing_period: string;
     started_at?: string;
     expires_at?: string | null;
+    grace_period_ends_at?: string | null;
+    assigned_by?: string | null;
+    admin_notes?: string | null;
     created_at?: string;
     updated_at?: string;
   }>;
@@ -326,6 +342,42 @@ const INITIAL_DB: LocalDB = {
   orders: [],
   order_items: [],
   customers: [],
+    plans: [
+    {
+      id: "free",
+      name: "Starter Free",
+      description: "Free store builder with WhatsApp checkout.",
+      monthly_price: 0,
+      yearly_price: 0,
+      storage_quota_mb: 250,
+      max_products: 25,
+      features: [
+        "Up to 25 products",
+        "250 MB Image Storage",
+        "3 Themes",
+        "WhatsApp Orders",
+        "Mobile Dashboard"
+      ],
+      is_active: true
+    },
+    {
+      id: "pro",
+      name: "Pro Business",
+      description: "For growing merchants and established brands.",
+      monthly_price: 2500,
+      yearly_price: 25000,
+      storage_quota_mb: 5120,
+      max_products: 1000,
+      features: [
+        "Up to 1,000 products",
+        "5 GB Image Storage",
+        "All Themes & Theme Studio",
+        "Priority Support",
+        "Advanced Analytics"
+      ],
+      is_active: true
+    }
+  ],
   subscriptions: [],
   order_payments: [],
   admin_activity_logs: [],
@@ -339,6 +391,7 @@ function readDB(): LocalDB {
     }
     const content = fs.readFileSync(DB_FILE, "utf8");
     const parsed = JSON.parse(content);
+    if (!parsed.plans) parsed.plans = [];
     if (!parsed.subscriptions) parsed.subscriptions = [];
     if (!parsed.admin_activity_logs) parsed.admin_activity_logs = [];
     if (!parsed.order_payments) parsed.order_payments = [];
@@ -500,10 +553,24 @@ export class LocalQueryBuilder {
       }));
     }
     if (table === "shops") {
-      return rows.map((s) => ({
-        ...s,
-        owner: db.profiles.find((pr) => pr.id === s.owner_id) || null,
-        settings: db.shop_settings.filter((st) => st.shop_id === s.id),
+      return rows.map((s) => {
+        const sub = (db.subscriptions || []).find((sub) => sub.shop_id === s.id);
+        const plan = sub ? (db.plans || []).find((p) => p.id === sub.plan_id) : null;
+        return {
+          ...s,
+          storage_used_bytes: typeof s.storage_used_bytes === "number" ? s.storage_used_bytes : 0,
+          custom_storage_quota_mb: s.custom_storage_quota_mb !== undefined ? s.custom_storage_quota_mb : null,
+          owner: db.profiles.find((pr) => pr.id === s.owner_id) || null,
+          settings: db.shop_settings.filter((st) => st.shop_id === s.id),
+          subscription: sub ? { ...sub, plan } : null,
+        };
+      });
+    }
+    if (table === "subscriptions") {
+      return rows.map((sub) => ({
+        ...sub,
+        plan: (db.plans || []).find((p) => p.id === sub.plan_id) || null,
+        shop: (db.shops || []).find((s) => s.id === sub.shop_id) || null,
       }));
     }
     if (table === "orders") {

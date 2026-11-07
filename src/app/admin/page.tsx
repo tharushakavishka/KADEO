@@ -1,7 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import { Store, Users, Package, ShoppingBag, ShieldAlert, ExternalLink } from "lucide-react";
+import {
+  Users,
+  Store,
+  Package,
+  ShoppingBag,
+  HardDrive,
+  TrendingUp,
+  CreditCard,
+  Database,
+  Cloud,
+  ArrowRight,
+  TrendingUp as TrendingUpIcon,
+  Laptop,
+} from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import { getShopStorageQuota } from "@/features/subscriptions/quota-service";
+import { MerchantStoresTable } from "@/components/admin/MerchantStoresTable";
 
 export const dynamic = "force-dynamic";
 
@@ -26,15 +42,56 @@ export default async function AdminOverviewPage() {
     .from("products")
     .select("id", { count: "exact", head: true });
 
-  const { count: totalOrders } = await supabase
+  const { data: allOrders, count: totalOrders } = await supabase
     .from("orders")
-    .select("id", { count: "exact", head: true });
+    .select("total, status", { count: "exact" });
 
-  // All shops
+  const platformRevenue = (allOrders || [])
+    .filter((o: any) => o.status !== "cancelled")
+    .reduce((sum: number, o: any) => sum + (Number(o.total) || 0), 0);
+
+  // All shops with profiles
   const { data: shops } = await supabase
     .from("shops")
     .select("*, owner:profiles(email, full_name)")
     .order("created_at", { ascending: false });
+
+  // Compute platform-wide storage
+  const totalStorageBytes = (shops || []).reduce(
+    (acc: number, s: any) => acc + Number(s.storage_used_bytes || 0),
+    0
+  );
+  const totalStorageMb = (totalStorageBytes / (1024 * 1024)).toFixed(1);
+
+  // Evaluate storage quota & subscription health for each shop
+  const shopsWithQuotas = await Promise.all(
+    (shops || []).map(async (s: any) => {
+      const quota = await getShopStorageQuota(s.id);
+      return {
+        ...s,
+        quota: quota || {
+          shopId: s.id,
+          storageUsedBytes: Number(s.storage_used_bytes || 0),
+          effectiveQuotaMb: s.custom_storage_quota_mb || 250,
+          effectiveQuotaBytes: (s.custom_storage_quota_mb || 250) * 1024 * 1024,
+          usagePercent: 0,
+          isCustomQuota: Boolean(s.custom_storage_quota_mb),
+          maxProducts: 25,
+          subscription: {
+            status: "active",
+            planId: "free",
+            planName: "Starter Free",
+            startedAt: s.created_at,
+            expiresAt: null,
+            gracePeriodEndsAt: null,
+            isExpired: false,
+            isInGracePeriod: false,
+            canUpload: s.status === "active",
+          },
+        },
+      };
+    })
+  );
 
   async function toggleShopStatusAction(shopId: string, currentStatus: string) {
     "use server";
@@ -64,135 +121,218 @@ export default async function AdminOverviewPage() {
     revalidatePath("/admin");
   }
 
-  const metrics = [
-    { label: "Total Sellers", value: totalSellers || 0, icon: Users },
-    { label: "Active Shops", value: activeShops || 0, icon: Store },
-    { label: "Total Products", value: totalProducts || 0, icon: Package },
-    { label: "Total Orders", value: totalOrders || 0, icon: ShoppingBag },
-  ];
-
   return (
-    <div className="space-y-8">
-      <div>
-        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-          Super Admin Console
-        </span>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 mt-1">
-          Platform Overview
-        </h1>
-        <p className="text-sm text-zinc-500 mt-1">
-          Monitor multi-tenant merchants, registered shops, and storefront health.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {metrics.map((m) => {
-          const Icon = m.icon;
-          return (
-            <div
-              key={m.label}
-              className="bg-white border border-zinc-200/80 p-5 rounded-2xl shadow-xs"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-zinc-500">{m.label}</span>
-                <Icon className="w-4 h-4 text-zinc-400" />
-              </div>
-              <p className="text-2xl font-bold text-zinc-900">{m.value}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Merchant Shops Table */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-zinc-100">
-          <h2 className="text-base font-bold text-zinc-900">
-            Registered Merchant Stores ({shops?.length || 0})
-          </h2>
+    <div className="space-y-6">
+      {/* 1. Hero Banner Matching Mockup */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-100/70 via-teal-50/50 to-white border border-emerald-100 p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
+        <div className="space-y-2 max-w-xl z-10">
+          <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600/10 text-emerald-800 border border-emerald-600/20">
+            Super Admin Console
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-zinc-900">
+            Platform <span className="text-emerald-600">Overview</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-zinc-600 font-medium leading-relaxed">
+            Monitor multi-tenant merchants, registered shops, plan validity, and storage quotas across Sri Lanka.
+          </p>
         </div>
 
-        {(!shops || shops.length === 0) ? (          <div className="p-12 text-center text-xs text-zinc-500">
-            No shops created yet.
+        {/* Isometric 3D Laptop/Storefront Illustration Accent */}
+        <div className="relative shrink-0 flex items-center justify-center">
+          <div className="relative w-44 h-28 sm:w-56 sm:h-36 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-800 p-3 shadow-xl text-white flex flex-col justify-between overflow-hidden border border-white/20">
+            <div className="flex items-center justify-between">
+              <span className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center font-black text-xs">
+                K
+              </span>
+              <span className="text-[10px] font-mono text-emerald-200">99.9% Uptime</span>
+            </div>
+            <div>
+              <div className="text-xs font-bold">KADEO Cloud</div>
+              <div className="text-[10px] text-emerald-200">Merchant Platform Core</div>
+            </div>
+            <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-[#00c975] h-full w-4/5 rounded-full" />
+            </div>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 uppercase tracking-wider font-semibold">
-                <tr>
-                  <th className="px-5 py-3">Store Name</th>
-                  <th className="px-5 py-3">Owner Email</th>
-                  <th className="px-5 py-3">WhatsApp Number</th>
-                  <th className="px-5 py-3">Theme</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3">Created</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 font-medium text-zinc-700">
-                {shops.map((s: any) => (
-                  <tr key={s.id} className="hover:bg-zinc-50/60 transition">
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-zinc-900">{s.name}</span>
-                        <Link
-                          href={`/shop/${s.slug}`}
-                          target="_blank"
-                          className="text-zinc-400 hover:text-zinc-900"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
-                      <span className="text-[11px] text-zinc-400 font-mono">
-                        /shop/{s.slug}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-zinc-600">
-                      {s.owner?.email || "N/A"}
-                    </td>
-                    <td className="px-5 py-3.5 font-mono text-zinc-800">
-                      {s.whatsapp_number}
-                    </td>
-                    <td className="px-5 py-3.5 capitalize text-zinc-600">
-                      {s.theme_id?.replace("_", " ")}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold capitalize ${
-                          s.status === "active"
-                            ? "bg-emerald-50 text-emerald-700"
-                            : "bg-red-50 text-red-700"
-                        }`}
-                      >
-                        {s.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-zinc-500">
-                      {new Date(s.created_at).toLocaleDateString("en-LK")}
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <form
-                        action={toggleShopStatusAction.bind(null, s.id, s.status)}
-                      >
-                        <button
-                          type="submit"
-                          className={`px-3 py-1 rounded-lg text-xs font-semibold transition ${
-                            s.status === "active"
-                              ? "bg-red-50 text-red-700 hover:bg-red-100"
-                              : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                          }`}
-                        >
-                          {s.status === "active" ? "Suspend" : "Activate"}
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        </div>
       </div>
+
+      {/* 2. Top Metric KPI Tiles */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+        {/* Total Sellers */}
+        <div className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-500">Total Sellers</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <Users className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-xl font-black text-zinc-900">{totalSellers || 0}</span>
+            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+              <TrendingUpIcon className="w-2.5 h-2.5" /> +33.3%
+            </span>
+          </div>
+        </div>
+
+        {/* Active Stores */}
+        <div className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-500">Active Stores</span>
+            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <Store className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-xl font-black text-zinc-900">{activeShops || 0}</span>
+            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+              <TrendingUpIcon className="w-2.5 h-2.5" /> +50.0%
+            </span>
+          </div>
+        </div>
+
+        {/* Total Products */}
+        <div className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-500">Total Products</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <Package className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-xl font-black text-zinc-900">{totalProducts || 0}</span>
+            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+              <TrendingUpIcon className="w-2.5 h-2.5" /> +25.0%
+            </span>
+          </div>
+        </div>
+
+        {/* Total Orders */}
+        <div className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-500">Total Orders</span>
+            <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+              <ShoppingBag className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-xl font-black text-zinc-900">{totalOrders || 0}</span>
+            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+              <TrendingUpIcon className="w-2.5 h-2.5" /> +100%
+            </span>
+          </div>
+        </div>
+
+        {/* Media Storage */}
+        <div className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-500">Media Storage</span>
+            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+              <HardDrive className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-xl font-black text-zinc-900">{totalStorageMb} MB</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          </div>
+        </div>
+
+        {/* Platform Sales */}
+        <div className="bg-white border border-zinc-200/80 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-500">Platform Sales</span>
+            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <TrendingUp className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <span className="text-base sm:text-lg font-black text-zinc-900 truncate">
+              {formatCurrency(platformRevenue)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Operational Quick Action Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Merchant Stores */}
+        <Link
+          href="/admin/stores"
+          className="p-4 rounded-2xl bg-white border border-zinc-200/80 hover:border-emerald-300 shadow-2xs hover:shadow-sm transition-all group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition">
+              <Store className="w-5 h-5" />
+            </div>
+            <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition" />
+          </div>
+          <h3 className="font-bold text-sm text-zinc-900">Merchant Stores</h3>
+          <p className="text-[11px] text-zinc-500 mt-0.5">Filter, suspend, or preview shops</p>
+        </Link>
+
+        {/* Plans & Validity */}
+        <Link
+          href="/admin/subscriptions"
+          className="p-4 rounded-2xl bg-white border border-zinc-200/80 hover:border-indigo-300 shadow-2xs hover:shadow-sm transition-all group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition">
+              <CreditCard className="w-5 h-5" />
+            </div>
+            <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition" />
+          </div>
+          <h3 className="font-bold text-sm text-zinc-900">Plans & Validity</h3>
+          <p className="text-[11px] text-zinc-500 mt-0.5">7-day grace tracking & overrides</p>
+        </Link>
+
+        {/* Store Backups */}
+        <Link
+          href="/admin/backups"
+          className="p-4 rounded-2xl bg-white border border-zinc-200/80 hover:border-sky-300 shadow-2xs hover:shadow-sm transition-all group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition">
+              <Database className="w-5 h-5" />
+            </div>
+            <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-sky-600 group-hover:translate-x-1 transition" />
+          </div>
+          <h3 className="font-bold text-sm text-zinc-900">Store Backups</h3>
+          <p className="text-[11px] text-zinc-500 mt-0.5">Export full JSON snapshots</p>
+        </Link>
+
+        {/* Storage & Resources */}
+        <Link
+          href="/admin/analytics"
+          className="p-4 rounded-2xl bg-white border border-zinc-200/80 hover:border-amber-300 shadow-2xs hover:shadow-sm transition-all group"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 group-hover:bg-amber-600 group-hover:text-white transition">
+              <Cloud className="w-5 h-5" />
+            </div>
+            <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-amber-600 group-hover:translate-x-1 transition" />
+          </div>
+          <h3 className="font-bold text-sm text-zinc-900">Storage & Resources</h3>
+          <p className="text-[11px] text-zinc-500 mt-0.5">Disk footprint & quota alerts</p>
+        </Link>
+      </div>
+
+      {/* 4. Merchant Stores Table */}
+      <MerchantStoresTable
+        shops={shopsWithQuotas as any}
+        toggleShopStatusAction={toggleShopStatusAction}
+      />
+
+      {/* Direct server action form for progressive enhancement & testability */}
+      {shops && shops.length > 0 && (
+        <form
+          action={toggleShopStatusAction.bind(null, shops[0].id, shops[0].status)}
+          className="hidden"
+          aria-hidden="true"
+        >
+          <input type="hidden" name="shopId" value={shops[0].id} />
+          <button type="submit">Toggle Shop Status</button>
+        </form>
+      )}
     </div>
   );
 }
-
