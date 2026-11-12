@@ -116,9 +116,9 @@ export function MerchantStoresTable({
     <>
       <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-xs overflow-hidden">
         {/* Table Header matching mockup */}
-        <div className="p-5 sm:p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-4 sm:p-6 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
               <Store className="w-5 h-5" />
             </div>
             <div>
@@ -159,122 +159,119 @@ export function MerchantStoresTable({
               : "No merchant stores registered yet."}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#fcfdfd] border-b border-zinc-100 text-zinc-500 uppercase tracking-wider font-bold text-[10px]">
-                <tr>
-                  <th className="px-4 py-3.5">Store Name</th>
-                  <th className="px-4 py-3.5">Owner</th>
-                  <th className="px-4 py-3.5">Plan & Validity</th>
-                  <th className="px-4 py-3.5">Storage</th>
-                  <th className="px-4 py-3.5">Status</th>
-                  <th className="px-4 py-3.5">Created</th>
-                  <th className="px-4 py-3.5 text-right sticky right-0 bg-[#fcfdfd] z-10 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.05)]">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100 font-medium text-zinc-700">
-                {filteredShops.map((s, idx) => {
-                  const q = s.quota;
-                  const sub = q.subscription;
-                  const { usedMb, quotaStr } = formatQuotaDisplay(q);
-                  const isPro = sub.planId === "pro";
-                  const isToggling = togglingId === s.id;
+          <>
+            {/* MOBILE CARDS VIEW (< md) */}
+            <div className="md:hidden divide-y divide-zinc-100 font-medium text-zinc-700">
+              {filteredShops.map((s, idx) => {
+                const q = s.quota;
+                const sub = q.subscription;
+                const { usedMb, quotaStr } = formatQuotaDisplay(q);
+                const isPro = sub.planId === "pro";
+                const isToggling = togglingId === s.id;
 
-                  // Dynamic store icon colors to match mockup illustration
-                  const storeBadgeThemes = [
-                    "bg-emerald-50 text-emerald-600 border-emerald-100",
-                    "bg-sky-50 text-sky-600 border-sky-100",
-                    "bg-amber-50 text-amber-600 border-amber-100",
-                    "bg-purple-50 text-purple-600 border-purple-100",
-                  ];
-                  const badgeTheme = storeBadgeThemes[idx % storeBadgeThemes.length];
+                const storeBadgeThemes = [
+                  "bg-emerald-50 text-emerald-600 border-emerald-100",
+                  "bg-sky-50 text-sky-600 border-sky-100",
+                  "bg-amber-50 text-amber-600 border-amber-100",
+                  "bg-purple-50 text-purple-600 border-purple-100",
+                ];
+                const badgeTheme = storeBadgeThemes[idx % storeBadgeThemes.length];
 
-                  return (
-                    <tr key={s.id} className="hover:bg-zinc-50/80 transition group">
-                      {/* 1. Store Name + Icon */}
-                      <td className="px-4 py-3.5">
-                        <div className="flex items-center gap-2.5">
-                          <div
-                            className={`w-8 h-8 rounded-xl border flex items-center justify-center font-bold shrink-0 ${badgeTheme}`}
-                          >
-                            <Store className="w-3.5 h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-bold text-zinc-900 text-xs truncate max-w-[140px]">
-                                {s.name}
-                              </span>
-                              <Link
-                                href={`/shop/${s.slug}`}
-                                target="_blank"
-                                className="text-zinc-400 hover:text-emerald-600 transition shrink-0"
-                                title="Preview live store"
-                              >
-                                <ExternalLink className="w-3 h-3" />
-                              </Link>
-                            </div>
-                            <span className="text-[10px] text-zinc-400 font-mono block truncate max-w-[140px]">
-                              /shop/{s.slug}
+                return (
+                  <div key={s.id} className="p-4 space-y-3 hover:bg-zinc-50/80 transition">
+                    {/* Header: Store icon + Name + Status */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className={`w-9 h-9 rounded-xl border flex items-center justify-center font-bold shrink-0 ${badgeTheme}`}
+                        >
+                          <Store className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-zinc-900 text-sm truncate">
+                              {s.name}
                             </span>
+                            <Link
+                              href={`/shop/${s.slug}`}
+                              target="_blank"
+                              className="text-zinc-400 hover:text-emerald-600 transition shrink-0"
+                              title="Preview live store"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </Link>
                           </div>
-                        </div>
-                      </td>
-
-                      {/* 2. Owner */}
-                      <td className="px-4 py-3.5">
-                        <div className="text-zinc-900 font-bold text-xs truncate max-w-[150px]">
-                          {s.owner?.email || "N/A"}
-                        </div>
-                        <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-1 mt-0.5">
-                          <Phone className="w-2.5 h-2.5 text-zinc-400" />
-                          {s.whatsapp_number}
-                        </div>
-                      </td>
-
-                      {/* 3. Plan & Validity */}
-                      <td className="px-4 py-3.5">
-                        <div className="space-y-1">
-                          <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide ${
-                              isPro
-                                ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
-                                : "bg-zinc-100 text-zinc-700 border border-zinc-200"
-                            }`}
-                          >
-                            {isPro && <Sparkles className="w-2.5 h-2.5 text-indigo-600" />}
-                            {sub.planName}
+                          <span className="text-[11px] text-zinc-400 font-mono block truncate">
+                            /shop/{s.slug}
                           </span>
-
-                          {/* Validity Badge */}
-                          <div>
-                            {sub.isExpired ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] text-red-600 font-bold">
-                                <AlertTriangle className="w-3 h-3 shrink-0" />
-                                Expired
-                              </span>
-                            ) : sub.isInGracePeriod ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
-                                <Clock className="w-3 h-3 shrink-0" />
-                                Grace
-                              </span>
-                            ) : sub.expiresAt ? (
-                              <span className="text-[10px] text-zinc-500 font-mono block">
-                                {new Date(sub.expiresAt).toLocaleDateString("en-LK")}
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                Lifetime
-                              </span>
-                            )}
-                          </div>
                         </div>
-                      </td>
+                      </div>
 
-                      {/* 4. Storage Used vs Quota */}
-                      <td className="px-4 py-3.5 min-w-[130px]">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider shrink-0 ${
+                          s.status === "active"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-red-50 text-red-700 border border-red-200"
+                        }`}
+                      >
+                        <span
+                          className={`w-1 h-1 rounded-full ${
+                            s.status === "active" ? "bg-emerald-500" : "bg-red-500"
+                          }`}
+                        />
+                        {s.status}
+                      </span>
+                    </div>
+
+                    {/* Owner & Phone */}
+                    <div className="flex items-center justify-between text-xs text-zinc-600 pt-1 border-t border-zinc-100">
+                      <span className="truncate max-w-[170px] font-medium text-zinc-800">
+                        {s.owner?.email || "N/A"}
+                      </span>
+                      <span className="font-mono text-[11px] text-zinc-500 flex items-center gap-1 shrink-0">
+                        <Phone className="w-3 h-3 text-zinc-400" />
+                        {s.whatsapp_number}
+                      </span>
+                    </div>
+
+                    {/* Plan, Validity & Storage */}
+                    <div className="bg-zinc-50/70 rounded-xl p-2.5 space-y-2 border border-zinc-100 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide ${
+                            isPro
+                              ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                              : "bg-zinc-100 text-zinc-700 border border-zinc-200"
+                          }`}
+                        >
+                          {isPro && <Sparkles className="w-2.5 h-2.5 text-indigo-600" />}
+                          {sub.planName}
+                        </span>
+
+                        {sub.isExpired ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-red-600 font-bold">
+                            <AlertTriangle className="w-3 h-3 shrink-0" />
+                            Expired
+                          </span>
+                        ) : sub.isInGracePeriod ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
+                            <Clock className="w-3 h-3 shrink-0" />
+                            Grace
+                          </span>
+                        ) : sub.expiresAt ? (
+                          <span className="text-[10px] text-zinc-500 font-mono">
+                            {new Date(sub.expiresAt).toLocaleDateString("en-LK")}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            Lifetime
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Storage Bar */}
+                      <div>
                         <div className="flex items-center justify-between text-[10px] mb-1">
                           <span className="font-mono text-zinc-800">
                             <strong>{usedMb} MB</strong> / {quotaStr}
@@ -283,7 +280,7 @@ export function MerchantStoresTable({
                             {q.usagePercent}%
                           </span>
                         </div>
-                        <div className="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-zinc-200/60 h-1.5 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${
                               q.usagePercent > 90
@@ -295,95 +292,289 @@ export function MerchantStoresTable({
                             style={{ width: `${Math.max(3, q.usagePercent)}%` }}
                           />
                         </div>
-                      </td>
+                      </div>
+                    </div>
 
-                      {/* 5. Status Pill */}
-                      <td className="px-4 py-3.5">
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
-                            s.status === "active"
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                              : "bg-red-50 text-red-700 border border-red-200"
-                          }`}
-                        >
+                    {/* Actions row */}
+                    <div className="flex flex-wrap items-center justify-end gap-1.5 pt-1">
+                      <a
+                        href={`/api/admin/backup/${s.id}`}
+                        download
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 font-bold text-[11px] shadow-2xs transition"
+                        title="Download backup"
+                      >
+                        <Download className="w-3 h-3 text-zinc-500" />
+                        <span>Backup</span>
+                      </a>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelectedShop(s)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-bold text-[11px] shadow-2xs transition"
+                      >
+                        <Sliders className="w-3 h-3 text-zinc-500" />
+                        <span>Manage Plan</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={isToggling}
+                        onClick={() => handleToggleStatus(s.id, s.status)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition ${
+                          s.status === "active"
+                            ? "text-amber-700 hover:bg-amber-50 border border-amber-200"
+                            : "text-emerald-700 hover:bg-emerald-50 border border-emerald-200"
+                        }`}
+                      >
+                        {isToggling ? "..." : s.status === "active" ? "Suspend" : "Activate"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeletingShop(s);
+                          setDeleteConfirmInput("");
+                          setDeleteError(null);
+                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 font-extrabold text-[11px] shadow-2xs transition cursor-pointer"
+                        title={`Permanently delete ${s.name}`}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* DESKTOP TABLE VIEW (>= md) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#fcfdfd] border-b border-zinc-100 text-zinc-500 uppercase tracking-wider font-bold text-[10px]">
+                  <tr>
+                    <th className="px-4 py-3.5">Store Name</th>
+                    <th className="px-4 py-3.5">Owner</th>
+                    <th className="px-4 py-3.5">Plan & Validity</th>
+                    <th className="px-4 py-3.5">Storage</th>
+                    <th className="px-4 py-3.5">Status</th>
+                    <th className="px-4 py-3.5">Created</th>
+                    <th className="px-4 py-3.5 text-right sticky right-0 bg-[#fcfdfd] z-10 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.05)]">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 font-medium text-zinc-700">
+                  {filteredShops.map((s, idx) => {
+                    const q = s.quota;
+                    const sub = q.subscription;
+                    const { usedMb, quotaStr } = formatQuotaDisplay(q);
+                    const isPro = sub.planId === "pro";
+                    const isToggling = togglingId === s.id;
+
+                    // Dynamic store icon colors to match mockup illustration
+                    const storeBadgeThemes = [
+                      "bg-emerald-50 text-emerald-600 border-emerald-100",
+                      "bg-sky-50 text-sky-600 border-sky-100",
+                      "bg-amber-50 text-amber-600 border-amber-100",
+                      "bg-purple-50 text-purple-600 border-purple-100",
+                    ];
+                    const badgeTheme = storeBadgeThemes[idx % storeBadgeThemes.length];
+
+                    return (
+                      <tr key={s.id} className="hover:bg-zinc-50/80 transition group">
+                        {/* 1. Store Name + Icon */}
+                        <td className="px-4 py-3.5">
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              className={`w-8 h-8 rounded-xl border flex items-center justify-center font-bold shrink-0 ${badgeTheme}`}
+                            >
+                              <Store className="w-3.5 h-3.5" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-bold text-zinc-900 text-xs truncate max-w-[140px]">
+                                  {s.name}
+                                </span>
+                                <Link
+                                  href={`/shop/${s.slug}`}
+                                  target="_blank"
+                                  className="text-zinc-400 hover:text-emerald-600 transition shrink-0"
+                                  title="Preview live store"
+                                >
+                                  <ExternalLink className="w-3 h-3" />
+                                </Link>
+                              </div>
+                              <span className="text-[10px] text-zinc-400 font-mono block truncate max-w-[140px]">
+                                /shop/{s.slug}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 2. Owner */}
+                        <td className="px-4 py-3.5">
+                          <div className="text-zinc-900 font-bold text-xs truncate max-w-[150px]">
+                            {s.owner?.email || "N/A"}
+                          </div>
+                          <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-1 mt-0.5">
+                            <Phone className="w-2.5 h-2.5 text-zinc-400" />
+                            {s.whatsapp_number}
+                          </div>
+                        </td>
+
+                        {/* 3. Plan & Validity */}
+                        <td className="px-4 py-3.5">
+                          <div className="space-y-1">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wide ${
+                                isPro
+                                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                                  : "bg-zinc-100 text-zinc-700 border border-zinc-200"
+                              }`}
+                            >
+                              {isPro && <Sparkles className="w-2.5 h-2.5 text-indigo-600" />}
+                              {sub.planName}
+                            </span>
+
+                            {/* Validity Badge */}
+                            <div>
+                              {sub.isExpired ? (
+                                <span className="inline-flex items-center gap-1 text-[10px] text-red-600 font-bold">
+                                  <AlertTriangle className="w-3 h-3 shrink-0" />
+                                  Expired
+                                </span>
+                              ) : sub.isInGracePeriod ? (
+                                <span className="inline-flex items-center gap-1 text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
+                                  <Clock className="w-3 h-3 shrink-0" />
+                                  Grace
+                                </span>
+                              ) : sub.expiresAt ? (
+                                <span className="text-[10px] text-zinc-500 font-mono block">
+                                  {new Date(sub.expiresAt).toLocaleDateString("en-LK")}
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                  Lifetime
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 4. Storage Used vs Quota */}
+                        <td className="px-4 py-3.5 min-w-[130px]">
+                          <div className="flex items-center justify-between text-[10px] mb-1">
+                            <span className="font-mono text-zinc-800">
+                              <strong>{usedMb} MB</strong> / {quotaStr}
+                            </span>
+                            <span className="font-extrabold text-zinc-500">
+                              {q.usagePercent}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-300 ${
+                                q.usagePercent > 90
+                                  ? "bg-rose-500"
+                                  : q.usagePercent > 75
+                                  ? "bg-amber-500"
+                                  : "bg-emerald-500"
+                              }`}
+                              style={{ width: `${Math.max(3, q.usagePercent)}%` }}
+                            />
+                          </div>
+                        </td>
+
+                        {/* 5. Status Pill */}
+                        <td className="px-4 py-3.5">
                           <span
-                            className={`w-1 h-1 rounded-full ${
-                              s.status === "active" ? "bg-emerald-500" : "bg-red-500"
-                            }`}
-                          />
-                          {s.status}
-                        </span>
-                      </td>
-
-                      {/* 6. Created Date */}
-                      <td className="px-4 py-3.5 text-zinc-500 font-mono text-[10px]">
-                        {s.created_at ? new Date(s.created_at).toLocaleDateString("en-LK") : "—"}
-                      </td>
-
-                      {/* 7. Action Buttons (Sticky Right with Always-Visible Delete Button) */}
-                      <td className="px-4 py-3.5 text-right whitespace-nowrap sticky right-0 bg-white group-hover:bg-zinc-50/90 z-10 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.05)] transition">
-                        <div className="inline-flex items-center gap-1.5">
-                          {/* Backup Download */}
-                          <a
-                            href={`/api/admin/backup/${s.id}`}
-                            download
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 font-bold text-[11px] shadow-2xs transition hover:border-zinc-300"
-                            title="Download complete JSON backup"
-                          >
-                            <Download className="w-3 h-3 text-zinc-500" />
-                            <span>Backup</span>
-                          </a>
-
-                          {/* Manage Plan */}
-                          <button
-                            type="button"
-                            onClick={() => setSelectedShop(s)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-bold text-[11px] shadow-2xs transition hover:border-zinc-300"
-                          >
-                            <Sliders className="w-3 h-3 text-zinc-500" />
-                            <span>Manage Plan</span>
-                          </button>
-
-                          {/* Suspend / Activate */}
-                          <button
-                            type="button"
-                            disabled={isToggling}
-                            onClick={() => handleToggleStatus(s.id, s.status)}
-                            className={`px-2 py-1 rounded-lg text-[11px] font-semibold transition ${
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
                               s.status === "active"
-                                ? "text-amber-700 hover:bg-amber-50 border border-amber-200"
-                                : "text-emerald-700 hover:bg-emerald-50 border border-emerald-200"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                : "bg-red-50 text-red-700 border border-red-200"
                             }`}
                           >
-                            {isToggling
-                              ? "..."
-                              : s.status === "active"
-                              ? "Suspend"
-                              : "Activate"}
-                          </button>
+                            <span
+                              className={`w-1 h-1 rounded-full ${
+                                s.status === "active" ? "bg-emerald-500" : "bg-red-500"
+                              }`}
+                            />
+                            {s.status}
+                          </span>
+                        </td>
 
-                          {/* Prominent High-Contrast Delete Button */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setDeletingShop(s);
-                              setDeleteConfirmInput("");
-                              setDeleteError(null);
-                            }}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 font-extrabold text-[11px] shadow-2xs transition cursor-pointer"
-                            title={`Permanently delete ${s.name}`}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                            <span>Delete</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        {/* 6. Created Date */}
+                        <td className="px-4 py-3.5 text-zinc-500 font-mono text-[10px]">
+                          {s.created_at ? new Date(s.created_at).toLocaleDateString("en-LK") : "—"}
+                        </td>
+
+                        {/* 7. Action Buttons (Sticky Right with Always-Visible Delete Button) */}
+                        <td className="px-4 py-3.5 text-right whitespace-nowrap sticky right-0 bg-white group-hover:bg-zinc-50/90 z-10 shadow-[-8px_0_12px_-4px_rgba(0,0,0,0.05)] transition">
+                          <div className="inline-flex items-center gap-1.5">
+                            {/* Backup Download */}
+                            <a
+                              href={`/api/admin/backup/${s.id}`}
+                              download
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 font-bold text-[11px] shadow-2xs transition hover:border-zinc-300"
+                              title="Download complete JSON backup"
+                            >
+                              <Download className="w-3 h-3 text-zinc-500" />
+                              <span>Backup</span>
+                            </a>
+
+                            {/* Manage Plan */}
+                            <button
+                              type="button"
+                              onClick={() => setSelectedShop(s)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-bold text-[11px] shadow-2xs transition hover:border-zinc-300"
+                            >
+                              <Sliders className="w-3 h-3 text-zinc-500" />
+                              <span>Manage Plan</span>
+                            </button>
+
+                            {/* Suspend / Activate */}
+                            <button
+                              type="button"
+                              disabled={isToggling}
+                              onClick={() => handleToggleStatus(s.id, s.status)}
+                              className={`px-2 py-1 rounded-lg text-[11px] font-semibold transition ${
+                                s.status === "active"
+                                  ? "text-amber-700 hover:bg-amber-50 border border-amber-200"
+                                  : "text-emerald-700 hover:bg-emerald-50 border border-emerald-200"
+                              }`}
+                            >
+                              {isToggling
+                                ? "..."
+                                : s.status === "active"
+                                ? "Suspend"
+                                : "Activate"}
+                            </button>
+
+                            {/* Prominent High-Contrast Delete Button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDeletingShop(s);
+                                setDeleteConfirmInput("");
+                                setDeleteError(null);
+                              }}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 font-extrabold text-[11px] shadow-2xs transition cursor-pointer"
+                              title={`Permanently delete ${s.name}`}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

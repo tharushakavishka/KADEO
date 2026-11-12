@@ -98,7 +98,7 @@ export function OrderThermalReceipt({
   const slipUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/shop/${shopSlug || "store"}/order-success?code=${orderCode}`
-      : `http://localhost:3000/shop/${shopSlug || "store"}/order-success?code=${orderCode}`;
+      : `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/shop/${shopSlug || "store"}/order-success?code=${orderCode}`;
 
   // Itemized text breakdown for WhatsApp message
   const itemsText =
@@ -282,7 +282,7 @@ export function OrderThermalReceipt({
         drawDivider();
         ctx.fillStyle = "#475569";
         ctx.font = "bold 11px 'Courier New', monospace";
-        ctx.fillText("ITEMS PURCHASED / භාණ්ඩ", 30, y);
+        ctx.fillText("ITEMS PURCHASED", 30, y);
         y += 18;
 
         if (items.length > 0) {
@@ -551,10 +551,10 @@ export function OrderThermalReceipt({
             </>
           )}
 
-          {/* Itemized Order Breakdown (Items Purchased / මිලදී ගත් භාණ්ඩ) */}
+          {/* Itemized Order Breakdown (Items Purchased) */}
           <div className="border-b border-dashed border-slate-300 my-2" />
           <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            <span>Items Purchased / භාණ්ඩ</span>
+            <span>Items Purchased</span>
             <span>Line Total</span>
           </div>
 

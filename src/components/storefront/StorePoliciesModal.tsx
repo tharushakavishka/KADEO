@@ -6,21 +6,34 @@ import { buildWhatsAppUrl } from "@/lib/phone";
 
 interface StorePoliciesModalProps {
   shopName: string;
-  whatsappNumber: string;
+  whatsappNumber?: string;
   deliveryInformation?: string | null;
   triggerClassName?: string;
   triggerLabel?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
+  type?: string;
 }
 
 export function StorePoliciesModal({
   shopName,
-  whatsappNumber,
+  whatsappNumber = "",
   deliveryInformation,
   triggerClassName,
   triggerLabel = "Shipping & Returns Policy",
+  isOpen: controlledIsOpen,
+  onClose,
+  type,
 }: StorePoliciesModalProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isControlled = controlledIsOpen !== undefined;
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
   const [tab, setTab] = useState<"delivery" | "returns">("delivery");
+
+  const handleClose = () => {
+    if (onClose) onClose();
+    if (!isControlled) setInternalIsOpen(false);
+  };
 
   const effectiveDelivery =
     deliveryInformation && deliveryInformation.trim().length > 0
@@ -34,23 +47,25 @@ export function StorePoliciesModal({
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className={
-          triggerClassName ||
-          "text-xs font-semibold text-[#192d2a] hover:text-[#017d6e] transition underline underline-offset-4 cursor-pointer"
-        }
-      >
-        {triggerLabel}
-      </button>
+      {!isControlled && (
+        <button
+          type="button"
+          onClick={() => setInternalIsOpen(true)}
+          className={
+            triggerClassName ||
+            "text-xs font-semibold text-[#192d2a] hover:text-[#017d6e] transition underline underline-offset-4 cursor-pointer"
+          }
+        >
+          {triggerLabel}
+        </button>
+      )}
 
       {isOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white border border-[#e8e4dc] rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative text-left animate-in fade-in zoom-in-95 duration-150">
             {/* Close Button */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
               className="absolute top-5 right-5 p-2 rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition cursor-pointer"
               aria-label="Close policies modal"
             >
@@ -148,7 +163,7 @@ export function StorePoliciesModal({
             <div className="mt-6 pt-4 border-t border-[#f0ebe1] flex justify-end">
               <button
                 type="button"
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 className="py-2 px-4 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-bold text-xs transition cursor-pointer"
               >
                 Close

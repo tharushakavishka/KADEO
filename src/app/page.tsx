@@ -38,34 +38,40 @@ import s from "./home.module.css";
 
 const themeShowcases = [
   {
-    id: "fashion",
-    name: "Amarasri Hearath Boutique",
-    sinhalaName: "දේශීය අත්කම් & විලාසිතා එකතුව",
-    category: "Fashion & Batik",
-    tagline: "High-converting Linen & Batik store with instant WhatsApp checkout.",
-    heroImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
-    product: "Pure Linen Shirt",
-    price: "LKR 3,850",
+    id: "saloon",
+    name: "Sachi Saloon & Beauty Care",
+    sinhalaName: "ස්වභාවික රූපලාවණ්‍ය සහ කෙස් සත්කාර එකතුව",
+    category: "Salons & Cosmetics",
+    tagline: "Modern Retail Theme with instant WhatsApp checkout and direct shopping bag.",
+    heroImage: "https://images.unsplash.com/photo-1608248597359-5613532b4b42?auto=format&fit=crop&w=800&q=80",
+    product: "Herbal Hair Care Oil 100ml",
+    price: "LKR 1,500",
+    badge: "LIVE ACTIVE STORE",
+    link: "/shop/sachi-saloon",
   },
   {
     id: "spices",
-    name: "Ceylon Spices Store",
-    sinhalaName: "Premium Island Spices",
+    name: "Ceylon Spices & Tea Store",
+    sinhalaName: "පිරිසිදු කුළුබඩු සහ අපනයන තේ නිෂ්පාදන",
     category: "Organic Spices & Tea",
-    tagline: "Pure Ceylon Alba Cinnamon and artisan black tea from Matale.",
+    tagline: "Minimal Theme with clean pouch sizing, transparent pricing, and courier rates.",
     heroImage: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=80",
     product: "Ceylon Cinnamon 100g",
     price: "LKR 1,250",
+    badge: "POPULAR THEME",
+    link: "/shop/sachi-saloon",
   },
   {
-    id: "crafts",
-    name: "Handicrafts Gallery",
-    sinhalaName: "Sri Lankan Handicrafts",
-    category: "Handmade Pottery & Crafts",
-    tagline: "Traditional handcrafted terracotta and eco-friendly home decors.",
-    heroImage: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80",
-    product: "Terracotta Vase",
-    price: "LKR 1,450",
+    id: "fashion",
+    name: "Amarasri Hearath Boutique",
+    sinhalaName: "දේශීය අත්කම් සහ පිරිසිදු ලිනන් විලාසිතා",
+    category: "Fashion & Batik",
+    tagline: "Shop App Theme with high-contrast imagery and 80mm digital thermal slips.",
+    heroImage: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
+    product: "Pure Linen Shirt",
+    price: "LKR 3,850",
+    badge: "HIGH CONVERSION",
+    link: "/shop/sachi-saloon",
   },
 ];
 
@@ -200,6 +206,15 @@ export default function MarketingHomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [activeThemeIndex, setActiveThemeIndex] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Smooth scroll reveal animations via IntersectionObserver
   useEffect(() => {
@@ -240,90 +255,99 @@ export default function MarketingHomePage() {
   }, []);
 
   return (
-    <div className={s.page}>
-      {/* Background Subtle Grid & Gentle Radial Tint */}
-      <div className={`absolute inset-0 ${s.subtleGrid} opacity-40 pointer-events-none`} />
-      <div className={`absolute inset-x-0 top-0 h-96 ${s.heroGradient} pointer-events-none`} />
+    <div className="relative min-h-screen bg-white">
 
-      {/* TOP NAVIGATION BAR */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-slate-200 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black shadow-xs group-hover:scale-105 transition">
-              <span className="w-5 h-5 rounded-lg bg-emerald-600 flex items-center justify-center text-xs font-bold">N</span>
+      {/* TOP FLOATING NAVIGATION BAR */}
+      <header
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          scrolled ? "py-2 sm:py-2.5" : "py-3 sm:py-4"
+        } px-3 sm:px-6 lg:px-8`}
+      >
+        <div
+          className={`max-w-7xl mx-auto rounded-2xl sm:rounded-full transition-all duration-300 px-4 sm:px-6 ${
+            scrolled ? "h-15 sm:h-16" : "h-16 sm:h-18"
+          } flex items-center justify-between gap-4 border ${
+            scrolled
+              ? "bg-white/95 backdrop-blur-2xl border-slate-200/90 shadow-[0_12px_32px_rgba(0,0,0,0.08)]"
+              : "bg-white/85 backdrop-blur-xl border-slate-200/80 shadow-[0_6px_24px_rgba(0,0,0,0.04)]"
+          }`}
+        >
+          {/* Brand & Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-900/5 p-1 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all duration-300 border border-emerald-500/20 group-hover:border-emerald-500/40 shrink-0 overflow-hidden">
+              <img src="/KADEO.png" alt="KADEO" className="w-full h-full object-contain" />
             </span>
-            <span className="text-2xl font-black tracking-tight text-slate-900 font-sans">
-              kadeo<span className="text-emerald-600">.</span>
-            </span>
-            <span className="hidden sm:inline-flex text-[10px] font-mono tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold ml-1">
-              v1.0 LK
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-2xl font-black tracking-tight text-slate-900 font-sans">
+                kadeo<span className="text-emerald-500">.</span>
+              </span>
+            </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-center gap-2 text-xs font-semibold text-slate-700">
+          {/* Desktop Nav Links (Capsule Island) */}
+          <nav className="hidden lg:flex items-center gap-1 p-1.5 rounded-full bg-slate-100/80 border border-slate-200/70 backdrop-blur-md shadow-inner shadow-slate-900/[0.02]">
             <a
               href="#features"
-              className="px-3.5 py-2 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-xs transition-all duration-200"
             >
               විශේෂාංග (Features)
             </a>
             <a
               href="#ai-discovery"
-              className="px-3.5 py-2 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-xs transition-all duration-200"
             >
               AI Discovery
             </a>
             <a
               href="#themes"
-              className="px-3.5 py-2 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-xs transition-all duration-200"
             >
               Store Themes
             </a>
             <a
               href="#reviews"
-              className="px-3.5 py-2 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-xs transition-all duration-200"
             >
               Seller අදහස්
             </a>
             <a
               href="#faqs"
-              className="px-3.5 py-2 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-white hover:shadow-xs transition-all duration-200"
             >
               FAQs
             </a>
             <Link
-              href="/shop/amarasri-hearath"
+              href="/shop/sachi-saloon"
               target="_blank"
-              className="px-3.5 py-2 rounded-full hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center gap-1 text-slate-800"
+              className="px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-800 bg-emerald-100/70 hover:bg-emerald-100 hover:text-emerald-950 border border-emerald-200/80 flex items-center gap-1.5 transition-all duration-200 shadow-xs"
             >
-              <span>Live Demo Store</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live Store</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
             </Link>
           </nav>
 
           {/* Right Action CTAs */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <Link
               href="/login"
-              className="hidden md:inline-flex text-xs font-bold text-slate-700 hover:text-slate-900 px-3 py-2 transition"
+              className="hidden md:inline-flex items-center text-xs font-bold text-slate-700 hover:text-slate-950 px-3.5 py-2 rounded-full hover:bg-slate-100/90 border border-transparent hover:border-slate-200/70 transition-all duration-200"
             >
               Sign In
             </Link>
 
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/20 transition hover:scale-[1.02] active:scale-95"
+              className="group relative inline-flex items-center gap-2 text-xs sm:text-sm font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-600/25 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-600/35 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer overflow-hidden"
             >
               <span className={s.sinhalaSans}>Store එකක් හදන්න</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:translate-x-0.5 transition-transform" />
             </Link>
 
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 bg-slate-100 border border-slate-200 cursor-pointer"
+              className="lg:hidden p-2 rounded-xl text-slate-700 hover:text-slate-950 bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200/80 backdrop-blur-md transition-all cursor-pointer"
               aria-label="Toggle Navigation"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -331,57 +355,65 @@ export default function MarketingHomePage() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown Menu Floating Card */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-slate-200 px-6 py-6 space-y-3 shadow-xl">
-            <div className={`flex flex-col gap-2 font-medium text-slate-700 ${s.sinhalaSans}`}>
+          <div className="lg:hidden max-w-7xl mx-auto mt-2 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-2xl p-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className={`flex flex-col gap-1 font-medium text-slate-700 ${s.sinhalaSans}`}>
               <a
                 href="#features"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-lg hover:bg-slate-50 hover:text-emerald-700 transition"
+                className="py-2.5 px-3.5 rounded-xl hover:bg-slate-50 hover:text-emerald-700 font-semibold text-sm transition flex items-center justify-between"
               >
-                විශේෂාංග (Features)
+                <span>විශේෂාංග (Features)</span>
+                <span className="text-xs text-slate-400">→</span>
               </a>
               <a
                 href="#ai-discovery"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-lg hover:bg-slate-50 hover:text-emerald-700 transition"
+                className="py-2.5 px-3.5 rounded-xl hover:bg-slate-50 hover:text-emerald-700 font-semibold text-sm transition flex items-center justify-between"
               >
-                AI Discovery
+                <span>AI Discovery</span>
+                <span className="text-xs text-slate-400">→</span>
               </a>
               <a
                 href="#themes"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-lg hover:bg-slate-50 hover:text-emerald-700 transition"
+                className="py-2.5 px-3.5 rounded-xl hover:bg-slate-50 hover:text-emerald-700 font-semibold text-sm transition flex items-center justify-between"
               >
-                Store Themes
+                <span>Store Themes</span>
+                <span className="text-xs text-slate-400">→</span>
               </a>
               <a
                 href="#reviews"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-lg hover:bg-slate-50 hover:text-emerald-700 transition"
+                className="py-2.5 px-3.5 rounded-xl hover:bg-slate-50 hover:text-emerald-700 font-semibold text-sm transition flex items-center justify-between"
               >
-                Seller අදහස්
+                <span>Seller අදහස්</span>
+                <span className="text-xs text-slate-400">→</span>
               </a>
               <a
                 href="#faqs"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-lg hover:bg-slate-50 hover:text-emerald-700 transition"
+                className="py-2.5 px-3.5 rounded-xl hover:bg-slate-50 hover:text-emerald-700 font-semibold text-sm transition flex items-center justify-between"
               >
-                FAQs
+                <span>FAQs</span>
+                <span className="text-xs text-slate-400">→</span>
               </a>
             </div>
 
-            <div className="pt-3 flex flex-col gap-2 border-t border-slate-100">
+            <div className="pt-3 flex flex-col gap-2.5 border-t border-slate-100">
               <Link
-                href="/shop/amarasri-hearath"
-                className="w-full text-center py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold border border-slate-200"
+                href="/shop/sachi-saloon"
+                target="_blank"
+                className="w-full text-center py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-sm font-bold border border-emerald-200/80 transition flex items-center justify-center gap-2"
               >
-                Live Demo Store
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Live Store Demo (Sachi Saloon)</span>
+                <ArrowUpRight className="w-4 h-4 text-emerald-600" />
               </Link>
               <Link
                 href="/login"
-                className="w-full text-center py-2.5 rounded-xl text-slate-700 text-sm font-semibold border border-slate-200"
+                className="w-full text-center py-2.5 rounded-xl text-slate-700 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 text-sm font-bold border border-slate-200 transition"
               >
                 Sign In to Dashboard
               </Link>
@@ -392,20 +424,11 @@ export default function MarketingHomePage() {
 
       <main className="relative z-10">
         {/* HERO SECTION */}
-        <section className="relative pt-10 pb-16 lg:pt-14 lg:pb-24 overflow-hidden">
+        <section className="relative pt-10 pb-16 lg:pt-14 lg:pb-24 overflow-hidden bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               {/* Left Column: Headlines & CTA */}
               <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-                {/* Announcement Pill Badge */}
-                <div
-                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs sm:text-sm font-bold shadow-xs ${s.reveal}`}
-                >
-                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                  <span className={s.sinhalaSans}>ශ්‍රී ලංකාවේ ප්‍රථම AI-Ready E-Commerce Builder එක</span>
-                  <span className="text-emerald-400">·</span>
-                  <span className="text-emerald-700 font-extrabold">0% Sales Commission</span>
-                </div>
 
                 {/* Main Headline */}
                 <h1
@@ -566,128 +589,229 @@ export default function MarketingHomePage() {
           </div>
         </section>
 
-        {/* SECTION: STOREFRONT THEMES SHOWCASE */}
-        <section id="themes" className="py-20 bg-slate-50/60 border-b border-slate-200 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* SECTION: STOREFRONT THEMES SHOWCASE (WHY KADEO) */}
+        <section id="themes" className="py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50/80 border-b border-slate-200/90 relative overflow-hidden">
+          {/* Subtle background glow decorative elements */}
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-10 w-80 h-80 bg-teal-100/30 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Header */}
-            <div className={`text-center max-w-3xl mx-auto mb-14 space-y-3 ${s.reveal}`}>
-              <span className={`inline-block text-xs font-bold uppercase tracking-wider text-emerald-800 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 ${s.sinhalaSans}`}>
-                • WHY KADEO •
-              </span>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight ${s.sinhalaHeading}`}>
+            <div className="text-center max-w-3xl mx-auto mb-10 space-y-3.5">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/90 text-emerald-900 text-xs font-bold tracking-wider uppercase shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                <span>WHY KADEO E-COMMERCE</span>
+              </div>
+              <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight ${s.sinhalaHeading}`}>
                 ඇයි KADEO ඔබේ ව්‍යාපාරයට <br />
-                <span className="text-emerald-600">ලස්සන Storefront Themes එකක්!</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700">
+                  වඩාත්ම ගැළපෙන E-Commerce වේදිකාව?
+                </span>
               </h2>
-              <p className={`text-slate-600 text-xs sm:text-sm ${s.sinhalaSans}`}>
-                ඔබේ නිෂ්පාදන වඩාත් ආකර්ෂණීය විදිහට පෙන්වන, Mobile-First, High-Converting Themes එකතුවක්.
+              <p className={`text-slate-600 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed ${s.sinhalaSans}`}>
+                Social media chat (FB / Instagram DMs) වලට වඩා 3x ගුණයක වේගවත් WhatsApp checkout එකක් සහිත, ලංකාවේ ඕනෑම online seller කෙනෙකුට ගැළපෙන නවීන Storefronts.
               </p>
             </div>
 
-            {/* Content: Left Features List + Right Theme Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              {/* Left Column: Bullet Points & Button */}
-              <div className={`lg:col-span-4 space-y-5 ${s.reveal}`}>
-                <div className={`space-y-3.5 text-xs sm:text-sm font-semibold text-slate-700 ${s.sinhalaSans}`}>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>පහසුවෙන්ම ලස්සන Theme එකක් තෝරන්න</span>
+            {/* Category / Theme Switcher Pill Bar */}
+            <div className="flex items-center justify-center mb-10">
+              <div className="inline-flex flex-wrap items-center justify-center gap-2 p-1.5 rounded-2xl bg-slate-100/90 border border-slate-200/80 shadow-inner">
+                {themeShowcases.map((t, idx) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setActiveThemeIndex(idx)}
+                    className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+                      activeThemeIndex === idx
+                        ? "bg-white text-emerald-950 shadow-md border border-emerald-200/60 scale-[1.02]"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+                    }`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full transition-colors"
+                      style={{ backgroundColor: activeThemeIndex === idx ? "#059669" : "#94a3b8" }}
+                    />
+                    <span>{t.category}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Interactive Showcase Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-14">
+              {/* Left Column: Live Showcase Interactive Card */}
+              <div className="lg:col-span-7 flex flex-col justify-between rounded-3xl bg-white border border-slate-200/90 p-6 sm:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
+                <div>
+                  {/* Floating Micro Badge Header */}
+                  <div className="flex items-center justify-between mb-4 z-10 relative">
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        {themeShowcases[activeThemeIndex].badge}
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+                        • {themeShowcases[activeThemeIndex].category}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 px-3 py-1 rounded-full border border-slate-200/60 font-mono">
+                      <Smartphone className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Mobile Ready 360px</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>ඔබේ වෙළෙඳපොළට ගැළපෙන Style</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Mobile-First &amp; Fast Loading</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Code නොදැන තත්පරයෙන් ක්‍රියාත්මකයි</span>
+
+                  {/* Hero Showcase Frame with Glass Badges */}
+                  <div className="relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-slate-900 group-hover:shadow-2xl transition-all duration-500">
+                    <img
+                      src={themeShowcases[activeThemeIndex].heroImage}
+                      alt={themeShowcases[activeThemeIndex].name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+
+                    {/* Floating Live Product Badge */}
+                    <div className="absolute top-4 left-4 backdrop-blur-md bg-white/95 border border-white/50 px-3.5 py-1.5 rounded-xl shadow-lg flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span className="text-xs font-bold text-slate-900">{themeShowcases[activeThemeIndex].product}</span>
+                      <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                        {themeShowcases[activeThemeIndex].price}
+                      </span>
+                    </div>
+
+                    {/* Bottom Text Over Image */}
+                    <div className="absolute bottom-4 left-4 right-4 text-white">
+                      <h3 className="text-xl sm:text-2xl font-black tracking-tight mb-1">
+                        {themeShowcases[activeThemeIndex].name}
+                      </h3>
+                      <p className={`text-xs text-emerald-200/90 font-medium ${s.sinhalaSans}`}>
+                        {themeShowcases[activeThemeIndex].sinhalaName}
+                      </p>
+                      <p className="text-xs text-slate-300 mt-1 line-clamp-1">
+                        {themeShowcases[activeThemeIndex].tagline}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="pt-2">
+                {/* Interactive Bottom Bar */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-6 mt-6 border-t border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+                      <MessageCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Instant WhatsApp Checkout</div>
+                      <div className="text-[11px] text-slate-500">Customer adds to cart &amp; sends order in 1 tap</div>
+                    </div>
+                  </div>
+
                   <Link
-                    href="/shop/amarasri-hearath"
+                    href={themeShowcases[activeThemeIndex].link}
                     target="_blank"
-                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition ${s.sinhalaSans}`}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#031d16] hover:bg-emerald-950 text-white font-bold text-xs shadow-md shadow-emerald-950/20 transition group/btn cursor-pointer"
                   >
-                    <span>සියලුම Themes බලන්න</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Live Store බලන්න</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </div>
 
-              {/* Right Column: Theme Showcase Grid */}
-              <div className={`lg:col-span-8 ${s.revealScale} ${s.delay1}`}>
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
-                  {/* Big Main Card (Amarasri Hearath) */}
-                  <div className="sm:col-span-7 rounded-3xl bg-white border border-slate-200 p-5 shadow-lg flex flex-col justify-between space-y-4 group">
-                    <div className="h-44 sm:h-52 rounded-2xl overflow-hidden relative bg-slate-100">
-                      <img
-                        src={themeShowcases[0].heroImage}
-                        alt="Amarasri Hearath Boutique"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex flex-col justify-end p-4 text-white">
-                        <h4 className="text-base font-bold">{themeShowcases[0].name}</h4>
-                        <p className={`text-xs text-slate-300 ${s.sinhalaSans}`}>{themeShowcases[0].sinhalaName}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-xs font-mono font-bold text-emerald-700">
-                        {themeShowcases[0].product} · {themeShowcases[0].price}
+              {/* Right Column: 4 Key Value Drivers (Why Kadeo vs FB/IG/Others) */}
+              <div className="lg:col-span-5 flex flex-col justify-between gap-3.5">
+                {/* Driver 1: 0% Sales Commission */}
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all group flex items-start gap-4">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0 group-hover:scale-105 transition-transform">
+                    <BadgePercent className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-sm font-bold text-slate-900">0% Sales Commission</h4>
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        100% ලාභය
                       </span>
-                      <Link
-                        href="/shop/amarasri-hearath"
-                        target="_blank"
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-bold shadow-xs hover:bg-emerald-700 transition ${s.sinhalaSans}`}
-                      >
-                        <span>මෙම Theme එක බලන්න</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </Link>
                     </div>
-                  </div>
-
-                  {/* 2 Smaller Cards Column */}
-                  <div className="sm:col-span-5 flex flex-col gap-4">
-                    {/* Card 2: Ceylon Spices */}
-                    <div className="rounded-2xl bg-white border border-slate-200 p-3 shadow-xs hover:shadow-md transition group">
-                      <div className="h-24 rounded-xl overflow-hidden mb-2 bg-slate-100">
-                        <img
-                          src={themeShowcases[1].heroImage}
-                          alt="Ceylon Spices"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                      <h5 className="text-xs font-bold text-slate-900">{themeShowcases[1].name}</h5>
-                      <p className="text-[10px] text-slate-500">{themeShowcases[1].sinhalaName}</p>
-                    </div>
-
-                    {/* Card 3: Handicrafts Gallery */}
-                    <div className="rounded-2xl bg-white border border-slate-200 p-3 shadow-xs hover:shadow-md transition group">
-                      <div className="h-24 rounded-xl overflow-hidden mb-2 bg-slate-100">
-                        <img
-                          src={themeShowcases[2].heroImage}
-                          alt="Handicrafts Gallery"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                      <h5 className="text-xs font-bold text-slate-900">{themeShowcases[2].name}</h5>
-                      <p className="text-[10px] text-slate-500">{themeShowcases[2].sinhalaName}</p>
-                    </div>
+                    <p className={`text-xs text-slate-600 leading-relaxed ${s.sinhalaSans}`}>
+                      විකුණුම් මත කිසිදු ප්‍රතිශතයක් හෝ කොමිස් මුදලක් අය නොකෙරේ. ඔබ උපයන සම්පූර්ණ මුදල සෘජුවම ඔබටම හිමිවේ.
+                    </p>
                   </div>
                 </div>
 
-                {/* Carousel navigation dots & arrows */}
-                <div className="flex items-center justify-center gap-2 pt-6">
-                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
-                  <span className="w-2 h-2 rounded-full bg-slate-300" />
-                  <span className="w-2 h-2 rounded-full bg-slate-300" />
-                  <span className="w-2 h-2 rounded-full bg-slate-300" />
-                  <span className="w-2 h-2 rounded-full bg-slate-300" />
+                {/* Driver 2: Automated 80mm Digital Thermal Receipts */}
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group flex items-start gap-4">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 shrink-0 group-hover:scale-105 transition-transform">
+                    <Receipt className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-sm font-bold text-slate-900">80mm Digital Thermal Receipts</h4>
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                        EXCLUSIVE
+                      </span>
+                    </div>
+                    <p className={`text-xs text-slate-600 leading-relaxed ${s.sinhalaSans}`}>
+                      ඔබේම ලාංඡනය සහිත මුද්‍රිත රිසිට්පතක් (Thermal Slip) වැනි image එකක් පාරිභෝගිකයාට සහ courier හට 1-click එකෙන් share කළ හැක.
+                    </p>
+                  </div>
                 </div>
+
+                {/* Driver 3: Direct Bank Slip Upload & COD */}
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition-all group flex items-start gap-4">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shrink-0 group-hover:scale-105 transition-transform">
+                    <Wallet className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-sm font-bold text-slate-900">Bank Slip Upload &amp; COD</h4>
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                        VERIFIED
+                      </span>
+                    </div>
+                    <p className={`text-xs text-slate-600 leading-relaxed ${s.sinhalaSans}`}>
+                      පාරිභෝගිකයාගෙන් Bank Slip එක upload කරවාගෙන Dashboard එකෙන්ම verified mark කිරීම සහ Cash on Delivery කළමනාකරණය.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Driver 4: Automated Courier Tracking */}
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:border-purple-300 transition-all group flex items-start gap-4">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-700 shrink-0 group-hover:scale-105 transition-transform">
+                    <Truck className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-sm font-bold text-slate-900">Automated Courier Tracking</h4>
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+                        6+ COURIERS
+                      </span>
+                    </div>
+                    <p className={`text-xs text-slate-600 leading-relaxed ${s.sinhalaSans}`}>
+                      Domex, Koombiyo, PromptX සහ SL Post Waybill එක ඇතුළත් කළ සැණින් Customer ට සජීවී Tracking link එකක් ලබා දේ.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom 4-Metric Sri Lankan Performance Bar */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 sm:p-8 rounded-3xl bg-slate-900 text-white shadow-xl">
+              <div className="text-center sm:text-left space-y-1">
+                <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">1.2s</div>
+                <div className="text-xs font-bold text-slate-200">Ultra-fast Mobile Loading</div>
+                <div className={`text-[10px] text-slate-400 ${s.sinhalaSans}`}>Dialog / Mobitel 4G වලදීද සුපිරි වේගයක්</div>
+              </div>
+              <div className="text-center sm:text-left space-y-1">
+                <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">3.4x</div>
+                <div className="text-xs font-bold text-slate-200">Higher Order Conversion</div>
+                <div className={`text-[10px] text-slate-400 ${s.sinhalaSans}`}>FB/IG chat වලට වඩා ඉක්මන් orders</div>
+              </div>
+              <div className="text-center sm:text-left space-y-1">
+                <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">LKR 0</div>
+                <div className="text-xs font-bold text-slate-200">Zero Transaction Fees</div>
+                <div className={`text-[10px] text-slate-400 ${s.sinhalaSans}`}>සැඟවුණු ගාස්තු හෝ කොමිස් නැත</div>
+              </div>
+              <div className="text-center sm:text-left space-y-1">
+                <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">&lt; 2 Mins</div>
+                <div className="text-xs font-bold text-slate-200">Store Setup Time</div>
+                <div className={`text-[10px] text-slate-400 ${s.sinhalaSans}`}>Coding නැතිව දුරකථනයෙන්ම ආරම්භය</div>
               </div>
             </div>
           </div>
@@ -1198,8 +1322,8 @@ export default function MarketingHomePage() {
             {/* Col 1: Brand */}
             <div className="lg:col-span-2 space-y-3">
               <Link href="/" className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
-                  N
+                <span className="w-8 h-8 rounded-lg bg-slate-100 p-1 flex items-center justify-center border border-slate-200 shrink-0 overflow-hidden">
+                  <img src="/KADEO.png" alt="KADEO" className="w-full h-full object-contain" />
                 </span>
                 <span className="text-xl font-black text-slate-900 tracking-tight font-sans">
                   kadeo<span className="text-emerald-600">.</span>

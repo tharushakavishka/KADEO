@@ -19,16 +19,19 @@ export function parseCategoryData(data: FormData | Record<string, any>) {
   if (data instanceof FormData) {
     const desc = data.get("description") as string;
     const slug = data.get("slug") as string;
+    const imageUrl = (data.get("imageUrl") || data.get("image_url")) as string;
     return {
       name: (data.get("name") as string) || "",
       slug: slug || undefined,
       description: desc === "" ? null : desc,
+      imageUrl: imageUrl === "" ? null : (imageUrl || undefined),
       sortOrder: data.get("sortOrder") !== null ? Number(data.get("sortOrder")) : 0,
     };
   }
   return {
     ...data,
     description: data.description === "" ? null : data.description,
+    imageUrl: data.imageUrl !== undefined ? (data.imageUrl === "" ? null : data.imageUrl) : (data.image_url === "" ? null : data.image_url),
   };
 }
 
@@ -52,6 +55,7 @@ export async function createCategoryService(
       name: validated.data.name,
       slug: validated.data.slug || slug,
       description: validated.data.description || null,
+      image_url: validated.data.imageUrl || null,
       sort_order: validated.data.sortOrder,
     })
     .select()
@@ -77,7 +81,7 @@ export async function updateCategoryService(
   // Verify ownership
   const { data: existing, error: existErr } = await supabase
     .from("categories")
-    .select("id, slug")
+    .select("id, slug, image_url")
     .eq("id", categoryId)
     .eq("shop_id", shopId)
     .single();
@@ -94,14 +98,20 @@ export async function updateCategoryService(
     return { error: validated.error.issues[0].message };
   }
 
+  const updatePayload: Record<string, any> = {
+    name: validated.data.name,
+    slug: validated.data.slug || slug,
+    description: validated.data.description || null,
+    sort_order: validated.data.sortOrder,
+  };
+
+  if (raw.imageUrl !== undefined || (raw as any).image_url !== undefined) {
+    updatePayload.image_url = validated.data.imageUrl || null;
+  }
+
   const { error: updateErr } = await supabase
     .from("categories")
-    .update({
-      name: validated.data.name,
-      slug: validated.data.slug || slug,
-      description: validated.data.description || null,
-      sort_order: validated.data.sortOrder,
-    })
+    .update(updatePayload)
     .eq("id", categoryId)
     .eq("shop_id", shopId);
 

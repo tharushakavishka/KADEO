@@ -140,6 +140,8 @@ export async function submitOrderAction(rawPayload: unknown) {
         ]
       : [];
 
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, "");
+
   // Format WhatsApp Message to store owner (Seller)
   const whatsappNumber = normalizePhoneNumber(data.whatsapp_number);
   const orderCode = data.order_code;
@@ -161,7 +163,7 @@ export async function submitOrderAction(rawPayload: unknown) {
     `*Total Payable:* ${totalFormatted}`,
     ``,
     `🔗 *View / Verify Official Digital Slip:*`,
-    `http://localhost:3000/shop/${shopSlug}/order-success?code=${orderCode}`,
+    `${siteUrl}/shop/${shopSlug}/order-success?code=${orderCode}`,
     ``,
     `Please check your Kadeo dashboard for full order details and fulfillment.`,
   ].filter((line) => line !== undefined && line !== null);
@@ -183,7 +185,7 @@ export async function submitOrderAction(rawPayload: unknown) {
     `*Total Amount:* ${totalFormatted}`,
     ``,
     `🔗 *View / Download Your Official Digital Slip:*`,
-    `http://localhost:3000/shop/${shopSlug}/order-success?code=${orderCode}`,
+    `${siteUrl}/shop/${shopSlug}/order-success?code=${orderCode}`,
     `----------------------------------------`,
     `Thank you for shopping with ${data.shop_name}!`,
   ].filter((line) => line !== undefined && line !== null);

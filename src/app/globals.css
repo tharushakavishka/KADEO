@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@400;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -8,19 +9,110 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-geist-sans), var(--font-sinhala), Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono);
+  --font-sinhala: var(--font-sinhala), 'Noto Sans Sinhala', sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.font-sinhala {
+  font-family: var(--font-sinhala), 'Noto Sans Sinhala', sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  color: #171717;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 320px;
+}
+
+/* Ensure media and embedded objects never cause horizontal overflow */
+img, svg, video, canvas, audio, iframe, embed, object {
+  max-width: 100%;
+}
+
+/* Responsive Product Grid Column Density (2, 3, or 4 columns) - strictly target catalog product grids, excluding modals/dialogs/drawers */
+.kadeo-store-content[data-grid-cols="2"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *) {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.kadeo-store-content[data-grid-cols="3"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *) {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.kadeo-store-content[data-grid-cols="4"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *) {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 768px) {
+  .kadeo-store-content[data-grid-cols="3"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *),
+  .kadeo-store-content[data-grid-cols="4"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .kadeo-store-content[data-grid-cols="2"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *),
+  .kadeo-store-content[data-grid-cols="3"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *),
+  .kadeo-store-content[data-grid-cols="4"] [class*="grid"]:not([role="dialog"]):not([role="dialog"] *):not([class*="modal"]):not([class*="modal"] *):not([class*="drawer"]):not([class*="drawer"] *):not(footer *):not(header *) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Explicit Product Quick View Modal & Trust Badges Layout */
+.product-quick-view-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+}
+
+@media (min-width: 1024px) {
+  .product-quick-view-grid {
+    grid-template-columns: 460px 1fr !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product-quick-view-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+.product-trust-badges-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+@media (min-width: 640px) {
+  .product-trust-badges-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Card Elevation & Border Styles */
+.kadeo-store-content[data-card-elevation="shadow"] article,
+.kadeo-store-content[data-card-elevation="shadow"] [class*="product"] {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.kadeo-store-content[data-card-elevation="border"] article,
+.kadeo-store-content[data-card-elevation="border"] [class*="product"] {
+  box-shadow: none !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.kadeo-store-content[data-card-elevation="flat"] article,
+.kadeo-store-content[data-card-elevation="flat"] [class*="product"] {
+  box-shadow: none !important;
+  border: none !important;
+  background-color: #f8fafc !important;
 }

@@ -36,8 +36,8 @@ export function NewStoreForm() {
     <div className="min-h-screen bg-zinc-50 py-12 px-4 flex justify-center items-center">
       <div className="w-full max-w-2xl bg-white border border-zinc-200 rounded-3xl p-8 sm:p-10 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-zinc-900 text-white flex items-center justify-center">
-            <Store className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-2xl bg-zinc-100 border border-zinc-200 p-1.5 flex items-center justify-center overflow-hidden shrink-0">
+            <img src="/KADEO.png" alt="KADEO" className="w-full h-full object-contain" />
           </div>
           <div>
             <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">

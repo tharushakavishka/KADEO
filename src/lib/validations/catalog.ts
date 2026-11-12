@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 
 export const imageSchema = z
   .string()
@@ -6,7 +6,8 @@ export const imageSchema = z
   .refine(
     (value) =>
       !value ||
-      /^\/uploads\/[a-zA-Z0-9/_-]+\.(png|jpg|webp|jpeg)$/i.test(value) ||
+      /^\/(uploads|images|[a-zA-Z0-9/_-]+)\/[a-zA-Z0-9/._-]+\.(png|jpg|webp|jpeg|svg|gif|avif)$/i.test(value) ||
+      value.startsWith("/") ||
       (() => {
         try {
           const url = new URL(value);
@@ -26,7 +27,7 @@ export const productSchema = z.object({
   price: z.coerce.number().min(0, "Price must be a positive number or zero."),
   compareAtPrice: z.coerce.number().min(0, "Compare-at price cannot be negative.").optional().nullable(),
   stockQuantity: z.coerce.number().int().min(0, "Stock cannot be negative."),
-  categoryId: z.string().uuid().optional().nullable().or(z.literal("")),
+  categoryId: z.string().min(1).max(100).optional().nullable().or(z.literal("")),
   status: z.enum(["active", "draft", "out_of_stock"]).default("active"),
   imageUrl: imageSchema.optional().or(z.literal("")),
   images: z.array(imageSchema).optional(),
@@ -37,4 +38,5 @@ export const categorySchema = z.object({
   slug: z.string().trim().min(2, "Slug must be at least 2 characters.").max(100).optional(),
   description: z.string().max(1000, "Description must be 1000 characters or fewer.").optional().nullable(),
   sortOrder: z.coerce.number().int().default(0),
+  imageUrl: imageSchema.optional().nullable().or(z.literal("")),
 });

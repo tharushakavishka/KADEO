@@ -121,6 +121,20 @@ export default function AuthShell({ mode: initialMode }: AuthShellProps) {
         {/* Left Column: Interactive Animated Form Area */}
         <div className="w-full md:w-[58%] lg:w-[56%] p-6 sm:p-9 lg:p-10 flex flex-col justify-between">
           <div>
+            {/* Official KADEO Platform Logo */}
+            <div className="flex items-center justify-center mb-4">
+              <Link href="/" className="inline-flex items-center gap-2.5 group">
+                <img
+                  src="/KADEO.png"
+                  alt="KADEO"
+                  className="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform"
+                />
+                <span className="text-2xl font-black tracking-tight text-emerald-950 font-sans">
+                  kadeo<span className="text-emerald-600">.</span>
+                </span>
+              </Link>
+            </div>
+
             {/* Top Badge: Trusted by Sri Lankan sellers */}
             <div className="flex items-center justify-center mb-5">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-900 text-xs font-semibold shadow-xs">
@@ -206,7 +220,7 @@ export default function AuthShell({ mode: initialMode }: AuthShellProps) {
                     </p>
                   </div>
 
-                  <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  <form onSubmit={handleLoginSubmit} method="POST" className="space-y-4">
                     <div>
                       <label
                         htmlFor="login-email"
@@ -307,7 +321,7 @@ export default function AuthShell({ mode: initialMode }: AuthShellProps) {
                     </p>
                   </div>
 
-                  <form onSubmit={handleRegisterSubmit} className="space-y-3">
+                  <form onSubmit={handleRegisterSubmit} method="POST" className="space-y-3">
                     <div>
                       <label
                         htmlFor="reg-fullName"

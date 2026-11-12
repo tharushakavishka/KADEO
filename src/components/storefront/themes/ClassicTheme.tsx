@@ -2,6 +2,7 @@
 import { StoreIcon } from "../StoreIcon";
 
 import { useStoreText } from "../StoreContent";
+import { customStyle } from "@/lib/store-custom-styles";
 
 import { useCart } from "../CartDrawer";
 import { formatCurrency } from "@/lib/utils";
@@ -34,7 +35,12 @@ interface ThemeProps {
 
 export function ClassicTheme({ shop, categories, products }: ThemeProps) {
   const t = useStoreText();
-  const { addItem } = useCart();
+  const { addItem, setIsOpen, totalCount } = useCart();
+  const cardStyle = customStyle(t, "card");
+  const buttonStyle = customStyle(t, "buttons");
+
+  const heroVisible = (part: string) => t(`visibility:hero:${part}`, "shown") !== "hidden";
+  const heroContentVisible = heroVisible("content") && ["title", "description"].some(heroVisible);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [addedId, setAddedId] = useState<string | null>(null);
 
@@ -56,33 +62,49 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
     setTimeout(() => setAddedId(null), 1200);
   }
 
+  const heroBanner = t("element:hero:image", t("hero:image_url", shop.banner_url || ""));
+
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900 pb-20">
       {/* Banner / Store Header */}
-      {shop.banner_url && <img src={shop.banner_url} alt={shop.name} className="w-full max-h-96 object-cover" />}
+      {heroBanner && (
+        <img
+          data-studio-element="hero_image"
+          src={heroBanner}
+          alt={shop.name}
+          className="w-full max-h-96 2xl:max-h-[460px] object-cover"
+        />
+      )}
+      {heroContentVisible && (
       <div className="bg-white border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
+        <div className="max-w-7xl 2xl:max-w-[1480px] mx-auto px-4 sm:px-6 py-6 sm:py-10">
+          {heroVisible("title") && (
+          <h1 data-studio-element="hero_title" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-zinc-900">
             {shop.name}
           </h1>
-          {shop.description && (
-            <p className="text-sm text-zinc-500 mt-2 max-w-2xl">{shop.description}</p>
+          )}
+          {shop.description && heroVisible("description") && (
+            <p data-studio-element="hero_desc" className="text-xs sm:text-sm text-zinc-500 mt-2 max-w-2xl leading-relaxed">{shop.description}</p>
           )}
           {shop.address && (
             <p className="text-xs text-zinc-400 mt-1">📍 {shop.address}</p>
           )}
         </div>
       </div>
+      )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Categories Sidebar */}
+      <div className="max-w-7xl 2xl:max-w-[1480px] mx-auto px-3 sm:px-6 py-6 sm:py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
+          {/* Categories Sidebar (Horizontal scroll on mobile, vertical card on desktop) */}
           <aside className="md:col-span-1 space-y-2">
-            <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-wider px-3 mb-2">{t("6ccb60071be8", "Categories")}</h2>
-            <div className="bg-white border border-zinc-200 rounded-xl p-2 space-y-1 shadow-2xs">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-400 px-3 hidden md:block">
+              {t("4beeb61e93ca", "Categories")}
+            </h2>
+            <div className="flex md:flex-col gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
               <button
                 onClick={() => setSelectedCategory("all")}
-                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition ${
+                style={selectedCategory === "all" ? buttonStyle : undefined}
+                className={`whitespace-nowrap md:whitespace-normal shrink-0 text-left px-3 py-2 rounded-lg text-xs font-semibold transition ${
                   selectedCategory === "all"
                     ? "bg-zinc-900 text-white"
                     : "text-zinc-600 hover:bg-zinc-100"
@@ -93,7 +115,8 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
                 <button
                   key={c.id}
                   onClick={() => setSelectedCategory(c.name)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition ${
+                  style={selectedCategory === c.name ? buttonStyle : undefined}
+                  className={`whitespace-nowrap md:whitespace-normal shrink-0 text-left px-3 py-2 rounded-lg text-xs font-semibold transition ${
                     selectedCategory === c.name
                       ? "bg-zinc-900 text-white"
                       : "text-zinc-600 hover:bg-zinc-100"
@@ -107,7 +130,7 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
 
           {/* Product Grid */}
           <div className="md:col-span-3">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-6">
               {filteredProducts.map((p) => {
                 const imageSrc = p.images?.[0]?.storage_path;
                 const isOut = p.stock_quantity <= 0;
@@ -115,7 +138,8 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
                 return (
                   <div
                     key={p.id}
-                    className="bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-2xs flex flex-col justify-between hover:shadow-md transition"
+                    data-studio-element="product_card"
+                    data-style-part="card" data-custom-text={Boolean(cardStyle.color)} style={cardStyle} className="bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-2xs flex flex-col justify-between hover:shadow-md transition"
                   >
                     <div className="aspect-square bg-zinc-100 relative">
                       {imageSrc ? (
@@ -134,9 +158,9 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
                       )}
                     </div>
 
-                    <div className="p-3.5 flex-1 flex flex-col justify-between">
+                    <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between">
                       <div>
-                        <h3 className="font-semibold text-xs sm:text-sm text-zinc-900 line-clamp-1">
+                        <h3 className="font-semibold text-xs sm:text-sm text-zinc-900 line-clamp-2 leading-snug">
                           {p.name}
                         </h3>
                         <p className="text-xs font-bold text-zinc-900 mt-1">
@@ -147,21 +171,15 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
                       <button
                         onClick={() => handleAddToCart(p)}
                         disabled={isOut}
-                        className={`w-full mt-3 py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
+                        data-studio-element="hero_cta"
+                        data-style-part="buttons" data-custom-text={Boolean(buttonStyle.color)} style={buttonStyle} className={`mt-3 w-full py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition ${
                           isOut
                             ? "bg-zinc-100 text-zinc-400 cursor-not-allowed"
-                            : addedId === p.id
-                            ? "bg-emerald-600 text-white"
                             : "bg-zinc-900 text-white hover:bg-zinc-800"
                         }`}
                       >
-                        {addedId === p.id ? (
-                          <>
-                            <StoreIcon name="Check" className="w-3.5 h-3.5" />{t("b68734c25910", "Added")}</>
-                        ) : (
-                          <>
-                            <StoreIcon name="Plus" className="w-3.5 h-3.5" />{t("61cc55aa0453", "Add")}</>
-                        )}
+                        <StoreIcon name="ShoppingBag" className="w-3.5 h-3.5" />
+                        <span>{isOut ? t("75b42d13dae7", "Sold Out") : t("3a910ecfb364", "Add to Bag")}</span>
                       </button>
                     </div>
                   </div>
@@ -171,10 +189,6 @@ export function ClassicTheme({ shop, categories, products }: ThemeProps) {
           </div>
         </div>
       </div>
-
-      <footer className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 text-center text-xs text-zinc-400">
-        <p>© {new Date().getFullYear()} {shop.name}{t("4a4be9026c97", ". Powered by KADEO.")}</p>
-      </footer>
     </div>
   );
 }

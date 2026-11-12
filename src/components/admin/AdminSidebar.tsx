@@ -79,8 +79,8 @@ export function AdminSidebar({ userEmail }: { userEmail: string }) {
       {/* Brand Header */}
       <div className="relative z-10 px-6 py-6 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#00c975] flex items-center justify-center font-black text-xl text-[#02281e] shadow-lg shadow-emerald-500/20">
-            K
+          <div className="w-10 h-10 rounded-2xl bg-white/10 p-1 flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/15 overflow-hidden shrink-0">
+            <img src="/KADEO.png" alt="KADEO" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
@@ -171,8 +171,8 @@ export function AdminSidebar({ userEmail }: { userEmail: string }) {
       {/* Mobile Top Bar */}
       <div className="md:hidden sticky top-0 z-40 bg-[#031d16] border-b border-white/10 px-4 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#00c975] flex items-center justify-center font-black text-sm text-[#02281e]">
-            K
+          <div className="w-8 h-8 rounded-xl bg-white/10 p-0.5 flex items-center justify-center border border-white/15 overflow-hidden shrink-0">
+            <img src="/KADEO.png" alt="KADEO" className="w-full h-full object-contain" />
           </div>
           <span className="font-extrabold text-sm text-white">KADEO GOV</span>
         </div>

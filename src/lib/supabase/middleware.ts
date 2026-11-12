@@ -63,12 +63,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Redirect authenticated user away from auth pages
-  if ((pathname === "/login" || pathname === "/register") && user) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/dashboard";
-    return NextResponse.redirect(redirectUrl);
-  }
+
 
   return supabaseResponse;
 }

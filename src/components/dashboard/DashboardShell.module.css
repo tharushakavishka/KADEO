@@ -5,11 +5,14 @@
   color: #0f172a;
   color-scheme: light;
   position: relative;
+  width: 100%;
+  min-width: 0;
 }
 
 .main {
   flex: 1;
   min-width: 0;
+  width: 100%;
   margin-left: 272px;
   display: flex;
   flex-direction: column;
@@ -18,6 +21,7 @@
 .content {
   max-width: 1440px;
   width: 100%;
+  min-width: 0;
   margin: 0 auto;
   padding: 32px 40px 60px;
 }
@@ -300,8 +304,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 0 40px;
+  gap: 16px;
+  padding: 0 32px;
   background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
   font-size: 13px;
@@ -309,6 +313,8 @@
   position: sticky;
   top: 0;
   z-index: 30;
+  width: 100%;
+  min-width: 0;
 }
 
 .breadcrumb {
@@ -316,7 +322,9 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
+  flex: 1;
   font-size: 13px;
+  overflow: hidden;
 }
 
 .breadcrumb strong {
@@ -325,17 +333,20 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 700;
+  min-width: 0;
 }
 
 .breadcrumbDivider {
   color: #94a3b8;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .topbarRight {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .searchPill {
@@ -409,6 +420,7 @@
   font-weight: 800;
   font-size: 14px;
   box-shadow: 0 2px 6px rgba(4, 120, 87, 0.25);
+  flex-shrink: 0;
 }
 
 /* Overview Layout & Welcome Banner */
@@ -416,13 +428,15 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
+  width: 100%;
+  min-width: 0;
 }
 
 .welcome {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 28px;
+  gap: 24px;
   padding: 32px 40px;
   border: 1px solid #d1fae5;
   border-radius: 28px;
@@ -430,10 +444,13 @@
   box-shadow: 0 4px 20px rgba(16, 185, 129, 0.04);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  min-width: 0;
 }
 
 .welcomeInfo {
   max-width: 540px;
+  min-width: 0;
 }
 
 .welcomeTag {
@@ -461,6 +478,7 @@
   letter-spacing: -0.5px;
   margin: 10px 0 6px;
   line-height: 1.15;
+  word-break: break-word;
 }
 
 .welcomeSubtitle {
@@ -476,6 +494,7 @@
   align-items: center;
   gap: 12px;
   margin-top: 22px;
+  flex-wrap: wrap;
 }
 
 .btnPrimaryGreen {
@@ -878,13 +897,7 @@
   }
 }
 
-@media (max-width: 900px) {
-  .searchPill {
-    display: none;
-  }
-}
-
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .shell {
     flex-direction: column;
   }
@@ -904,6 +917,7 @@
 
   .main {
     margin-left: 0;
+    width: 100%;
   }
 
   .brand {
@@ -940,9 +954,20 @@
     display: none;
   }
 
+  .content {
+    padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 767px) {
   .topbar {
-    height: 58px;
-    padding: 0 16px;
+    height: 56px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .topbarRight {
+    gap: 6px;
   }
 
   .breadcrumb span,
@@ -950,17 +975,92 @@
     font-size: 12px;
   }
 
+  .breadcrumbText {
+    display: none;
+  }
+
   .content {
-    padding: 20px 16px 40px;
+    padding: 16px 12px 36px;
+  }
+
+  .welcome {
+    padding: 20px 16px;
+    border-radius: 20px;
+    gap: 16px;
+  }
+
+  .welcomeTitle {
+    font-size: 24px;
+  }
+
+  .welcomeActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .welcomeActions > * {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 12px;
   }
 
   .quickLinks {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .quickLinkCard {
+    padding: 14px 16px;
+    border-radius: 16px;
   }
 
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+  }
+
+  .stat {
+    padding: 14px 12px;
+    border-radius: 16px;
+  }
+
+  .statTop {
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+
+  .statIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+  }
+
+  .statIcon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .statValue {
+    font-size: 20px;
+    word-break: break-word;
+  }
+
+  .ordersHeader {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .welcomeActions {
+    grid-template-columns: 1fr;
+  }
+  .stats {
+    grid-template-columns: 1fr;
   }
 }
 

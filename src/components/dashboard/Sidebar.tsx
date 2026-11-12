@@ -10,6 +10,7 @@ import {
   Layers,
   ShoppingCart,
   Users,
+  Palette,
   Monitor,
   Settings,
   Crown,
@@ -33,6 +34,7 @@ const navItems = [
   { label: "Categories", href: "/dashboard/categories", icon: Layers },
   { label: "Orders", href: "/dashboard/orders", icon: ShoppingCart },
   { label: "Customers", href: "/dashboard/customers", icon: Users },
+  { label: "Themes", href: "/dashboard/themes", icon: Palette },
   { label: "Store Design", href: "/dashboard/design", icon: Monitor },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
   { label: "Subscription", href: "/dashboard/subscription", icon: Crown },
@@ -123,7 +125,9 @@ export function Sidebar({ shopSlug, shopName }: SidebarProps) {
           className={s.brand}
           aria-label="Kadeo seller workspace"
         >
-          <span className={s.brandMark}>K</span>
+          <span className={s.brandMark} style={{ overflow: "hidden", padding: "2px" }}>
+            <img src="/KADEO.png" alt="KADEO" className="w-full h-full object-contain" />
+          </span>
           <div className={s.brandText}>
             <strong>KADEO</strong>
             <small>Seller Workspace</small>

@@ -62,9 +62,14 @@ export default async function DashboardLayout({
           {/* Breadcrumb */}
           <div className={s.breadcrumb}>
             <Home size={16} className="text-emerald-700 shrink-0" />
-            <span className="text-slate-600 font-medium">Seller Workspace</span>
-            <ChevronRight size={14} className={s.breadcrumbDivider} />
-            <strong className="text-slate-900 font-bold">
+            <span className={`${s.breadcrumbText} text-slate-600 font-medium`}>
+              Seller Workspace
+            </span>
+            <ChevronRight
+              size={14}
+              className={`${s.breadcrumbText} ${s.breadcrumbDivider}`}
+            />
+            <strong className="text-slate-900 font-bold truncate">
               {shop?.name || "Amarasri Hearath"}
             </strong>
           </div>
@@ -74,8 +79,8 @@ export default async function DashboardLayout({
             {isAdmin && (
               <Link
                 href="/admin"
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 transition shadow-2xs mr-1"
-                title="Super Admin Privileges Active � Click to open Platform Console"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 transition shadow-2xs mr-1"
+                title="Super Admin Privileges Active – Click to open Platform Console"
               >
                 <ShieldCheck size={14} className="text-amber-600" />
                 <span>Super Admin</span>
@@ -94,7 +99,7 @@ export default async function DashboardLayout({
 
             <button
               type="button"
-              className={s.iconBtn}
+              className={`${s.iconBtn} hidden sm:grid`}
               aria-label="Help & Documentation"
             >
               <HelpCircle size={18} />

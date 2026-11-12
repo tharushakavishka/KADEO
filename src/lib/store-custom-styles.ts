@@ -22,7 +22,9 @@ export const customStyleKeys = new Set(styleAreas.flatMap(area => customControls
 export function validCustomStyle(key: string, value: string) {
   if (!customStyleKeys.has(key)) return false;
   const control = customControls.find(item => item.id === key.split(":")[2])!;
-  return control.type === "color" ? /^#[0-9a-f]{6}$/i.test(value) : /^\d{1,3}$/.test(value) && Number(value) >= control.min && Number(value) <= control.max;
+  return control.type === "color"
+    ? /^#[0-9a-f]{3,8}$/i.test(value)
+    : /^\d{1,3}$/.test(value) && Number(value) >= control.min && Number(value) <= control.max;
 }
 export function customStyle(t: (key: string, fallback: string) => string, id: StyleArea): CSSProperties {
   const area = styleAreas.find(area => area.id === id)!;
@@ -30,7 +32,10 @@ export function customStyle(t: (key: string, fallback: string) => string, id: St
   const style: CSSProperties & Record<string, string | number | undefined> = {};
   const background = read("background"), opacity = read("opacity");
   if (background !== undefined || opacity !== undefined) {
-    const hex = background || area.background;
+    let hex = background || area.background;
+    if (hex.length === 4) {
+      hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+    }
     style.background = `rgba(${parseInt(hex.slice(1,3),16)}, ${parseInt(hex.slice(3,5),16)}, ${parseInt(hex.slice(5,7),16)}, ${Number(opacity ?? area.opacity) / 100})`;
   }
   const color = read("color");
@@ -44,5 +49,54 @@ export function customStyle(t: (key: string, fallback: string) => string, id: St
   if (blur !== undefined) style.backdropFilter = style.WebkitBackdropFilter = `blur(${blur}px)`;
   const shadow = read("shadow");
   if (shadow !== undefined) style.boxShadow = Number(shadow) === 0 ? "none" : `0 8px 24px rgba(15, 35, 28, ${Number(shadow)/100})`;
+
+  // Button enhancements (Pill shape, variants, full width)
+  if (id === "buttons") {
+    const shapeBtn = t("shape:btn_radius", "");
+    if (shapeBtn === "99" || shapeBtn === "pill") {
+      style.borderRadius = "9999px";
+    } else if (shapeBtn === "0" || shapeBtn === "square") {
+      style.borderRadius = "0px";
+    } else if (shapeBtn === "16" || shapeBtn === "rounded") {
+      style.borderRadius = "16px";
+    } else if (shapeBtn === "8" || shapeBtn === "soft") {
+      style.borderRadius = "8px";
+    }
+
+    const variant = t("button:variant", "");
+    if (variant === "outline") {
+      const activeColor = String(style.color || style.background || t("color:primary", "#017d6e"));
+      style.background = "transparent";
+      style.borderColor = activeColor;
+      style.borderWidth = "2px";
+      style.borderStyle = "solid";
+      style.color = activeColor;
+      style["--custom-text"] = activeColor;
+    } else if (variant === "soft") {
+      const activeColor = String(style.color || style.background || t("color:primary", "#017d6e"));
+      style.background = "#e6f4f1";
+      style.color = activeColor;
+      style["--custom-text"] = activeColor;
+    }
+
+    const fullWidth = t("element:hero_cta:full_width", "");
+    if (fullWidth === "true") {
+      style.width = "100%";
+      style.justifyContent = "center";
+    }
+  }
+
+  // Card enhancements (Shape & shadow)
+  if (id === "card") {
+    const cardRadius = t("shape:card_radius", "");
+    if (cardRadius === "rounded" || cardRadius === "16") {
+      style.borderRadius = "16px";
+    } else if (cardRadius === "soft" || cardRadius === "8") {
+      style.borderRadius = "8px";
+    } else if (cardRadius === "sharp" || cardRadius === "0") {
+      style.borderRadius = "0px";
+    }
+  }
+
   return style;
 }

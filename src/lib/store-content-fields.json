@@ -568,5 +568,40 @@
     "theme": "modern_retail",
     "key": "e07b41acde23",
     "text": "THE COLLECTION"
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:announcement",
+    "text": "Islandwide Delivery across Sri Lanka • Cash on Delivery / Bank Transfer Available"
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:hero:title",
+    "text": "The Holiday Sale is here!"
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:hero:description",
+    "text": "Unwrap exclusive offers, all week long."
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:hero:button",
+    "text": "Shop now"
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:search:placeholder",
+    "text": "What are you shopping for today?"
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:tracking:title",
+    "text": "Track your packages in real-time"
+  },
+  {
+    "theme": "shop_app",
+    "key": "shopapp:tracking:description",
+    "text": "Stay updated from order placement to doorstep handover across Sri Lanka (Pronto, Koombiyo, Domex, Certis Lanka)."
   }
 ]

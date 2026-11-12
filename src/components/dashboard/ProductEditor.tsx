@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -16,6 +16,9 @@ import {
   Star,
   Archive,
   Loader2,
+  Palette,
+  Ruler,
+  X,
 } from "lucide-react";
 import {
   createProductAction,
@@ -23,6 +26,11 @@ import {
   archiveProductAction,
   deleteProductAction,
 } from "@/features/products/actions";
+import {
+  parseProductDescription,
+  serializeProductDescription,
+  ProductColorVariant,
+} from "@/lib/product-variants";
 
 export interface CategoryOption {
   id: string;
@@ -57,21 +65,45 @@ export function ProductEditor({
 }: ProductEditorProps) {
   const router = useRouter();
 
+  // Parse existing variants from description if present
+  const initialParsed = parseProductDescription(initialProduct?.description);
+
   // Initialize draft values
   const [draft, setDraft] = useState<ProductFormData>({
     id: initialProduct?.id,
     name: initialProduct?.name || "",
     slug: initialProduct?.slug || "",
-    description: initialProduct?.description || "",
+    description: initialParsed.cleanDescription || initialProduct?.description || "",
     sku: initialProduct?.sku || "",
     price: initialProduct?.price !== undefined ? initialProduct.price : "",
-    compareAtPrice: initialProduct?.compareAtPrice !== undefined && initialProduct?.compareAtPrice !== null ? initialProduct.compareAtPrice : "",
+    compareAtPrice:
+      initialProduct?.compareAtPrice !== undefined && initialProduct?.compareAtPrice !== null
+        ? initialProduct.compareAtPrice
+        : "",
     stockQuantity: initialProduct?.stockQuantity !== undefined ? initialProduct.stockQuantity : 10,
     categoryId: initialProduct?.categoryId || "",
     status: initialProduct?.status || "active",
     imageUrl: initialProduct?.imageUrl || "",
     images: initialProduct?.images || (initialProduct?.imageUrl ? [initialProduct.imageUrl] : []),
   });
+
+  // Variant States (Optional Color & Size options)
+  const [enableColors, setEnableColors] = useState<boolean>(
+    Boolean(initialParsed.variants?.colors && initialParsed.variants.colors.length > 0)
+  );
+  const [colorVariants, setColorVariants] = useState<ProductColorVariant[]>(
+    initialParsed.variants?.colors || []
+  );
+  const [newColorName, setNewColorName] = useState("");
+  const [newColorHex, setNewColorHex] = useState("#00A859");
+
+  const [enableSizes, setEnableSizes] = useState<boolean>(
+    Boolean(initialParsed.variants?.sizes && initialParsed.variants.sizes.length > 0)
+  );
+  const [sizeVariants, setSizeVariants] = useState<string[]>(
+    initialParsed.variants?.sizes || []
+  );
+  const [newSizeInput, setNewSizeInput] = useState("");
 
   const [imageUrlInput, setImageUrlInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -129,21 +161,26 @@ export function ProductEditor({
   }
 
   function handleAddImageUrl() {
-    if (!imageUrlInput.trim()) return;
-    try {
-      const url = new URL(imageUrlInput.trim());
-      if (url.protocol !== "https:" && url.protocol !== "http:") {
-        setError("Image URL must use http or https.");
+    const trimmed = imageUrlInput.trim();
+    if (!trimmed) return;
+    const isRelative = trimmed.startsWith("/");
+    if (!isRelative) {
+      try {
+        const url = new URL(trimmed);
+        if (url.protocol !== "https:" && url.protocol !== "http:") {
+          setError("Image URL must use http or https.");
+          return;
+        }
+      } catch {
+        setError("Please enter a valid HTTP/HTTPS image URL or uploaded path.");
         return;
       }
-    } catch {
-      setError("Please enter a valid HTTP/HTTPS image URL.");
-      return;
     }
 
     setDraft((prev) => {
       const currentImages = prev.images || [];
-      const nextImages = [...currentImages, imageUrlInput.trim()];
+      if (currentImages.includes(trimmed)) return prev;
+      const nextImages = [...currentImages, trimmed];
       return {
         ...prev,
         images: nextImages,
@@ -182,6 +219,38 @@ export function ProductEditor({
     });
   }
 
+  function handleAddColor() {
+    const trimmed = newColorName.trim();
+    if (!trimmed) return;
+    if (colorVariants.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
+      setError("This color name already exists.");
+      return;
+    }
+    setColorVariants([...colorVariants, { name: trimmed, hex: newColorHex }]);
+    setNewColorName("");
+    setError("");
+  }
+
+  function handleRemoveColor(index: number) {
+    setColorVariants(colorVariants.filter((_, i) => i !== index));
+  }
+
+  function handleAddSize() {
+    const trimmed = newSizeInput.trim().toUpperCase();
+    if (!trimmed) return;
+    if (sizeVariants.includes(trimmed)) {
+      setError("This size already exists.");
+      return;
+    }
+    setSizeVariants([...sizeVariants, trimmed]);
+    setNewSizeInput("");
+    setError("");
+  }
+
+  function handleRemoveSize(index: number) {
+    setSizeVariants(sizeVariants.filter((_, i) => i !== index));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -210,48 +279,77 @@ export function ProductEditor({
         return;
       }
 
+      // Automatically incorporate any pending image URL in the input field
+      let updatedImages = [...(draft.images || [])];
+      const pendingUrl = imageUrlInput.trim();
+      if (pendingUrl) {
+        const isRel = pendingUrl.startsWith("/");
+        let valid = false;
+        if (isRel) {
+          valid = true;
+        } else {
+          try {
+            const u = new URL(pendingUrl);
+            if (u.protocol === "https:" || u.protocol === "http:") valid = true;
+          } catch {}
+        }
+        if (valid && !updatedImages.includes(pendingUrl)) {
+          updatedImages.push(pendingUrl);
+        }
+      }
+
+      // Serialize optional variants with clean description
+      const variantsConfig = {
+        colors: enableColors && colorVariants.length > 0 ? colorVariants : undefined,
+        sizes: enableSizes && sizeVariants.length > 0 ? sizeVariants : undefined,
+      };
+      const finalDescription = serializeProductDescription(
+        draft.description || "",
+        variantsConfig
+      );
+
       const payload = {
         name: draft.name.trim(),
         slug: draft.slug?.trim() || undefined,
-        description: draft.description?.trim() || "",
+        description: finalDescription,
         sku: draft.sku?.trim() || "",
         price: numPrice,
         compareAtPrice: draft.compareAtPrice ? Number(draft.compareAtPrice) : null,
         stockQuantity: Math.floor(numStock),
         categoryId: draft.categoryId || null,
         status: draft.status,
-        imageUrl: draft.imageUrl || draft.images?.[0] || "",
-        images: draft.images || [],
+        imageUrl: updatedImages[0] || draft.imageUrl || "",
+        images: updatedImages,
       };
 
-      if (mode === "create" && !partialCreatedId) {
-        const result = await createProductAction(payload);
-        if (result?.partialSuccess && result?.productId) {
-          setPartialCreatedId(result.productId);
-          setError(result.error || "Product record created, but some gallery photos failed to attach. Click 'Open Existing Product in Editor' or save again to update this item without creating duplicates.");
-        } else if (result?.error) {
-          setError(result.error);
-        } else {
-          setSuccessMessage("Product created successfully! Redirecting...");
-          router.push("/dashboard/products");
-          router.refresh();
+      if (mode === "create") {
+        const res = await createProductAction(payload);
+        if (res?.error) {
+          setError(res.error);
+          if (res.partialSuccess && res.productId) {
+            setPartialCreatedId(res.productId);
+          }
+          setBusy(false);
+          return;
         }
       } else {
-        const targetId = mode === "create" && partialCreatedId ? partialCreatedId : initialProduct?.id;
-        if (!targetId) throw new Error("Product ID is missing.");
-        const result = await updateProductAction(targetId, payload);
-        if (result?.error) {
-          setError(result.error);
-        } else {
-          setSuccessMessage("Product details and inventory updated successfully.");
-          if (partialCreatedId) {
-            router.push(`/dashboard/products/${partialCreatedId}/edit`);
-          }
-          router.refresh();
+        if (!initialProduct?.id) throw new Error("Missing product ID");
+        const res = await updateProductAction(initialProduct.id, payload);
+        if (res?.error) {
+          setError(res.error);
+          setBusy(false);
+          return;
         }
+        setSuccessMessage("Product updated successfully.");
+        setDraft((prev) => ({
+          ...prev,
+          images: updatedImages,
+          imageUrl: updatedImages[0] || "",
+        }));
+        router.refresh();
       }
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred while saving.");
+      setError(err.message || "Failed to save product.");
     } finally {
       setBusy(false);
     }
@@ -262,11 +360,11 @@ export function ProductEditor({
     setBusy(true);
     setError("");
     try {
-      const result = await archiveProductAction(initialProduct.id);
-      if (result.error) {
-        setError(result.error);
+      const res = await archiveProductAction(initialProduct.id);
+      if (res?.error) {
+        setError(res.error);
       } else {
-        setDraft((prev) => ({ ...prev, status: "draft" }));
+        setDraft({ ...draft, status: "draft" });
         setSuccessMessage("Product archived and hidden from storefront.");
         router.refresh();
       }
@@ -339,8 +437,8 @@ export function ProductEditor({
         </h1>
         <p className="text-xs text-zinc-500 mb-6">
           {mode === "create"
-            ? "Provide your product details, pricing, inventory, and photos."
-            : "Update your product details, pricing, stock levels, category, and images."}
+            ? "Provide your product details, pricing, inventory, photos, and optional variants."
+            : "Update your product details, pricing, stock levels, category, images, and variants."}
         </p>
 
         {/* Global Feedback Banners */}
@@ -406,7 +504,7 @@ export function ProductEditor({
                   setDraft({ ...draft, name: e.target.value });
                   setError("");
                 }}
-                placeholder="e.g. Classic White Linen Shirt"
+                placeholder="e.g. Hair Growth Serum 50ml"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
               />
             </div>
@@ -428,7 +526,7 @@ export function ProductEditor({
                   setDraft({ ...draft, slug: e.target.value });
                   setError("");
                 }}
-                placeholder="classic-white-linen-shirt"
+                placeholder="hair-growth-serum-50ml"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
               />
             </div>
@@ -481,7 +579,7 @@ export function ProductEditor({
                   setDraft({ ...draft, price: e.target.value });
                   setError("");
                 }}
-                placeholder="4500.00"
+                placeholder="3750.00"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
               />
             </div>
@@ -505,7 +603,7 @@ export function ProductEditor({
                   setDraft({ ...draft, compareAtPrice: e.target.value });
                   setError("");
                 }}
-                placeholder="5500.00"
+                placeholder="4200.00"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
               />
             </div>
@@ -551,7 +649,7 @@ export function ProductEditor({
                   setDraft({ ...draft, sku: e.target.value });
                   setError("");
                 }}
-                placeholder="e.g. LIN-WHT-01"
+                placeholder="e.g. SRM-001"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
               />
             </div>
@@ -585,10 +683,10 @@ export function ProductEditor({
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-semibold text-zinc-700 uppercase tracking-wider">
-                    Product Images & Gallery
+                    Product Images & Gallery (Multiple Photos)
                   </h3>
                   <p className="text-[11px] text-zinc-500 mt-0.5">
-                    Upload photos directly or add image links. The first image is the primary cover.
+                    Upload multiple photos or add image links. The first image is the primary cover displayed in catalogs.
                   </p>
                 </div>
               </div>
@@ -614,7 +712,7 @@ export function ProductEditor({
                       <Upload className="w-5 h-5 text-zinc-500" />
                     )}
                     <span className="font-semibold text-zinc-900">
-                      {uploadBusy ? "Uploading photo..." : "Upload from Computer"}
+                      {uploadBusy ? "Uploading photo..." : "Upload Photo from Computer"}
                     </span>
                     <span className="text-[10px] text-zinc-400">PNG, JPEG, WebP up to 4 MB</span>
                   </label>
@@ -625,15 +723,21 @@ export function ProductEditor({
                     htmlFor="product-image-url-input"
                     className="block text-[11px] font-semibold text-zinc-600"
                   >
-                    Or Add Image via HTTPS Link
+                    Or Add Image via HTTPS / Local Link
                   </label>
                   <div className="flex gap-2">
                     <input
                       id="product-image-url-input"
                       type="url"
-                      placeholder="https://..."
+                      placeholder="https://... or /images/..."
                       value={imageUrlInput}
                       onChange={(e) => setImageUrlInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddImageUrl();
+                        }
+                      }}
                       className="flex-1 px-2.5 py-1.5 text-xs rounded-lg border border-zinc-200 bg-white text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
                     />
                     <button
@@ -652,7 +756,7 @@ export function ProductEditor({
               {draft.images && draft.images.length > 0 ? (
                 <div className="space-y-2">
                   <p className="text-[11px] font-medium text-zinc-500">
-                    Gallery photos ({draft.images.length}) ?" reorder or remove:
+                    Gallery photos ({draft.images.length}) — click arrows to reorder or trash to remove:
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {draft.images.map((imgUrl, idx) => (
@@ -669,7 +773,7 @@ export function ProductEditor({
                           {idx === 0 && (
                             <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-zinc-900/80 text-white text-[10px] font-semibold flex items-center gap-1 shadow">
                               <Star className="w-2.5 h-2.5 fill-white text-white" />
-                              Primary
+                              Cover
                             </span>
                           )}
                         </div>
@@ -716,8 +820,196 @@ export function ProductEditor({
               )}
             </div>
 
+            {/* Optional Color & Variant Selection Section */}
+            <div className="sm:col-span-2 pt-4 border-t border-zinc-100 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Palette className="w-4 h-4 text-emerald-600" />
+                  <div>
+                    <h3 className="text-xs font-semibold text-zinc-800 uppercase tracking-wider">
+                      Color / Variant Options (Optional)
+                    </h3>
+                    <p className="text-[11px] text-zinc-500">
+                      Enable if this product comes in different colors, shades, or variants (e.g. Original, Green Tea, Lavender).
+                    </p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={enableColors}
+                    onChange={(e) => setEnableColors(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                </label>
+              </div>
+
+              {enableColors && (
+                <div className="bg-zinc-50/70 border border-zinc-200 rounded-xl p-4 space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="color"
+                      value={newColorHex}
+                      onChange={(e) => setNewColorHex(e.target.value)}
+                      className="w-8 h-8 rounded-lg cursor-pointer border border-zinc-300 p-0.5 bg-white"
+                      title="Choose color shade"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Variant / Color Name (e.g. Rose, Lavender, Green Tea)"
+                      value={newColorName}
+                      onChange={(e) => setNewColorName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddColor();
+                        }
+                      }}
+                      className="flex-1 min-w-[200px] px-3 py-1.5 text-xs rounded-lg border border-zinc-200 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddColor}
+                      disabled={!newColorName.trim()}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-40 transition"
+                    >
+                      + Add Color
+                    </button>
+                  </div>
+
+                  {colorVariants.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {colorVariants.map((c, i) => (
+                        <div
+                          key={i}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200 bg-white text-xs font-medium text-zinc-800 shadow-2xs"
+                        >
+                          <span
+                            className="w-3.5 h-3.5 rounded-full border border-black/10 shrink-0"
+                            style={{ backgroundColor: c.hex || "#e5e7eb" }}
+                          />
+                          <span>{c.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveColor(i)}
+                            className="text-zinc-400 hover:text-red-500 ml-1"
+                            title="Remove"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-zinc-400 italic">No color variants added yet.</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Optional Clothing Sizes Section */}
+            <div className="sm:col-span-2 pt-4 border-t border-zinc-100 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Ruler className="w-4 h-4 text-emerald-600" />
+                  <div>
+                    <h3 className="text-xs font-semibold text-zinc-800 uppercase tracking-wider">
+                      Sizes (Clothing & Apparel, Optional)
+                    </h3>
+                    <p className="text-[11px] text-zinc-500">
+                      Enable if you sell clothes or sized products (e.g. XS, S, M, L, XL, XXL or shoe sizes).
+                    </p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={enableSizes}
+                    onChange={(e) => setEnableSizes(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                </label>
+              </div>
+
+              {enableSizes && (
+                <div className="bg-zinc-50/70 border border-zinc-200 rounded-xl p-4 space-y-3">
+                  {/* Preset Quick Add Buttons */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[11px] font-semibold text-zinc-500 mr-1">Quick Add:</span>
+                    {["XS", "S", "M", "L", "XL", "XXL", "Free Size"].map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => {
+                          if (!sizeVariants.includes(preset)) {
+                            setSizeVariants([...sizeVariants, preset]);
+                          }
+                        }}
+                        className={`px-2 py-0.5 text-[11px] font-bold rounded-lg border transition ${
+                          sizeVariants.includes(preset)
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-300"
+                            : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100"
+                        }`}
+                      >
+                        +{preset}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Custom Size (e.g. 32, 34, 38, or 6-12M)"
+                      value={newSizeInput}
+                      onChange={(e) => setNewSizeInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddSize();
+                        }
+                      }}
+                      className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-zinc-200 bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddSize}
+                      disabled={!newSizeInput.trim()}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-40 transition"
+                    >
+                      + Add Size
+                    </button>
+                  </div>
+
+                  {sizeVariants.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {sizeVariants.map((s, i) => (
+                        <div
+                          key={i}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-zinc-200 bg-white text-xs font-bold text-zinc-800 shadow-2xs"
+                        >
+                          <span>{s}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSize(i)}
+                            className="text-zinc-400 hover:text-red-500 ml-1"
+                            title="Remove"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-zinc-400 italic">No sizes added yet.</p>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Description */}
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-2 pt-2 border-t border-zinc-100">
               <label
                 htmlFor="product-description"
                 className="block text-xs font-semibold text-zinc-700 uppercase tracking-wider mb-1.5"
@@ -734,7 +1026,7 @@ export function ProductEditor({
                   setDraft({ ...draft, description: e.target.value });
                   setError("");
                 }}
-                placeholder="Fabric details, sizing information, care instructions..."
+                placeholder="Product highlights, benefits, formula, fabric details, sizing or care instructions..."
                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
               />
             </div>
@@ -819,19 +1111,9 @@ export function ProductEditor({
                 type="button"
                 disabled={deleteBusy}
                 onClick={handleDeleteConfirm}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition"
+                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-xs font-semibold transition"
               >
-                {deleteBusy ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Deleting...</span>
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Confirm Delete</span>
-                  </>
-                )}
+                {deleteBusy ? "Deleting..." : "Confirm Delete"}
               </button>
             </div>
           </div>

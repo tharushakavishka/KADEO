@@ -8,7 +8,8 @@
   padding: 8px 16px;
   font-size: 13px;
   color: #64748b;
-  width: 320px;
+  width: 300px;
+  max-width: 100%;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -269,7 +270,7 @@
 @media (max-width: 900px) {
   .trigger {
     width: auto;
-    padding: 8px 12px;
+    padding: 7px 12px;
   }
   .placeholder {
     display: none;
@@ -277,10 +278,37 @@
 }
 
 @media (max-width: 640px) {
+  .trigger {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+  .trigger:hover {
+    background: #f1f5f9;
+  }
+  .placeholder,
+  .kbd {
+    display: none;
+  }
+  .searchIcon {
+    width: 18px;
+    height: 18px;
+    color: #475569;
+  }
   .backdrop {
-    padding-top: 24px;
+    padding-top: 16px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
   .modal {
     border-radius: 16px;
+  }
+  .itemDesc {
+    display: none;
   }
 }

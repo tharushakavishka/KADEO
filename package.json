@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/unit/utils.test.mjs tests/unit/local-db-integrity.test.mjs tests/unit/catalog-workflow.test.mjs tests/unit/frontend-enhancements.test.mjs tests/unit/plan-quota-and-subscription-ui.test.mjs tests/unit/plan-quota-qa-verification.test.mjs tests/unit/admin-governance-and-backup.test.cjs tests/unit/account-and-store-deletion.test.cjs"
+    "test": "node --test tests/unit/utils.test.mjs tests/unit/local-db-integrity.test.mjs tests/unit/catalog-workflow.test.mjs tests/unit/frontend-enhancements.test.mjs tests/unit/plan-quota-and-subscription-ui.test.mjs tests/unit/plan-quota-qa-verification.test.mjs tests/unit/admin-governance-and-backup.test.cjs tests/unit/account-and-store-deletion.test.cjs tests/unit/store-theme-realtime.test.mjs tests/unit/production-readiness-audit.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.3",

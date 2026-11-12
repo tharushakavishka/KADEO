@@ -60,6 +60,7 @@ export interface LocalDB {
     name: string;
     slug: string;
     description?: string;
+    image_url?: string | null;
     sort_order?: number;
     created_at: string;
     updated_at: string;

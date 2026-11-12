@@ -8,14 +8,26 @@ import {
   Search,
   X,
   MessageCircle,
-  ArrowUpRight,
   ChevronLeft,
   ChevronRight,
+  Plus,
+  Package,
+  Truck,
+  CheckCircle2,
+  Clock,
+  Settings,
+  XCircle,
+  Calendar,
+  Filter,
+  ChevronDown,
+  ExternalLink,
+  MoreVertical,
+  User,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { buildWhatsAppUrl } from "@/lib/phone";
 
-interface OrderItem {
+export interface OrderItem {
   id: string;
   order_code: string;
   customer_name_snapshot: string;
@@ -23,15 +35,22 @@ interface OrderItem {
   total: number;
   status: string;
   created_at: string;
+  updated_at?: string;
 }
 
-interface OrderListClientProps {
+export interface OrderListClientProps {
   orders: OrderItem[];
   totalCount: number;
   currentPage: number;
   totalPages: number;
   searchQuery: string;
   currentStatus: string;
+  stageCounts?: {
+    pending: number;
+    processing: number;
+    shipped: number;
+    completed: number;
+  };
 }
 
 export function OrderListClient({
@@ -41,21 +60,23 @@ export function OrderListClient({
   totalPages,
   searchQuery,
   currentStatus,
+  stageCounts = { pending: 0, processing: 0, shipped: 0, completed: 0 },
 }: OrderListClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [searchInput, setSearchInput] = useState(searchQuery);
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
   const statuses = [
-    { label: "All Orders", value: "all" },
-    { label: "Pending", value: "pending" },
-    { label: "Confirmed", value: "confirmed" },
-    { label: "Processing", value: "processing" },
-    { label: "Shipped", value: "shipped" },
-    { label: "Completed", value: "completed" },
-    { label: "Cancelled", value: "cancelled" },
+    { label: "All Orders", value: "all", icon: Package },
+    { label: "Pending", value: "pending", icon: Clock },
+    { label: "Confirmed", value: "confirmed", icon: CheckCircle2 },
+    { label: "Processing", value: "processing", icon: Settings },
+    { label: "Shipped", value: "shipped", icon: Truck },
+    { label: "Completed", value: "completed", icon: CheckCircle2 },
+    { label: "Cancelled", value: "cancelled", icon: XCircle },
   ];
 
   function updateQuery(updates: Record<string, string | null>) {
@@ -83,253 +104,550 @@ export function OrderListClient({
     updateQuery({ q: null });
   }
 
+  function renderStatusBadge(status: string) {
+    if (status === "completed") {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#dcfce7] text-[#16a34a]">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          <span>Completed</span>
+        </span>
+      );
+    }
+    if (status === "confirmed" || status === "shipped") {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#e0f2fe] text-[#0284c7]">
+          {status === "shipped" ? <Truck className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+          <span className="capitalize">{status}</span>
+        </span>
+      );
+    }
+    if (status === "cancelled") {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700">
+          <XCircle className="w-3.5 h-3.5" />
+          <span>Cancelled</span>
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#fef3c7] text-[#b45309]">
+        <Clock className="w-3.5 h-3.5" />
+        <span className="capitalize">{status}</span>
+      </span>
+    );
+  }
+
+  const fromRow = totalCount > 0 ? (currentPage - 1) * 10 + 1 : 0;
+  const toRow = Math.min(currentPage * 10, totalCount);
+
   return (
     <div className="space-y-6">
-      {/* Status Filter Tabs (Preserves Search Query) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      {/* 1. TOP HEADER SECTION */}
+      <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 pb-1">
+        <div className="space-y-1 z-10">
+          <span className="text-[11px] font-extrabold text-[#00c982] uppercase tracking-wider block">
+            ORDER MANAGEMENT
+          </span>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              Store Orders
+            </h1>
+            <span className="inline-flex items-center justify-center px-3 py-0.5 rounded-full text-xs font-bold bg-[#d1fae5] text-[#065f46]">
+              {totalCount}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 font-medium">
+            View, track, and update fulfilment for incoming customer WhatsApp orders.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4 z-10 self-start md:self-center">
+          {/* 3D Bags & Cart Illustration Graphic */}
+          <div className="hidden xl:block absolute right-48 top-0 pointer-events-none select-none">
+            <img
+              src="/images/orders-header-illustration.png"
+              alt="Orders illustration"
+              className="h-28 object-contain drop-shadow-sm"
+              onError={(e) => {
+                (e.target as HTMLElement).style.display = "none";
+              }}
+            />
+          </div>
+
+          <Link
+            href="/dashboard/pos"
+            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-[#064e3b] hover:bg-[#032e23] text-white text-xs sm:text-sm font-bold shadow-sm transition active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Order</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* 2. FOUR FULFILLMENT STATUS CARDS */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+        {/* Needs Confirmation */}
+        <button
+          type="button"
+          onClick={() => updateQuery({ status: "pending" })}
+          className={`bg-white rounded-3xl border ${
+            currentStatus === "pending" ? "border-emerald-500 ring-2 ring-emerald-500/20" : "border-slate-100"
+          } shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-3.5 sm:p-5 flex items-center justify-between transition hover:shadow-md text-left w-full cursor-pointer`}
+        >
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#dcfce7] text-[#16a34a] flex items-center justify-center shrink-0">
+              <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] sm:text-xs font-bold text-slate-700 block truncate">Needs Confirm</span>
+              <span className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight block mt-0.5">
+                {stageCounts.pending}
+              </span>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 shrink-0" />
+        </button>
+
+        {/* To Pack */}
+        <button
+          type="button"
+          onClick={() => updateQuery({ status: "processing" })}
+          className={`bg-white rounded-3xl border ${
+            currentStatus === "processing" ? "border-emerald-500 ring-2 ring-emerald-500/20" : "border-slate-100"
+          } shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-3.5 sm:p-5 flex items-center justify-between transition hover:shadow-md text-left w-full cursor-pointer`}
+        >
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#fef3c7] text-[#d97706] flex items-center justify-center shrink-0">
+              <Package className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] sm:text-xs font-bold text-slate-700 block truncate">To Pack</span>
+              <span className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight block mt-0.5">
+                {stageCounts.processing}
+              </span>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 shrink-0" />
+        </button>
+
+        {/* On The Way */}
+        <button
+          type="button"
+          onClick={() => updateQuery({ status: "shipped" })}
+          className={`bg-white rounded-3xl border ${
+            currentStatus === "shipped" ? "border-emerald-500 ring-2 ring-emerald-500/20" : "border-slate-100"
+          } shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-3.5 sm:p-5 flex items-center justify-between transition hover:shadow-md text-left w-full cursor-pointer`}
+        >
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#e0f2fe] text-[#0284c7] flex items-center justify-center shrink-0">
+              <Truck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] sm:text-xs font-bold text-slate-700 block truncate">On The Way</span>
+              <span className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight block mt-0.5">
+                {stageCounts.shipped}
+              </span>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 shrink-0" />
+        </button>
+
+        {/* Completed */}
+        <button
+          type="button"
+          onClick={() => updateQuery({ status: "completed" })}
+          className={`bg-white rounded-3xl border ${
+            currentStatus === "completed" ? "border-emerald-500 ring-2 ring-emerald-500/20" : "border-slate-100"
+          } shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-3.5 sm:p-5 flex items-center justify-between transition hover:shadow-md text-left w-full cursor-pointer`}
+        >
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#f3e8ff] text-[#9333ea] flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[11px] sm:text-xs font-bold text-slate-700 block truncate">Completed</span>
+              <span className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight block mt-0.5">
+                {stageCounts.completed}
+              </span>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 shrink-0" />
+        </button>
+      </div>
+
+      {/* 3. STATUS FILTER PILLS ROW */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {statuses.map((s) => {
           const isActive =
             (!currentStatus && s.value === "all") || currentStatus === s.value;
+          const Icon = s.icon;
           return (
             <button
               key={s.value}
               type="button"
               aria-pressed={isActive}
               onClick={() => updateQuery({ status: s.value })}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 sm:gap-2 shrink-0 ${
                 isActive
-                  ? "bg-emerald-700 text-white shadow-sm"
-                  : "bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                  ? "bg-[#064e3b] text-white shadow-sm"
+                  : "bg-white border border-slate-200/90 text-slate-700 hover:bg-slate-50"
               }`}
             >
-              {s.label}
+              <Icon className="w-3.5 h-3.5" />
+              <span>{s.label}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Search Input Bar (Retains Status Filter) */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+      {/* 4. SEARCH & FILTERS BAR */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        {/* Search Input */}
         <form onSubmit={handleSearchSubmit} className="flex-1 relative">
           <label htmlFor="order-search-input" className="sr-only">
-            Search orders by order code, customer name, or phone number
+            Search orders by order ID, customer name, or phone
           </label>
-          <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-3.5 pointer-events-none" />
           <input
             id="order-search-input"
             type="text"
             placeholder="Search by order ID (e.g. KAD-2026), customer name, or phone..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full pl-10 pr-10 py-2 text-xs rounded-xl border border-zinc-200 bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-600 transition"
+            className="w-full bg-white border border-slate-200/90 rounded-2xl pl-11 pr-10 py-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 font-medium shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#00c982] transition"
           />
           {searchInput && (
             <button
               type="button"
               onClick={handleClearSearch}
-              aria-label="Clear order search text"
-              className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-600"
+              aria-label="Clear search text"
+              className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 p-1"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </form>
 
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={handleClearSearch}
-            className="px-3 py-2 text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition shrink-0"
-          >
-            Clear Search
-          </button>
-        )}
+        {/* Filter Dropdowns */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Date Range */}
+          <div className="relative inline-flex items-center bg-white border border-slate-200/90 rounded-2xl px-3.5 sm:px-4 py-2 sm:py-2.5 shadow-2xs hover:border-slate-300 transition cursor-pointer">
+            <Calendar className="w-4 h-4 text-slate-700 pointer-events-none shrink-0" />
+            <span className="text-xs font-bold text-slate-800 px-2 py-0.5">Select Date</span>
+            <ChevronDown className="w-4 h-4 text-slate-400 pointer-events-none" />
+          </div>
+
+          {/* Filter */}
+          <div className="relative inline-flex items-center bg-white border border-slate-200/90 rounded-2xl px-3.5 sm:px-4 py-2 sm:py-2.5 shadow-2xs hover:border-slate-300 transition cursor-pointer">
+            <Filter className="w-4 h-4 text-slate-700 pointer-events-none shrink-0" />
+            <span className="text-xs font-bold text-slate-800 px-2 py-0.5">Filter</span>
+          </div>
+
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="text-xs font-bold text-rose-600 hover:text-rose-700 px-2 py-1"
+            >
+              Reset
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Orders Table Container */}
-      <div className="bg-white border border-zinc-200/80 rounded-2xl shadow-sm overflow-hidden">
-        {orders.length === 0 ? (
-          <div className="p-12 text-center">
-            <ShoppingBag className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-zinc-900">
-              {searchQuery || (currentStatus && currentStatus !== "all")
-                ? "No orders found matching criteria"
-                : "No customer orders yet"}
-            </h3>
-            <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto mb-4">
-              {searchQuery || (currentStatus && currentStatus !== "all")
-                ? "Try searching with a different order code or switch to All Orders filter."
-                : "Incoming customer orders from your storefront will be listed here."}
-            </p>
-            {(searchQuery || (currentStatus && currentStatus !== "all")) && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchInput("");
-                  router.push(pathname);
-                }}
-                className="px-4 py-2 rounded-xl border border-zinc-200 text-zinc-700 text-xs font-semibold hover:bg-zinc-50 transition"
-              >
-                Reset All Filters
-              </button>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="divide-y divide-slate-100 md:hidden">
-              {orders.map((order) => (
-                <article key={order.id} className="space-y-3 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <Link
-                      href={`/dashboard/orders/${order.id}`}
-                      className="font-mono text-sm font-bold text-emerald-700 hover:underline"
-                    >
-                      {order.order_code}
-                    </Link>
-                    <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-semibold capitalize">
-                      {order.status}
-                    </span>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold">{order.customer_name_snapshot}</p>
-                      <p className="text-xs text-slate-500">
-                        {new Date(order.created_at).toLocaleDateString("en-LK")}
-                      </p>
+      {/* 5. ORDERS DATA TABLE & MOBILE CARDS */}
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden">
+        {/* MOBILE CARDS VIEW (< md) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {orders.length === 0 ? (
+            <div className="py-12 px-4 text-center text-slate-500">
+              <div className="w-14 h-14 rounded-2xl bg-[#f0fdf4] text-emerald-600 mx-auto flex items-center justify-center mb-3">
+                <ShoppingBag className="w-7 h-7" />
+              </div>
+              <p className="text-sm font-bold text-slate-900">No customer orders yet</p>
+              <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+                Orders placed via your storefront or created manually in Sales Desk will appear here.
+              </p>
+            </div>
+          ) : (
+            orders.map((o) => {
+              const isMenuOpen = activeMenuId === o.id;
+              const dateStr = new Date(o.created_at).toLocaleDateString("en-US", {
+                month: "numeric",
+                day: "numeric",
+                year: "numeric",
+              });
+              const cleanPhone = (o.customer_phone_snapshot || "").replace(/[^0-9]/g, "");
+
+              return (
+                <div key={o.id} className="p-4 space-y-3 hover:bg-slate-50/50 transition">
+                  {/* Top row: Order Code, Status badge */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-[#dcfce7] text-[#16a34a] flex items-center justify-center shrink-0">
+                        <Package className="w-4 h-4 stroke-[2.2]" />
+                      </div>
+                      <span className="font-extrabold text-sm text-slate-900 truncate">
+                        {o.order_code}
+                      </span>
                     </div>
-                    <strong className="text-sm">{formatCurrency(Number(order.total))}</strong>
+                    {renderStatusBadge(o.status)}
                   </div>
-                  <div className="flex gap-3">
-                    <Link
-                      href={`/dashboard/orders/${order.id}`}
-                      className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3 py-2 text-xs font-semibold text-white transition"
-                    >
-                      Manage order
-                    </Link>
+
+                  {/* Customer and phone info */}
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                        <User className="w-3 h-3" />
+                      </div>
+                      <span className="font-bold text-slate-800 truncate">
+                        {o.customer_name_snapshot}
+                      </span>
+                    </div>
+
                     <a
-                      href={buildWhatsAppUrl(order.customer_phone_snapshot)}
+                      href={buildWhatsAppUrl(cleanPhone, `Hi ${o.customer_name_snapshot}, regarding your order ${o.order_code}`)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50 transition"
+                      className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold text-xs hover:underline shrink-0"
                     >
-                      Contact customer
+                      <MessageCircle className="w-3.5 h-3.5 fill-[#25D366] text-[#25D366]" />
+                      <span>{o.customer_phone_snapshot}</span>
                     </a>
                   </div>
-                </article>
-              ))}
-            </div>
-            <div className="hidden overflow-x-auto md:block">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-zinc-50 border-b border-zinc-100 text-zinc-500 uppercase tracking-wider font-semibold">
-                  <tr>
-                    <th className="px-5 py-3">Order Code</th>
-                    <th className="px-5 py-3">Customer</th>
-                    <th className="px-5 py-3">WhatsApp / Phone</th>
-                    <th className="px-5 py-3">Total Amount</th>
-                    <th className="px-5 py-3">Status</th>
-                    <th className="px-5 py-3">Date</th>
-                    <th className="px-5 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 font-medium text-zinc-700">
-                  {orders.map((o) => {
-                    const customerWhatsApp = buildWhatsAppUrl(o.customer_phone_snapshot);
-                    return (
-                      <tr key={o.id} className="hover:bg-zinc-50/60 transition">
-                        <td className="px-5 py-3.5 font-mono text-zinc-900 font-semibold">
-                          {o.order_code}
-                        </td>
-                        <td className="px-5 py-3.5 text-zinc-900">
-                          {o.customer_name_snapshot}
-                        </td>
-                        <td className="px-5 py-3.5 text-zinc-600">
-                          <a
-                            href={customerWhatsApp}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Chat on WhatsApp with customer ${o.customer_name_snapshot}`}
-                            className="inline-flex items-center gap-1 text-emerald-700 hover:underline"
-                          >
-                            <MessageCircle className="w-3.5 h-3.5" />
-                            <span>{o.customer_phone_snapshot}</span>
-                          </a>
-                        </td>
-                        <td className="px-5 py-3.5 font-semibold text-zinc-900">
-                          {formatCurrency(Number(o.total))}
-                        </td>
-                        <td className="px-5 py-3.5">
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold capitalize ${
-                              o.status === "completed"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : o.status === "pending"
-                                ? "bg-amber-50 text-amber-700"
-                                : o.status === "cancelled"
-                                ? "bg-red-50 text-red-700"
-                                : "bg-zinc-100 text-zinc-700"
-                            }`}
-                          >
-                            {o.status}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3.5 text-zinc-500">
-                          {new Date(o.created_at).toLocaleDateString("en-LK")}
-                        </td>
-                        <td className="px-5 py-3.5 text-right">
+
+                  {/* Amount, Date, Manage & Options */}
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100/70">
+                    <div>
+                      <span className="text-[11px] text-slate-400 block">{dateStr}</span>
+                      <span className="font-extrabold text-slate-900 text-sm">
+                        {formatCurrency(o.total)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 relative">
+                      <Link
+                        href={`/dashboard/orders/${o.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#10b981] bg-white text-[#059669] hover:bg-[#ecfdf5] text-xs font-bold transition shadow-2xs"
+                      >
+                        <span>Manage</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={() => setActiveMenuId(isMenuOpen ? null : o.id)}
+                        aria-label={`More options for order ${o.order_code}`}
+                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+
+                      {isMenuOpen && (
+                        <div className="absolute right-0 bottom-9 w-44 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-20 text-left">
                           <Link
                             href={`/dashboard/orders/${o.id}`}
-                            className="text-xs font-semibold text-zinc-900 hover:underline inline-flex items-center justify-end gap-1"
-                            aria-label={`Manage order ${o.order_code}`}
+                            className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                            <span>View Details</span>
+                          </Link>
+                          <a
+                            href={buildWhatsAppUrl(cleanPhone, `Order update: ${o.order_code}`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>WhatsApp Customer</span>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* DESKTOP TABLE VIEW (>= md) */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50/70 border-b border-slate-100 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                <th className="py-4 pl-6 pr-4 font-extrabold text-slate-700">ORDER CODE</th>
+                <th className="py-4 px-4 font-extrabold text-slate-700">CUSTOMER</th>
+                <th className="py-4 px-4 font-extrabold text-slate-700">WHATSAPP / PHONE</th>
+                <th className="py-4 px-4 font-extrabold text-slate-700">TOTAL AMOUNT</th>
+                <th className="py-4 px-4 font-extrabold text-slate-700">STATUS</th>
+                <th className="py-4 px-4 font-extrabold text-slate-700">DATE</th>
+                <th className="py-4 pr-6 pl-4 text-right font-extrabold text-slate-700">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
+              {orders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-16 text-center text-slate-500">
+                    <div className="w-16 h-16 rounded-3xl bg-[#f0fdf4] text-emerald-600 mx-auto flex items-center justify-center mb-3">
+                      <ShoppingBag className="w-8 h-8" />
+                    </div>
+                    <p className="text-base font-bold text-slate-900">No customer orders yet</p>
+                    <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                      Orders placed via your storefront or created manually in Sales Desk will appear here.
+                    </p>
+                  </td>
+                </tr>
+              ) : (
+                orders.map((o) => {
+                  const isMenuOpen = activeMenuId === o.id;
+                  const dateStr = new Date(o.created_at).toLocaleDateString("en-US", {
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+                  const cleanPhone = (o.customer_phone_snapshot || "").replace(/[^0-9]/g, "");
+
+                  return (
+                    <tr key={o.id} className="hover:bg-[#fcfdfd] transition group">
+                      {/* Order Code */}
+                      <td className="py-4 pl-6 pr-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-[#dcfce7] text-[#16a34a] flex items-center justify-center shrink-0">
+                            <Package className="w-4 h-4 stroke-[2.2]" />
+                          </div>
+                          <span className="font-extrabold text-slate-900 group-hover:text-emerald-700 transition">
+                            {o.order_code}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Customer */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                            <User className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="font-bold text-slate-900">
+                            {o.customer_name_snapshot}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* WhatsApp / Phone */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2 text-emerald-700 font-semibold text-xs">
+                          <MessageCircle className="w-4 h-4 fill-[#25D366] text-[#25D366] shrink-0" />
+                          <a
+                            href={buildWhatsAppUrl(cleanPhone, `Hi ${o.customer_name_snapshot}, regarding your order ${o.order_code}`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:underline"
+                            title="Message on WhatsApp"
+                          >
+                            {o.customer_phone_snapshot}
+                          </a>
+                        </div>
+                      </td>
+
+                      {/* Total Amount */}
+                      <td className="py-4 px-4">
+                        <span className="font-extrabold text-slate-900 text-sm">
+                          {formatCurrency(o.total)}
+                        </span>
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-4 px-4">{renderStatusBadge(o.status)}</td>
+
+                      {/* Date */}
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-1.5 text-slate-600 text-xs">
+                          <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>{dateStr}</span>
+                        </div>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-4 pr-6 pl-4 text-right">
+                        <div className="flex items-center justify-end gap-2 relative">
+                          <Link
+                            href={`/dashboard/orders/${o.id}`}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#10b981] bg-white text-[#059669] hover:bg-[#ecfdf5] text-xs font-bold transition shadow-2xs"
                           >
                             <span>Manage</span>
-                            <ArrowUpRight className="w-3.5 h-3.5" />
+                            <ExternalLink className="w-3.5 h-3.5" />
                           </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
 
-            {/* Bounded Pagination Footer */}
-            {totalPages > 1 && (
-              <div className="p-4 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
-                <span className="font-medium">
-                  Showing {(currentPage - 1) * 10 + 1}–{Math.min(currentPage * 10, totalCount)} of {totalCount} orders
-                </span>
+                          <button
+                            type="button"
+                            onClick={() => setActiveMenuId(isMenuOpen ? null : o.id)}
+                            aria-label={`More options for order ${o.order_code}`}
+                            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    disabled={currentPage <= 1}
-                    onClick={() => updateQuery({ page: String(currentPage - 1) })}
-                    aria-label="Previous orders page"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-zinc-200 text-zinc-700 font-semibold disabled:opacity-40 hover:bg-zinc-50 transition"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                    <span>Previous</span>
-                  </button>
+                          {isMenuOpen && (
+                            <div className="absolute right-0 top-10 w-44 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 z-20 text-left">
+                              <Link
+                                href={`/dashboard/orders/${o.id}`}
+                                className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                                <span>View Details</span>
+                              </Link>
+                              <a
+                                href={buildWhatsAppUrl(cleanPhone, `Order update: ${o.order_code}`)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                              >
+                                <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>WhatsApp Customer</span>
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
 
-                  <span className="font-semibold text-zinc-900 px-2">
-                    Page {currentPage} of {totalPages}
-                  </span>
+        {/* Pagination Footer */}
+        <div className="p-4 sm:p-5 border-t border-slate-100 bg-[#fafbfa] flex items-center justify-between text-xs text-slate-500 font-medium">
+          <span>
+            Showing {fromRow} to {toRow} of {totalCount} {totalCount === 1 ? "order" : "orders"}
+          </span>
 
-                  <button
-                    type="button"
-                    disabled={currentPage >= totalPages}
-                    onClick={() => updateQuery({ page: String(currentPage + 1) })}
-                    aria-label="Next orders page"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-zinc-200 text-zinc-700 font-semibold disabled:opacity-40 hover:bg-zinc-50 transition"
-                  >
-                    <span>Next</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
-        )}
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              disabled={currentPage <= 1}
+              onClick={() => updateQuery({ page: String(currentPage - 1) })}
+              aria-label="Previous page"
+              className="w-8 h-8 rounded-xl border border-slate-200 bg-white text-slate-700 flex items-center justify-center hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition shadow-2xs"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span className="w-8 h-8 rounded-xl bg-[#064e3b] text-white font-bold flex items-center justify-center shadow-2xs">
+              {currentPage}
+            </span>
+            <button
+              type="button"
+              disabled={currentPage >= totalPages}
+              onClick={() => updateQuery({ page: String(currentPage + 1) })}
+              aria-label="Next page"
+              className="w-8 h-8 rounded-xl border border-slate-200 bg-white text-slate-700 flex items-center justify-center hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition shadow-2xs"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { EliteCommerceTheme } from "@/components/storefront/themes/EliteCommerceTheme";
 import { StoreContent } from "@/components/storefront/StoreContent";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
@@ -11,6 +12,7 @@ import { BoutiqueTheme } from "@/components/storefront/themes/BoutiqueTheme";
 import { ClassicTheme } from "@/components/storefront/themes/ClassicTheme";
 import { ModernRetailTheme } from "@/components/storefront/themes/ModernRetailTheme";
 import { ShopAppTheme } from "@/components/storefront/themes/ShopAppTheme";
+import { CustomStoreTheme } from "@/components/storefront/themes/CustomStoreTheme";
 import { Eye, Lock, ArrowLeft, ShieldAlert } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -115,7 +117,7 @@ export default async function StorefrontPage({ params }: PageProps) {
   // 2. Fetch Categories
   const { data: categories } = await supabase
     .from("categories")
-    .select("id, name, slug")
+    .select("id, name, slug, image_url")
     .eq("shop_id", shop.id)
     .order("sort_order", { ascending: true });
 
@@ -139,11 +141,27 @@ export default async function StorefrontPage({ params }: PageProps) {
     logo_url: shop.logo_url,
   };
 
-  const hasCustomHeader = shop.theme_id === "modern_retail" || shop.theme_id === "shop_app";
+  const hasCustomHeader = shop.theme_id === "modern_retail" || shop.theme_id === "shop_app" || shop.theme_id === "custom" || shop.theme_id === "elite_commerce";
 
   // Render matching theme
   function renderTheme() {
     switch (shop?.theme_id) {
+      case "elite_commerce":
+        return (
+          <EliteCommerceTheme
+            shop={shopData}
+            categories={categories || []}
+            products={(products as any) || []}
+          />
+        );
+      case "custom":
+        return (
+          <CustomStoreTheme
+            shop={shopData}
+            categories={categories || []}
+            products={(products as any) || []}
+          />
+        );
       case "modern_retail":
         return (
           <ModernRetailTheme
@@ -227,3 +245,4 @@ export default async function StorefrontPage({ params }: PageProps) {
     </StoreContent>
   );
 }
+

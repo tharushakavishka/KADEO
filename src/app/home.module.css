@@ -1,52 +1,70 @@
-/* KADEO Light Theme with Authentic Sri Lankan Typography & Smooth Dynamic Animations */
-@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@500;600;700;800&family=Gemunu+Libre:wght@500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700;800;900&family=Yaldevi:wght@400;500;600;700&display=swap');
+/* Modern Kadeo Home Stylesheet */
 
 .page {
   background-color: #ffffff;
   color: #0f172a;
-  font-family: var(--font-geist-sans), "Noto Sans Sinhala", "Yaldevi", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow-x: hidden;
-  position: relative;
   min-height: 100vh;
+  position: relative;
 }
 
-/* Typography Classes for Sinhala */
 .sinhalaHeading {
-  font-family: "Gemunu Libre", "Abhaya Libre", "Noto Sans Sinhala", sans-serif;
-  letter-spacing: -0.02em;
-}
-
-.sinhalaSerif {
-  font-family: "Abhaya Libre", Georgia, serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.025em;
 }
 
 .sinhalaSans {
-  font-family: "Noto Sans Sinhala", "Yaldevi", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: normal;
 }
 
-/* Subtle clean background patterns (No glow) */
-.subtleGrid {
-  background-image: radial-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
+/* Gradients */
 .heroGradient {
-  background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, rgba(248, 250, 252, 0) 70%);
+  background: transparent;
 }
 
-/* Clean Light Cards - No Glow Effects */
+.accentGradient {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+.darkCardGradient {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+/* Glassmorphism & Soft Cards */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glassDark {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subtleBorder {
+  border: 1px solid #e2e8f0;
+}
+
+/* 3D Soft Lighting Box Shadows */
+.softShadow {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.02);
+}
+
+.glowShadow {
+  box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.3);
+}
+
+.glowShadowBlue {
+  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.3);
+}
+
 .lightCard {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 1.5rem;
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.lightCard:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.1);
-  transform: translateY(-4px);
+  box-shadow: 0 8px 24px -4px rgba(5, 150, 105, 0.12);
 }
 
 .lightCardActive {
@@ -56,11 +74,11 @@
   box-shadow: 0 8px 24px -4px rgba(5, 150, 105, 0.12);
 }
 
-/* Scroll Reveal Animations */
+/* Scroll Reveal Animations (Resilient baseline: opacity: 1 so no blank sections) */
 .reveal {
-  opacity: 0;
-  transform: translateY(34px);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -70,9 +88,9 @@
 }
 
 .revealScale {
-  opacity: 0;
-  transform: translateY(28px) scale(0.97);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -99,7 +117,6 @@
 
 .floatCleanAlt {
   animation: floatCleanAltAnim 8s ease-in-out infinite;
-  animation-delay: -1.5s;
 }
 
 @keyframes floatCleanAnim {
@@ -116,114 +133,94 @@
     transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-6px) rotate(0.5deg);
+    transform: translateY(-6px) rotate(1deg);
   }
 }
 
-/* Gentle Pulse without Glow */
-.subtlePulse {
-  animation: subtlePulseAnim 3s ease-in-out infinite;
+/* Subtle Pulse */
+.pulseSlow {
+  animation: pulseSlowAnim 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes subtlePulseAnim {
+@keyframes pulseSlowAnim {
   0%, 100% {
-    transform: scale(1);
+    opacity: 1;
   }
   50% {
-    transform: scale(1.03);
+    opacity: 0.65;
   }
 }
 
-/* Continuous Marquee Animation */
+/* Marquee / Auto Scroller for Logos */
 .marqueeContainer {
+  display: flex;
   overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-}
-
-.marqueeTrack {
-  display: flex;
+  user-select: none;
   gap: 2rem;
-  animation: marqueeAnim 28s linear infinite;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
 
-.marqueeTrack:hover {
-  animation-play-state: paused;
+.marqueeContent {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  min-width: 100%;
+  gap: 2rem;
+  animation: scrollMarquee 25s linear infinite;
 }
 
-@keyframes marqueeAnim {
-  0% {
-    transform: translateX(0%);
+@keyframes scrollMarquee {
+  from {
+    transform: translateX(0);
   }
-  100% {
-    transform: translateX(-50%);
+  to {
+    transform: translateX(calc(-100% - 2rem));
   }
 }
 
-/* Clean Gradient Text */
-.gradientGreen {
-  background: linear-gradient(135deg, #059669 0%, #047857 50%, #0f766e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradientInk {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Realistic Laptop & Device Frames */
-.laptopScreen {
-  background: #1e293b;
-  border-radius: 1.25rem 1.25rem 0 0;
-  padding: 0.75rem 0.75rem 0 0.75rem;
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
-  border: 2px solid #334155;
-}
-
-.laptopBase {
-  height: 14px;
-  background: linear-gradient(to bottom, #cbd5e1 0%, #94a3b8 100%);
-  border-radius: 0 0 1rem 1rem;
+/* Receipt Paper Fold & Cut Effect */
+.receiptPaper {
+  background: #ffffff;
   position: relative;
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
 }
 
-.laptopBase::after {
+.receiptPaper::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: #64748b;
-  border-radius: 0 0 4px 4px;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: radial-gradient(circle, transparent, transparent 50%, #ffffff 50%, #ffffff 100%);
+  background-size: 12px 12px;
 }
 
-.phoneFrame {
-  background: #0f172a;
-  border-radius: 2rem;
-  padding: 0.5rem;
-  border: 3px solid #334155;
-  box-shadow: 0 25px 40px -10px rgba(15, 23, 42, 0.35);
+/* Theme Showcase Interactive Card */
+.themeCardActive {
+  border-color: #059669;
+  box-shadow: 0 12px 30px -6px rgba(5, 150, 105, 0.18), 0 4px 12px -2px rgba(5, 150, 105, 0.08);
+  transform: translateY(-2px);
 }
 
-/* Order Sharing Image Display Container */
-.orderSharingImageCard {
-  border-radius: 2rem;
-  overflow: hidden;
-  background: #ffffff;
+/* Feature 3D Icon Container */
+.iconBox3D {
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f5f9 100%);
   border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.12);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.orderSharingImageCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.18);
-  border-color: #cbd5e1;
+/* Badge Glow */
+.badgeGlow {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .heroGradient {
+    background: transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -232,7 +229,7 @@
     transform: none !important;
     transition: none !important;
   }
-  .floatClean, .floatCleanDelay, .floatCleanAlt, .marqueeTrack {
+  .floatClean, .floatCleanDelay, .floatCleanAlt, .pulseSlow, .marqueeContent {
     animation: none !important;
   }
 }
