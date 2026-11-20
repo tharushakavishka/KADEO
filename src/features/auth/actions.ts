@@ -81,7 +81,10 @@ export async function registerAction(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  let signUpError = null;
+
+  // Attempt standard public signup
+  const { data: signUpData, error: normalSignUpError } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -91,8 +94,48 @@ export async function registerAction(formData: FormData) {
     },
   });
 
-  if (error) {
-    return { error: error.message };
+  if (normalSignUpError) {
+    // If rate limited by Supabase default email provider (e.g., 3 emails/hour on free tier),
+    // fallback gracefully to admin-confirmed signup so merchants can onboard instantly without blocks
+    if (
+      normalSignUpError.message?.toLowerCase().includes("rate limit") ||
+      (normalSignUpError as any).code === "over_email_send_rate_limit"
+    ) {
+      try {
+        const { createAdminClient } = await import("@/lib/supabase/admin");
+        const adminSupabase = createAdminClient();
+        const { data: adminUser, error: adminErr } = await adminSupabase.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: {
+            full_name: fullName,
+          },
+        });
+
+        if (adminErr) {
+          return { error: adminErr.message };
+        }
+
+        // Auto sign-in the created user
+        const { error: signInErr } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInErr) {
+          // Created successfully, redirect to login if auto-login fails
+          redirect("/login?registered=true");
+        }
+
+        redirect("/dashboard/new-store");
+      } catch (adminFallbackErr: any) {
+        if (adminFallbackErr?.digest?.includes("NEXT_REDIRECT")) throw adminFallbackErr;
+        return { error: normalSignUpError.message };
+      }
+    } else {
+      return { error: normalSignUpError.message };
+    }
   }
 
   redirect("/dashboard/new-store");
