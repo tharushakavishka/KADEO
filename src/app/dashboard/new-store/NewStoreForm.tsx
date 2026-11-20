@@ -5,11 +5,17 @@ import { createShopAction } from "@/features/shops/actions";
 import { generateSlug } from "@/lib/utils";
 import { ArrowRight, Loader2, Store, Sparkles, Phone, MapPin, Mail } from "lucide-react";
 
-export function NewStoreForm() {
+interface NewStoreFormProps {
+  initialName?: string;
+  initialEmail?: string;
+}
+
+export function NewStoreForm({ initialName = "", initialEmail = "" }: NewStoreFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [shopName, setShopName] = useState("");
-  const [slug, setSlug] = useState("");
+  const [shopName, setShopName] = useState(initialName);
+  const [slug, setSlug] = useState(generateSlug(initialName));
+  const [contactEmail, setContactEmail] = useState(initialEmail);
   const [selectedTheme, setSelectedTheme] = useState("minimal");
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -138,6 +144,8 @@ export function NewStoreForm() {
                 <input
                   type="email"
                   name="contactEmail"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
                   placeholder="contact@ceylonlinen.lk"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 bg-white text-zinc-900 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 transition"
                 />

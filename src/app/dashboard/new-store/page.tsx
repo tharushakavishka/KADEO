@@ -18,7 +18,7 @@ export default async function NewStorePage() {
   // Check admin role: Super Admins manage the platform and should not be prompted to create individual stores
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, full_name, email")
     .eq("id", user.id)
     .single();
 
@@ -37,5 +37,8 @@ export default async function NewStorePage() {
     redirect("/dashboard");
   }
 
-  return <NewStoreForm />;
+  const initialName = profile?.full_name || (user.user_metadata?.full_name as string) || "";
+  const initialEmail = profile?.email || user.email || "";
+
+  return <NewStoreForm initialName={initialName} initialEmail={initialEmail} />;
 }
