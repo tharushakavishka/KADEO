@@ -11,6 +11,7 @@ import { RecentOrdersTable } from "@/components/dashboard/RecentOrdersTable";
 import { getShopStorageQuota } from "@/features/subscriptions/quota-service";
 import { SubscriptionExpiryBanner } from "@/components/dashboard/SubscriptionExpiryBanner";
 import { StorageQuotaMeter } from "@/components/dashboard/StorageQuotaMeter";
+import { SalesAnalyticsChart } from "@/components/dashboard/SalesAnalyticsChart";
 import {
   Package,
   ShoppingBag,
@@ -376,6 +377,11 @@ export default async function DashboardOverviewPage() {
             </Link>
           );
         })}
+      </div>
+
+      {/* Modern 7-Day Sales Analytics Chart */}
+      <div className="mb-6">
+        <SalesAnalyticsChart orders={allShopOrders || []} />
       </div>
 
       {/* Storage Quota & Subscription Health Meter */}
