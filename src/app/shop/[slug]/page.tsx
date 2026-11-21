@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { data: shop } = await supabase
     .from("shops")
-    .select("id, owner_id, name, description, settings:shop_settings(store_visibility)")
+    .select("id, owner_id, name, slug, description, logo_url, banner_url, settings:shop_settings(store_visibility)")
     .eq("slug", slug)
     .eq("status", "active")
     .single();
@@ -52,9 +52,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const title = `${shop.name} · Official Online Store`;
+  const description =
+    shop.description || `Browse products and order directly from ${shop.name} via WhatsApp. Island-wide delivery across Sri Lanka.`;
+  const imageUrl = shop.banner_url || shop.logo_url || "https://kadeo.vercel.app/KADEO.png";
+  const storeUrl = `https://kadeo.vercel.app/shop/${shop.slug}`;
+
   return {
-    title: `${shop.name} · Official Online Store`,
-    description: shop.description || `Browse products and order directly from ${shop.name} via WhatsApp.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: storeUrl,
+      siteName: "KADEO",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${shop.name} Storefront`,
+        },
+      ],
+      type: "website",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
   };
 }
 
